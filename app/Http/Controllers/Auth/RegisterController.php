@@ -86,7 +86,7 @@ class RegisterController extends Controller
     protected function checkEmail(Request $request)
     {
         if (User::checkIfEmailExists($request->email)) {
-            return response()->json(['Email Found!']);
+            return response()->json('That email is already taken');
         }
     }
 }
