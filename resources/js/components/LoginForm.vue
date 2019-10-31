@@ -126,9 +126,6 @@
                     .then((response)  => {
                         this.errors.email = response.data;
                     })
-                    .catch((error) => {
-                        console.log(error);
-                    });
                 }
             },
             checkPassword() {
@@ -227,7 +224,6 @@
 
                     axios.post(route, data)
                     .then(() => {
-                        console.log("ok")
                         location.href = '/home';
                     })
                     .catch((error) => {

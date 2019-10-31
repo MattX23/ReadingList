@@ -3,7 +3,7 @@
 <!--        <div class="text-right toggle-container"><span class="toggle-sidebar">X</span></div>-->
         <div class="menu-item">New List</div>
         <div class="menu-item">Archives</div>
-        <div class="menu-item">Logout</div>
+        <div class="menu-item" @click="logout">Logout</div>
 
 <!--        <a class="dropdown-item" href="{{ route('logout') }}"-->
 <!--           onclick="event.preventDefault();-->
@@ -38,7 +38,13 @@
 
         },
         methods: {
-
+            logout() {
+                const data = document.head.querySelector('meta[name="csrf-token"]').content;
+                axios.post('/api/logout', data)
+                .then(() => {
+                    location.href = '/login';
+                })
+            },
         }
     }
 </script>
@@ -50,6 +56,7 @@
         border-top: 1px solid silver;
         padding-top: 0.25rem;
         line-height: 3.5rem;
+        cursor: pointer;
     }
     .menu-item:hover {
         background: silver;
