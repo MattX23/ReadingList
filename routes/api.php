@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 
 Route::post('/register', 'Auth\RegisterController@register');
 Route::post('/login', 'Auth\LoginController@login');
+Route::post('/logout', 'Auth\LoginController@logout');
 Route::post('/check-email', 'Auth\RegisterController@checkEmail');
 
 //Route::middleware('auth:api')->post('/check-email', 'Auth\RegisterController@checkEmail');
