@@ -69,10 +69,12 @@
 <script>
     const SIGN_IN = 'Sign in';
     const REGISTER = 'Register';
+    const LOGIN_ROUTE = '/api/login';
+    const REGISTER_ROUTE = '/api/register';
+
     export default {
         data() {
             return {
-                accountStatusText: "Don't",
                 errors: {
                     email: '',
                     password: '',
@@ -93,6 +95,13 @@
             this.showCorrectForm();
         },
         computed: {
+            accountStatusText() {
+                if (!this.register) {
+                    return "Don't";
+                } else {
+                    return "Already";
+                }
+            },
             buttonText() {
                 if (this.register === false) {
                     return SIGN_IN;
@@ -138,7 +147,7 @@
                 }
             },
             checkEmptyUsername() {
-                if (this.user.username.length < 1) {
+                if (this.user.username.length < 1 && this.register) {
                     this.errors.username = 'Please enter your username';
                 }
             },
@@ -168,20 +177,20 @@
                     this.errors.username = '';
                 }
             },
-            hasNoErrors() {
-                let result = true;
+            hasErrors() {
+                let result = false;
                 for (let i in this.errors) {
                     if (this.errors[i] !== '') {
-                        result = false;
+                        result = true;
                         break;
                     }
                 }
                 return result;
             },
             showCorrectForm() {
-                const str = window.location.href;
-                const n = str.lastIndexOf('/');
-                const result = str.substring(n + 1);
+                const url = window.location.href;
+                const n = url.lastIndexOf('/');
+                const result = url.substring(n + 1);
                 if (result === REGISTER.toLowerCase()) {
                     this.register = true;
                 }
@@ -189,12 +198,10 @@
             switchType() {
                 if (!this.register) {
                     this.register = true;
-                    this.accountStatusText = 'Already';
                     this.passwordPlaceHolder = 'Choose a password';
                     window.history.pushState('register', 'Title', '/register');
                 } else {
                     this.register = false;
-                    this.accountStatusText = "Don't";
                     this.passwordPlaceHolder = 'Enter your password';
                     window.history.pushState('login', 'Title', '/login');
                 }
@@ -203,28 +210,40 @@
                 this.checkEmptyEmail();
                 this.checkEmptyPassword();
                 this.checkEmptyUsername();
-                if (this.hasNoErrors()) {
-                    let route = '/api/register';
+
+                if (!this.hasErrors()) {
+                    let route = LOGIN_ROUTE;
 
                     let data = {
                         email: this.user.email,
                         password: this.user.password,
                     };
 
-                    if (!this.register) {
-                        route = 'api/login';
+                    if (this.register) {
+                        route = REGISTER_ROUTE;
                         data.username = this.user.username;
                         data.password_confirmation = this.user.passwordConfirm;
                     }
 
                     axios.post(route, data)
-                        .then(function (response) {
-                            document.querySelector('meta[name="api-token"]').setAttribute("content", response.data);
-                            location.href = '/home';
-                        })
-                        .catch(function (error) {
-                            console.log(error);
-                        });
+                    .then(() => {
+                        console.log("ok")
+                        location.href = '/home';
+                    })
+                    .catch((error) => {
+                        const errors = error.response.data.errors;
+                        if (errors.email) {
+                            this.errors.email = errors.email[0];
+                        }
+
+                        if (errors.username) {
+                            this.errors.username = errors.username[0];
+                        }
+
+                        if (errors.password) {
+                            this.errors.password = errors.password[0];
+                        }
+                    });
                 }
             },
         }
