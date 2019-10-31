@@ -22,6 +22,7 @@
         @include('includes.navbar')
         <main class="py-4">
             @yield('content')
+            <side-bar></side-bar>
         </main>
     </div>
 </body>
