@@ -1,5 +1,5 @@
 <template>
-    <div class="side-bar">
+    <div v-show="showMenu" class="side-bar">
 <!--        <div class="text-right toggle-container"><span class="toggle-sidebar">X</span></div>-->
         <div class="menu-item">New List</div>
         <div class="menu-item">Archives</div>
@@ -18,15 +18,21 @@
 </template>
 
 <script>
+    import { EventBus } from '../eventbus/event-bus.js';
 
     export default {
         data() {
             return {
-
+                showMenu: false,
             }
         },
         mounted() {
 
+        },
+        created() {
+            EventBus.$on('toggle-sidebar', (state) => {
+                !state ? (this.showMenu = true) : (this.showMenu = false);
+            });
         },
         computed: {
 

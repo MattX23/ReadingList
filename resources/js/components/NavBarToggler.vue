@@ -1,19 +1,20 @@
 <template>
     <ul class="">
-        <li @click="toggleSideBar" class="nav-item dropdown">
-            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+        <li class="nav-item dropdown">
+            <span @click="toggleSideBar()" class="nav-link dropdown-toggle">
 
-            </a>
+            </span>
         </li>
     </ul>
 </template>
 
 <script>
+    import { EventBus } from '../eventbus/event-bus.js';
 
     export default {
         data() {
             return {
-
+                state: false,
             }
         },
         mounted() {
@@ -24,7 +25,8 @@
         },
         methods: {
             toggleSideBar() {
-                console.log("Toggle time");
+                EventBus.$emit('toggle-sidebar', this.state);
+                this.state = !this.state;
             },
         }
     }
@@ -33,5 +35,8 @@
 <style type="scss" scoped>
     ul  {
         list-style: none;
+    }
+    .dropdown-toggle {
+        cursor: pointer;
     }
 </style>
