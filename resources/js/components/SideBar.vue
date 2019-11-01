@@ -1,19 +1,10 @@
 <template>
     <div v-show="showMenu" class="side-bar">
-<!--        <div class="text-right toggle-container"><span class="toggle-sidebar">X</span></div>-->
-        <div class="menu-item">New List</div>
+        <div class="menu-item"
+             @click="newList">New List</div>
         <div class="menu-item">Archives</div>
-        <div class="menu-item" @click="logout">Logout</div>
-
-<!--        <a class="dropdown-item" href="{{ route('logout') }}"-->
-<!--           onclick="event.preventDefault();-->
-<!--                                                     document.getElementById('logout-form').submit();">-->
-<!--            {{ __('Logout') }}-->
-<!--        </a>-->
-
-<!--        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">-->
-<!--            @csrf-->
-<!--        </form>-->
+        <div class="menu-item"
+             @click="logout">Logout</div>
     </div>
 </template>
 
@@ -24,6 +15,10 @@
         data() {
             return {
                 showMenu: false,
+                modal: {
+                    title: 'What is this list about?',
+                    buttonText: 'Create new list',
+                }
             }
         },
         mounted() {
@@ -38,12 +33,28 @@
 
         },
         methods: {
+            closeSideBar() {
+                EventBus.$emit('toggle-sidebar', true);
+            },
             logout() {
                 const data = document.head.querySelector('meta[name="csrf-token"]').content;
                 axios.post('/api/logout', data)
                 .then(() => {
                     location.href = '/login';
                 })
+            },
+            newList() {
+                this.closeSideBar();
+                EventBus.$emit('toggle-modal', this.modal.title, this.modal.buttonText);
+                EventBus.$on('submit-input', (listName) => {
+                    const data = {
+                        name: listName,
+                    }
+                    axios.post('/api/create-list', data)
+                    .then((response) => {
+                        console.log(response)
+                    })
+                });
             },
         }
     }

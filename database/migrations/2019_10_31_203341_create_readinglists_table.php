@@ -13,7 +13,7 @@ class CreateReadingListsTable extends Migration
      */
     public function up()
     {
-        Schema::create('readinglists', function (Blueprint $table) {
+        Schema::create('reading_lists', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name')->index();
             $table->integer('user_id')->index();
@@ -28,6 +28,6 @@ class CreateReadingListsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('readinglists');
+        Schema::dropIfExists('reading_lists');
     }
 }
