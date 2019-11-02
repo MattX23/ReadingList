@@ -8,7 +8,7 @@
                           @click="addURL">+</span>
                 </h3>
             </div>
-            <div class="card-body">
+            <div v-for="link in links" class="card-body">
                 <div class="row link-content">
                     <div class="col-2 img-block">
                         img
@@ -19,6 +19,9 @@
                         </div>
                         <div>
                             Link content
+                        </div>
+                        <div>
+                            {{ link.url }}
                         </div>
                     </div>
                     <div class="col-12 footer">
@@ -37,6 +40,7 @@
         props: {
             name: String,
             id: Number,
+            links: Array,
         },
         data() {
             return {
@@ -62,6 +66,7 @@
                     axios.post('/api/lists/add-link', data)
                     .then((response) => {
                         EventBus.$emit('close-modal');
+                        EventBus.$emit('re-render');
                         console.log(response.status)
                         // TODO flash success message
                         console.log(response)
@@ -83,6 +88,9 @@
     }
     .card {
         border: none;
+    }
+    .card-body {
+        border-bottom: 1px solid silver;
     }
     .card-header {
         height: 50px;

@@ -26,6 +26,12 @@ class ReadingList extends Model
         'user_id'   => 'required|integer',
     ];
 
+    /**
+     * The relationships that should always be loaded.
+     *
+     * @var array
+     */
+    protected $with = ['links'];
 
     public function user() : BelongsTo
     {

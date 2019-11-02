@@ -25,6 +25,8 @@ class LinkController extends Controller
             return response()->json($link->validationErrors(), 422);
         }
 
+
+
         $link->save();
 
         return response()->json("Link added");
