@@ -14,6 +14,7 @@
                                type="text"
                                v-model="textInput"
                                :placeholder="placeholder"
+                               @keydown="clearErrors"
                                autofocus>
                         <small v-if="error" class="text-danger">
                             {{ error }}
@@ -47,6 +48,7 @@
         },
         created() {
             EventBus.$on('toggle-modal', (method, title, buttonText, placeholder) => {
+                this.clearErrors();
                 this.showModal = true;
                 this.method = method;
                 this.title = title;
@@ -61,6 +63,9 @@
             });
         },
         methods: {
+            clearErrors() {
+                this.error = '';
+            },
             closeModal() {
                 this.showModal = false;
                 this.textInput = '';

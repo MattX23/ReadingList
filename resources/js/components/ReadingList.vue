@@ -10,18 +10,15 @@
             </div>
             <div v-for="link in links" class="card-body">
                 <div class="row link-content">
-                    <div class="col-2 img-block">
-                        img
+                    <div v-if="link.image" class="col-12 img-block">
+                        <img :src="link.image" class="link-image">
                     </div>
-                    <div class="col-10">
+                    <div class="col-12">
                         <div>
-                            LINK HEADER
+                            <h3 class="link-title"><a :href="link.url">{{ link.title }}</a></h3>
                         </div>
                         <div>
-                            Link content
-                        </div>
-                        <div>
-                            {{ link.url }}
+                            {{ link.description }}
                         </div>
                     </div>
                     <div class="col-12 footer">
@@ -81,6 +78,9 @@
 </script>
 
 <style type="scss" scoped>
+    h3 {
+        margin: 0;
+    }
     .add-link {
         float: right;
         margin-left: -12px;
@@ -88,21 +88,40 @@
     }
     .card {
         border: none;
+        max-height: 630px;
+        overflow-x: scroll;
+        background: rgba(255,255,255,0.3);
     }
     .card-body {
         border-bottom: 1px solid silver;
+        background: white;
+        margin-bottom: 10px;
+        padding-bottom: 0px;
     }
     .card-header {
         height: 50px;
+        position: -webkit-sticky;
+        position: sticky;
+        top: 0;
+        background: white;
+        z-index: 999;
     }
     .footer {
         border: 1px solid silver;
+        margin-top: 10px;
     }
     .img-block {
-        border: 1px solid silver;
+        text-align: center;
     }
     .link-content {
         min-height: 100px;
+    }
+    .link-image {
+       max-height: 100px;
+        margin-bottom: 10px;
+    }
+    .link-title {
+        margin: 10px 0px;
     }
     .reading-list {
         margin-bottom: 15px;
