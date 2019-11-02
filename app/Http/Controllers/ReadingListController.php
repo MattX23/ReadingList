@@ -19,6 +19,16 @@ class ReadingListController extends Controller
     }
 
     /**
+     * @return JsonResponse
+     */
+    public function get() : JsonResponse
+    {
+        $readingLists = Auth::user()->readingLists;
+
+        return response()->json(['readingLists' => $readingLists]);
+    }
+
+    /**
      * @param Request $request
      * @return JsonResponse
      */

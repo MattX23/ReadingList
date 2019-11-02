@@ -2,7 +2,11 @@
     <div class="reading-list">
         <div class="card">
             <div class="card-header text-center">
-                <h3>Animals</h3>
+                <h3>{{ name }}
+                    <span class="add-link"
+                          title="Add a URL"
+                          @click="addURL">+</span>
+                </h3>
             </div>
             <div class="card-body">
                 <div class="row link-content">
@@ -27,26 +31,38 @@
 </template>
 
 <script>
+    import { EventBus } from '../eventbus/event-bus.js';
 
     export default {
+        props: {
+            name: String,
+        },
         data() {
             return {
-
+                modal: {
+                    title: `Add to ${this.name}`,
+                    buttonText: "Add",
+                    placeholder: "Paste the URL here",
+                },
             }
-        },
-        mounted() {
-
         },
         computed: {
 
         },
         methods: {
-
+            addURL() {
+                EventBus.$emit('toggle-modal', this.modal.title, this.modal.buttonText, this.modal.placeholder);
+            },
         }
     }
 </script>
 
 <style type="scss" scoped>
+    .add-link {
+        float: right;
+        margin-left: -12px;
+        cursor: pointer;
+    }
     .card {
         border: none;
     }

@@ -43,9 +43,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function user() : HasMany
+    public function readingLists() : HasMany
     {
-        return $this->hasMany(User::class);
+        return $this->hasMany(ReadingList::class);
     }
 
     public static function checkIfEmailExists(string $email) : ?bool

@@ -50,8 +50,9 @@
                     const data = {
                         name: listName,
                     }
-                    axios.post('/api/create-list', data)
+                    axios.post('/api/lists/create', data)
                     .then((response) => {
+                        // TODO flash success message
                         console.log(response)
                     })
                 });
