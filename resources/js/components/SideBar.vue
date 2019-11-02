@@ -16,8 +16,10 @@
             return {
                 showMenu: false,
                 modal: {
+                    method: 'create-new-list',
                     title: 'What is this list about?',
                     buttonText: 'Create new list',
+                    placeholder: 'Give your list a name',
                 }
             }
         },
@@ -45,8 +47,8 @@
             },
             newList() {
                 this.closeSideBar();
-                EventBus.$emit('toggle-modal', this.modal.title, this.modal.buttonText);
-                EventBus.$on('submit-input', (listName) => {
+                EventBus.$emit('toggle-modal', this.modal.method, this.modal.title, this.modal.buttonText, this.modal.placeholder);
+                EventBus.$on(this.modal.method, (listName) => {
                     const data = {
                         name: listName,
                     }
@@ -54,6 +56,9 @@
                     .then((response) => {
                         // TODO flash success message
                         console.log(response)
+                    })
+                    .catch((error) => {
+                        EventBus.$emit('input-error', error.response.data);
                     })
                 });
             },

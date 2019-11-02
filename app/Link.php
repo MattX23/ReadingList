@@ -2,11 +2,14 @@
 
 namespace App;
 
+use App\Traits\ValidationTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Link extends Model
 {
+    use ValidationTrait;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -21,7 +24,6 @@ class Link extends Model
         'url'               => 'required|url',
         'reading_list_id'   => 'required|integer',
     ];
-
 
     public function readingList() : BelongsTo
     {

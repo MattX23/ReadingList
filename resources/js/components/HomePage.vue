@@ -3,7 +3,8 @@
         <div class="row">
             <div v-for="readingList in readingLists" class="col-xl-4 col-md-6">
                 <reading-list
-                :name="readingList.name"></reading-list>
+                :name="readingList.name"
+                :id="readingList.id"></reading-list>
             </div>
         </div>
     </div>

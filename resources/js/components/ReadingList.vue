@@ -36,10 +36,12 @@
     export default {
         props: {
             name: String,
+            id: Number,
         },
         data() {
             return {
                 modal: {
+                    method: 'add-link',
                     title: `Add to ${this.name}`,
                     buttonText: "Add",
                     placeholder: "Paste the URL here",
@@ -51,7 +53,23 @@
         },
         methods: {
             addURL() {
-                EventBus.$emit('toggle-modal', this.modal.title, this.modal.buttonText, this.modal.placeholder);
+                EventBus.$emit('toggle-modal', this.modal.method, this.modal.title, this.modal.buttonText, this.modal.placeholder);
+                EventBus.$on(this.modal.method, (link) => {
+                    const data = {
+                        link: link,
+                        id: this.id,
+                    }
+                    axios.post('/api/lists/add-link', data)
+                    .then((response) => {
+                        EventBus.$emit('close-modal');
+                        console.log(response.status)
+                        // TODO flash success message
+                        console.log(response)
+                    })
+                    .catch((error) => {
+                        EventBus.$emit('input-error', error.response.data);
+                    })
+                });
             },
         }
     }

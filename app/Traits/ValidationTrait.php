@@ -17,8 +17,7 @@ trait ValidationTrait {
         $v = Validator::make($data, $ReflectionClass->rules);
 
         if ($v->fails()) {
-            // TODO customise error messages for failures
-            $this->errors = $v->failed();
+            $this->errors = $v->errors()->first();
 
             return FALSE;
         }
