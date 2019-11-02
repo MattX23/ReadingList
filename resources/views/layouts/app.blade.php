@@ -22,6 +22,7 @@
         @include('includes.navbar')
         <main class="py-4">
             @yield('content')
+            <single-input-modal></single-input-modal>
             <side-bar></side-bar>
         </main>
     </div>

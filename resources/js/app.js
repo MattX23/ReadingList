@@ -20,9 +20,11 @@ window.Vue = require('vue');
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 Vue.component('login-form', require('./components/LoginForm.vue').default);
+Vue.component('home-page', require('./components/HomePage.vue').default);
 Vue.component('reading-list', require('./components/ReadingList.vue').default);
 Vue.component('side-bar', require('./components/SideBar.vue').default);
 Vue.component('toggler', require('./components/NavBarToggler.vue').default);
+Vue.component('single-input-modal', require('./components/SingleInputModal.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
