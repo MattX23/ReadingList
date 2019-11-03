@@ -8,21 +8,61 @@
                           @click="addURL">+</span>
                 </h3>
             </div>
-            <div v-for="link in links" class="card-body">
-                <div class="row link-content">
-                    <div v-if="link.image" class="col-12 img-block">
-                        <img :src="link.image" class="link-image">
-                    </div>
-                    <div class="col-12">
-                        <div>
-                            <h3 class="link-title"><a :href="link.url" target="_blank">{{ link.title }}</a></h3>
+            <div v-for="link in links">
+                <div class="card-body">
+                    <div class="row link-content">
+                        <div v-if="link.image" class="col-12 img-block">
+                            <img :src="link.image" class="link-image">
                         </div>
-                        <div>
-                            {{ link.description }}
+                        <div class="col-12">
+                            <div>
+                                <h3 class="link-title"><a :href="link.url" target="_blank">{{ link.title }}</a></h3>
+                            </div>
+                            <div>
+                                {{ link.description }}
+                            </div>
                         </div>
                     </div>
-                    <div class="col-12 footer">
-                        footer
+                    <div v-show="showOptions" class="options">
+                        <div class="option-item">
+                            Change title
+                        </div>
+                        <div class="option-item">
+                            Change description
+                        </div>
+                        <div class="option-item">
+                            Move
+                        </div>
+                        <div class="option-item">
+                            Delete
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 footer">
+                    <div class="row">
+                        <div class="col">
+                            <img src="/images/icons/email.png" class="footer-icon">
+                        </div>
+                        <div class="col">
+                            <img src="/images/icons/archive.png" class="footer-icon">
+                        </div>
+                        <div class="col">
+                            <img src="/images/icons/calendar.png" class="footer-icon">
+                        </div>
+                        <div class="col">
+                            <img src="/images/icons/facebook.png" class="footer-icon">
+                        </div>
+                        <div class="col">
+                            <img src="/images/icons/twitter.png" class="footer-icon">
+                        </div>
+                        <div class="col">
+                            <img src="/images/icons/view.png" class="footer-icon">
+                        </div>
+                        <div class="col">
+                            <img src="/images/icons/options.png"
+                                 @click="openOptionsMenu"
+                                 class="footer-icon">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -47,6 +87,7 @@
                     buttonText: "Add",
                     placeholder: "Paste the URL here",
                 },
+                showOptions: false,
             }
         },
         computed: {
@@ -73,6 +114,9 @@
                     })
                 });
             },
+            openOptionsMenu() {
+              this.showOptions = true;
+            },
         }
     }
 </script>
@@ -95,8 +139,8 @@
     .card-body {
         border-bottom: 1px solid silver;
         background: white;
-        margin-bottom: 10px;
-        padding-bottom: 0px;
+        padding-bottom: 15px;
+        position: relative;
     }
     .card-header {
         height: 50px;
@@ -108,7 +152,14 @@
     }
     .footer {
         border: 1px solid silver;
-        margin-top: 10px;
+        background: lightgray;
+        margin-bottom: 10px;
+        padding: 5px 10px;
+        text-align: center;
+    }
+    .footer-icon {
+        width: 1.5rem;
+        cursor: pointer;
     }
     .img-block {
         text-align: center;
@@ -122,6 +173,19 @@
     }
     .link-title {
         margin: 10px 0px;
+    }
+    .options {
+        position: absolute;
+        border: 1px solid;
+        bottom: 0;
+        right: 1px;
+        width: 10rem;
+        background: white;
+        cursor: pointer;
+    }
+    .option-item {
+        padding: 10px;
+        border-bottom: 1px solid silver;
     }
     .reading-list {
         margin-bottom: 15px;
