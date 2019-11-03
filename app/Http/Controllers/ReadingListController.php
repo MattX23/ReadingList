@@ -42,7 +42,7 @@ class ReadingListController extends Controller
         $list = new ReadingList($data);
 
         if (!$list->validate($data)) {
-            return response()->json($list->validationErrors());
+            return response()->json($list->validationErrors(), 422);
         }
 
         $list->save();

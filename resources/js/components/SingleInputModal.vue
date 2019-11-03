@@ -14,7 +14,11 @@
                                type="text"
                                v-model="textInput"
                                :placeholder="placeholder"
+                               @keydown="clearErrors"
                                autofocus>
+                        <small v-if="error" class="text-danger">
+                            {{ error }}
+                        </small>
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-success"
@@ -34,33 +38,43 @@
         data() {
             return {
                 showModal: false,
+                method: '',
                 title: '',
                 buttonText: '',
                 textInput: '',
                 placeholder: '',
+                error: '',
             }
         },
         created() {
-            EventBus.$on('toggle-modal', (title, buttonText, placeholder) => {
+            EventBus.$on('toggle-modal', (method, title, buttonText, placeholder) => {
+                this.clearErrors();
                 this.showModal = true;
+                this.method = method;
                 this.title = title;
                 this.buttonText = buttonText;
                 this.placeholder = placeholder;
             });
+            EventBus.$on('input-error', (error) => {
+                this.error = error;
+            });
+            EventBus.$on('close-modal', () => {
+                this.closeModal();
+            });
         },
         methods: {
+            clearErrors() {
+                this.error = '';
+            },
             closeModal() {
                 this.showModal = false;
+                this.textInput = '';
             },
             doNothing() {
                 return null;
             },
             submitModal() {
-                if (this.textInput) {
-                    this.closeModal();
-                    EventBus.$emit('submit-input', this.textInput);
-                    this.textInput = '';
-                }
+                EventBus.$emit(this.method, this.textInput);
             },
         }
     }
