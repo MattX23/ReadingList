@@ -1,11 +1,11 @@
 <template>
     <transition name="modal-fade">
-        <div v-show="showModal" class="custom-modal" tabindex="-1" role="dialog">
-            <div class="modal-dialog modal-dialog-centered" role="document">
+        <div v-show="showModal" @click="closeModal" class="custom-modal" tabindex="-1" role="dialog">
+            <div @click.stop="doNothing" class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">{{ title }}</h5>
-                        <button @click="closeModal" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <button @click.stop="closeModal" type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
@@ -51,6 +51,9 @@
         methods: {
             closeModal() {
                 this.showModal = false;
+            },
+            doNothing() {
+                return null;
             },
             submitModal() {
                 if (this.textInput) {

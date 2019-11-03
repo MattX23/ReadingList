@@ -1,7 +1,7 @@
 <template>
     <ul class="">
         <li class="nav-item dropdown">
-            <span @click="toggleSideBar()" class="nav-link dropdown-toggle">
+            <span @click.stop="toggleSideBar()" class="nav-link dropdown-toggle">
 
             </span>
         </li>

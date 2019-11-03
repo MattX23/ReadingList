@@ -1,10 +1,12 @@
 <template>
-    <div v-show="showMenu" class="side-bar">
-        <div class="menu-item"
-             @click="newList">New List</div>
-        <div class="menu-item">Archives</div>
-        <div class="menu-item"
-             @click="logout">Logout</div>
+    <div v-show="showMenu" @click="closeSideBar" class="side-bar-container">
+        <div class="side-bar">
+            <div class="menu-item"
+                 @click.stop="newList">New List</div>
+            <div class="menu-item">Archives</div>
+            <div class="menu-item"
+                 @click="logout">Logout</div>
+        </div>
     </div>
 </template>
 
@@ -74,12 +76,30 @@
         background: silver;
         color: white;
     }
+    .menu-item:hover:last-child {
+        border-radius: 0px 0px 15px 15px;
+    }
     .side-bar {
         width: 400px;
-        background: white;
         position: fixed;
-        right: 0;
+        right: 5px;
         top: 55px;
+        z-index: 999;
+        background: gainsboro;
+        border: 2px solid gray;
+        border-top: 0px;
+        border-radius: 0px 0px 15px 15px;
+    }
+    .side-bar-container {
+        position: fixed;
+        z-index: 9998;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, .5);
+        -webkit-transition: opacity .3s ease;
+        transition: opacity .3s ease;
     }
     .toggle-container {
         height: 20px;
