@@ -4,7 +4,7 @@
             <div class="card-header text-center">
                 <h3>{{ name }}
                     <span class="add-link"
-                          title="Add a URL"
+                          title="Add a link"
                           @click="addURL">+</span>
                 </h3>
             </div>
@@ -15,7 +15,7 @@
                     </div>
                     <div class="col-12">
                         <div>
-                            <h3 class="link-title"><a :href="link.url">{{ link.title }}</a></h3>
+                            <h3 class="link-title"><a :href="link.url" target="_blank">{{ link.title }}</a></h3>
                         </div>
                         <div>
                             {{ link.description }}
@@ -59,7 +59,7 @@
                     const data = {
                         link: link,
                         id: this.id,
-                    }
+                    };
                     axios.post('/api/lists/add-link', data)
                     .then((response) => {
                         EventBus.$emit('close-modal');
