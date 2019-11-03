@@ -25,6 +25,8 @@ Vue.component('reading-list', require('./components/ReadingList.vue').default);
 Vue.component('side-bar', require('./components/SideBar.vue').default);
 Vue.component('toggler', require('./components/NavBarToggler.vue').default);
 Vue.component('single-input-modal', require('./components/SingleInputModal.vue').default);
+Vue.component('confirmation-modal', require('./components/ConfirmationModal.vue').default);
+Vue.component('reading-link', require('./components/Link.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

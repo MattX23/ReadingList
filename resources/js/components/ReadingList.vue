@@ -5,66 +5,11 @@
                 <h3>{{ name }}
                     <span class="add-link"
                           title="Add a link"
-                          @click="addURL">+</span>
+                          @click.stop="addURL">+</span>
                 </h3>
             </div>
             <div v-for="link in links">
-                <div class="card-body">
-                    <div class="row link-content">
-                        <div v-if="link.image" class="col-12 img-block">
-                            <img :src="link.image" class="link-image">
-                        </div>
-                        <div class="col-12">
-                            <div>
-                                <h3 class="link-title"><a :href="link.url" target="_blank">{{ link.title }}</a></h3>
-                            </div>
-                            <div>
-                                {{ link.description }}
-                            </div>
-                        </div>
-                    </div>
-                    <div v-show="showOptions" class="options">
-                        <div class="option-item">
-                            Change title
-                        </div>
-                        <div class="option-item">
-                            Change description
-                        </div>
-                        <div class="option-item">
-                            Move
-                        </div>
-                        <div class="option-item">
-                            Delete
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 footer">
-                    <div class="row">
-                        <div class="col">
-                            <img src="/images/icons/email.png" class="footer-icon">
-                        </div>
-                        <div class="col">
-                            <img src="/images/icons/archive.png" class="footer-icon">
-                        </div>
-                        <div class="col">
-                            <img src="/images/icons/calendar.png" class="footer-icon">
-                        </div>
-                        <div class="col">
-                            <img src="/images/icons/facebook.png" class="footer-icon">
-                        </div>
-                        <div class="col">
-                            <img src="/images/icons/twitter.png" class="footer-icon">
-                        </div>
-                        <div class="col">
-                            <img src="/images/icons/view.png" class="footer-icon">
-                        </div>
-                        <div class="col">
-                            <img src="/images/icons/options.png"
-                                 @click="openOptionsMenu"
-                                 class="footer-icon">
-                        </div>
-                    </div>
-                </div>
+                <reading-link :link="link"></reading-link>
             </div>
         </div>
     </div>
@@ -90,32 +35,15 @@
                 showOptions: false,
             }
         },
+        created() {
+
+        },
         computed: {
 
         },
         methods: {
             addURL() {
-                EventBus.$emit('toggle-modal', this.modal.method, this.modal.title, this.modal.buttonText, this.modal.placeholder);
-                EventBus.$on(this.modal.method, (link) => {
-                    const data = {
-                        link: link,
-                        id: this.id,
-                    };
-                    axios.post('/api/lists/add-link', data)
-                    .then((response) => {
-                        EventBus.$emit('close-modal');
-                        EventBus.$emit('re-render');
-                        console.log(response.status)
-                        // TODO flash success message
-                        console.log(response)
-                    })
-                    .catch((error) => {
-                        EventBus.$emit('input-error', error.response.data);
-                    })
-                });
-            },
-            openOptionsMenu() {
-              this.showOptions = true;
+                EventBus.$emit('toggle-modal', this.modal.method, this.modal.title, this.modal.buttonText, this.modal.placeholder, this.id);
             },
         }
     }
@@ -136,12 +64,6 @@
         overflow-x: scroll;
         background: rgba(255,255,255,0.3);
     }
-    .card-body {
-        border-bottom: 1px solid silver;
-        background: white;
-        padding-bottom: 15px;
-        position: relative;
-    }
     .card-header {
         height: 50px;
         position: -webkit-sticky;
@@ -149,43 +71,6 @@
         top: 0;
         background: white;
         z-index: 999;
-    }
-    .footer {
-        border: 1px solid silver;
-        background: lightgray;
-        margin-bottom: 10px;
-        padding: 5px 10px;
-        text-align: center;
-    }
-    .footer-icon {
-        width: 1.5rem;
-        cursor: pointer;
-    }
-    .img-block {
-        text-align: center;
-    }
-    .link-content {
-        min-height: 100px;
-    }
-    .link-image {
-       max-height: 100px;
-        margin-bottom: 10px;
-    }
-    .link-title {
-        margin: 10px 0px;
-    }
-    .options {
-        position: absolute;
-        border: 1px solid;
-        bottom: 0;
-        right: 1px;
-        width: 10rem;
-        background: white;
-        cursor: pointer;
-    }
-    .option-item {
-        padding: 10px;
-        border-bottom: 1px solid silver;
     }
     .reading-list {
         margin-bottom: 15px;

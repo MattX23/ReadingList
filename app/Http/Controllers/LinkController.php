@@ -30,4 +30,16 @@ class LinkController extends Controller
 
         return response()->json("Link added");
     }
+
+    /**
+     * @param Link $link
+     * @return JsonResponse
+     * @throws \Exception
+     */
+    public function delete(Link $link) : JsonResponse
+    {
+        $link->delete();
+
+        return response()->json("Link deleted");
+    }
 }

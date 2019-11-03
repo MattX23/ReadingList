@@ -10,20 +10,12 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <input class="form-control"
-                               type="text"
-                               v-model="textInput"
-                               :placeholder="placeholder"
-                               @keydown="clearErrors"
-                               autofocus>
-                        <small v-if="error" class="text-danger">
-                            {{ error }}
-                        </small>
+                        {{ body }}
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-success"
+                        <button :class="btnClass"
                                 v-text="buttonText"
-                                @click.stop="submitModal"></button>
+                                @click="submitModal"></button>
                     </div>
                 </div>
             </div>
@@ -42,54 +34,42 @@
                 title: '',
                 buttonText: '',
                 textInput: '',
-                placeholder: '',
-                error: '',
-                readingListId: '',
+                body: '',
+                btnClass: 'btn btn-success',
+                id: '',
             }
         },
         created() {
-            EventBus.$on('toggle-modal', (method, title, buttonText, placeholder, id) => {
-                this.clearErrors();
+            EventBus.$on('toggle-confirmation-modal', (method, title, buttonText, body, btnClass, id) => {
                 this.showModal = true;
                 this.method = method;
                 this.title = title;
                 this.buttonText = buttonText;
-                this.placeholder = placeholder;
-                this.readingListId = id;
-            });
-            EventBus.$on('input-error', (error) => {
-                this.error = error;
+                this.body = body;
+                this.id = id;
+                if (btnClass === 'delete') {
+                    this.btnClass = 'btn btn-danger';
+                }
             });
             EventBus.$on('close-modal', () => {
                 this.closeModal();
             });
         },
         methods: {
-            clearErrors() {
-                this.error = '';
-            },
             closeModal() {
                 this.showModal = false;
-                this.textInput = '';
             },
             doNothing() {
                 return null;
             },
             submitModal() {
-                const data = {
-                    link: this.textInput,
-                    id: this.readingListId,
-                };
-                axios.post(`/api/lists/${this.method}`, data)
+                axios.post(`/api/lists/${this.method}/${this.id}`, {})
                     .then((response) => {
-                        this.closeModal();
+                        EventBus.$emit('close-modal');
                         EventBus.$emit('re-render');
-                        //console.log(response.status)
-                        // TODO flash success message
-                        //console.log(response)
                     })
                     .catch((error) => {
-                        this.error = error.response.data;
+
                     })
             },
         }
