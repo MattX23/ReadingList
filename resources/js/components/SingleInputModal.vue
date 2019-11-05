@@ -58,9 +58,6 @@
                 this.placeholder = placeholder;
                 this.readingListId = id;
             });
-            EventBus.$on('input-error', (error) => {
-                this.error = error;
-            });
             EventBus.$on('close-modal', () => {
                 this.closeModal();
             });
@@ -77,17 +74,23 @@
                 return null;
             },
             submitModal() {
-                const data = {
-                    link: this.textInput,
-                    id: this.readingListId,
-                };
+                let data = {};
+
+                if (this.method === 'create') {
+                    data.name = this.textInput;
+                } else if (this.method === 'add-link') {
+                    data.link = this.textInput;
+                    data.id = this.readingListId;
+                }
+
                 axios.post(`/api/lists/${this.method}`, data)
                     .then((response) => {
                         this.closeModal();
                         EventBus.$emit('re-render');
+                        EventBus.$emit('flash', response.data, 'success');
                     })
                     .catch((error) => {
-
+                        this.error = error.response.data;
                     })
             },
         }

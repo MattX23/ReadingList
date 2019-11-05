@@ -44,10 +44,10 @@
                 <div class="col">
                     <img src="/images/icons/calendar.png" class="footer-icon">
                 </div>
-                <div class="col">
+                <div class="col" v-if="wideScreen">
                     <img src="/images/icons/facebook.png" class="footer-icon">
                 </div>
-                <div class="col">
+                <div class="col" v-if="wideScreen">
                     <img src="/images/icons/twitter.png" class="footer-icon">
                 </div>
                 <div class="col">
@@ -69,7 +69,8 @@
 
     export default {
         props: {
-            link: Object
+            link: Object,
+            windowWidth: Number,
         },
         data() {
             return {
@@ -83,11 +84,12 @@
                 },
             }
         },
-        created() {
-
-        },
         computed: {
-
+          wideScreen() {
+              if (this.windowWidth > 1445) {
+                  return true;
+              }
+          }
         },
         methods: {
             closeOptions() {
@@ -110,6 +112,7 @@
         padding-bottom: 15px;
         position: relative;
         padding-top: 30px;
+        min-height: 235px;
     }
     .footer {
         border: 1px solid silver;
@@ -119,7 +122,7 @@
         text-align: center;
     }
     .footer-icon {
-        width: 1.5rem;
+        max-width: 1.5rem;
         cursor: pointer;
     }
     .img-block {

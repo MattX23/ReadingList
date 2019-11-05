@@ -67,9 +67,10 @@
                     .then((response) => {
                         EventBus.$emit('close-modal');
                         EventBus.$emit('re-render');
+                        EventBus.$emit('flash', response.data, 'success');
                     })
                     .catch((error) => {
-
+                        EventBus.$emit('flash', error.response.data, 'danger');
                     })
             },
         }

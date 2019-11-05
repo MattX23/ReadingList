@@ -1,11 +1,12 @@
 <template>
     <div class="container-fluid">
         <div class="row">
-            <div v-for="readingList in readingLists" class="col-xl-4 col-md-6">
+            <div v-for="readingList in readingLists" class="col-xl-3 col-md-4 col-xs-6">
                 <reading-list
                 :name="readingList.name"
                 :id="readingList.id"
-                :links="readingList.links"></reading-list>
+                :links="readingList.links"
+                :windowWidth="windowWidth"></reading-list>
             </div>
         </div>
     </div>
@@ -18,18 +19,19 @@
         data() {
             return {
                 readingLists: {},
+                windowWidth: window.innerWidth,
             }
         },
         mounted() {
             this.fetchData();
+            window.onresize = () => {
+                this.windowWidth = window.innerWidth
+            }
         },
         created() {
             EventBus.$on('re-render', () => {
                 this.fetchData();
             })
-        },
-        computed: {
-
         },
         methods: {
             fetchData() {

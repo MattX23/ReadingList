@@ -25,6 +25,7 @@
             <single-input-modal></single-input-modal>
             <confirmation-modal></confirmation-modal>
             <side-bar></side-bar>
+            <alert></alert>
         </main>
     </div>
 </body>

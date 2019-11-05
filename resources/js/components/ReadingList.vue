@@ -9,7 +9,8 @@
                 </h3>
             </div>
             <div v-for="link in links">
-                <reading-link :link="link"></reading-link>
+                <reading-link :link="link"
+                :windowWidth="windowWidth"></reading-link>
             </div>
         </div>
     </div>
@@ -23,6 +24,7 @@
             name: String,
             id: Number,
             links: Array,
+            windowWidth: Number,
         },
         data() {
             return {

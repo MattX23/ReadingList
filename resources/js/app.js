@@ -19,14 +19,15 @@ window.Vue = require('vue');
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-Vue.component('login-form', require('./components/LoginForm.vue').default);
+Vue.component('confirmation-modal', require('./components/ConfirmationModal.vue').default);
+Vue.component('alert', require('./components/FlashMessage.vue').default);
 Vue.component('home-page', require('./components/HomePage.vue').default);
+Vue.component('login-form', require('./components/LoginForm.vue').default);
+Vue.component('reading-link', require('./components/Link.vue').default);
 Vue.component('reading-list', require('./components/ReadingList.vue').default);
 Vue.component('side-bar', require('./components/SideBar.vue').default);
-Vue.component('toggler', require('./components/NavBarToggler.vue').default);
 Vue.component('single-input-modal', require('./components/SingleInputModal.vue').default);
-Vue.component('confirmation-modal', require('./components/ConfirmationModal.vue').default);
-Vue.component('reading-link', require('./components/Link.vue').default);
+Vue.component('toggler', require('./components/NavBarToggler.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
