@@ -23,7 +23,8 @@
                     <div class="modal-footer">
                         <button class="btn btn-success"
                                 v-text="buttonText"
-                                @click.stop="submitModal"></button>
+                                @click.stop="submitModal">
+                        </button>
                     </div>
                 </div>
             </div>
@@ -84,12 +85,9 @@
                     .then((response) => {
                         this.closeModal();
                         EventBus.$emit('re-render');
-                        //console.log(response.status)
-                        // TODO flash success message
-                        //console.log(response)
                     })
                     .catch((error) => {
-                        this.error = error.response.data;
+
                     })
             },
         }
