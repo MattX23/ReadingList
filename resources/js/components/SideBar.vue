@@ -18,7 +18,7 @@
             return {
                 showMenu: false,
                 modal: {
-                    method: 'create',
+                    method: 'list/create',
                     title: 'What is this list about?',
                     buttonText: 'Create new list',
                     placeholder: 'Give your list a name',

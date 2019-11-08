@@ -21,7 +21,11 @@
                 <div class="option-item">
                     Change description
                 </div>
-                <div class="option-item">
+                <div v-if="!wideScreen" class="option-item">
+                    Share
+                </div>
+                <div class="option-item"
+                @click="moveLink">
                     Move
                 </div>
                 <div class="option-item">
@@ -71,16 +75,23 @@
         props: {
             link: Object,
             windowWidth: Number,
+            id: Number,
         },
         data() {
             return {
                 showOptions: false,
-                modal: {
-                    method: 'delete-link',
+                listId: this.id,
+                deleteModal: {
+                    method: 'link/delete',
                     title: 'Please confirm',
                     buttonText: "Delete",
                     body: `Are you sure you want to delete ${this.link.title}?`,
                     btnClass: 'delete',
+                },
+                selectModal: {
+                    method: 'link/move',
+                    title: 'Choose a list',
+                    buttonText: "Move",
                 },
             }
         },
@@ -96,7 +107,23 @@
                 this.showOptions = false;
             },
             deleteLink() {
-                EventBus.$emit('toggle-confirmation-modal', this.modal.method, this.modal.title, this.modal.buttonText, this.modal.body, this.modal.btnClass, this.link.id);
+                EventBus.$emit('toggle-confirmation-modal',
+                    this.deleteModal.method,
+                    this.deleteModal.title,
+                    this.deleteModal.buttonText,
+                    this.deleteModal.body,
+                    this.deleteModal.btnClass,
+                    this.link.id
+                );
+            },
+            moveLink() {
+                EventBus.$emit('toggle-selection-modal',
+                    this.selectModal.method,
+                    this.selectModal.title,
+                    this.selectModal.buttonText,
+                    this.listId,
+                    this.link.id
+                );
             },
             toggleOptionsMenu() {
                 this.showOptions = !this.showOptions;
@@ -112,7 +139,7 @@
         padding-bottom: 15px;
         position: relative;
         padding-top: 30px;
-        min-height: 235px;
+        min-height: 275px;
     }
     .footer {
         border: 1px solid silver;
@@ -134,6 +161,7 @@
     .link-image {
         max-height: 100px;
         margin-bottom: 10px;
+        max-width: 100%;
     }
     .link-title {
         margin: 10px 0px;

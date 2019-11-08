@@ -10,7 +10,12 @@
             </div>
             <div v-for="link in links">
                 <reading-link :link="link"
-                :windowWidth="windowWidth"></reading-link>
+                :windowWidth="windowWidth"
+                :id="id"></reading-link>
+            </div>
+            <div v-if="links.length < 1"
+                 class="card-body">
+                You haven't saved anything in this list yet. To add something, click the plus above.
             </div>
         </div>
     </div>
@@ -29,19 +34,13 @@
         data() {
             return {
                 modal: {
-                    method: 'add-link',
+                    method: 'link/create',
                     title: `Add to ${this.name}`,
                     buttonText: "Add",
                     placeholder: "Paste the URL here",
                 },
                 showOptions: false,
             }
-        },
-        created() {
-
-        },
-        computed: {
-
         },
         methods: {
             addURL() {
@@ -65,6 +64,9 @@
         max-height: 630px;
         overflow-x: scroll;
         background: rgba(255,255,255,0.3);
+    }
+    .card-body {
+        background: white;
     }
     .card-header {
         height: 50px;

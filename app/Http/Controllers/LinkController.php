@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Link;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -33,8 +34,25 @@ class LinkController extends Controller
 
     /**
      * @param Link $link
+     * @param Request $request
      * @return JsonResponse
-     * @throws \Exception
+     * @throws Exception
+     */
+    public function move(Link $link, Request $request) : JsonResponse
+    {
+        $newList = $request->newListId;
+
+        $link->update([
+           'reading_list_id' => $newList,
+        ]);
+
+        return response()->json("Link moved");
+    }
+
+    /**
+     * @param Link $link
+     * @return JsonResponse
+     * @throws Exception
      */
     public function delete(Link $link) : JsonResponse
     {

@@ -1,7 +1,7 @@
 <template>
     <div class="container-fluid">
         <div class="row">
-            <div v-for="readingList in readingLists" class="col-xl-3 col-md-4 col-xs-6">
+            <div v-for="readingList in readingLists" class="col-xl-3 col-md-4 col-sm-6">
                 <reading-list
                 :name="readingList.name"
                 :id="readingList.id"

@@ -23,6 +23,7 @@
         <main class="py-4">
             @yield('content')
             <single-input-modal></single-input-modal>
+            <selection-modal></selection-modal>
             <confirmation-modal></confirmation-modal>
             <side-bar></side-bar>
             <alert></alert>
