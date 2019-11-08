@@ -3,7 +3,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body" @keydown.enter="submitForm">
                         <div class="form-group">
                             <input type="email"
                                    v-model="user.email"
@@ -55,7 +55,7 @@
                         </div>
                     </div>
                     <div class="card-footer text-center">
-                        <button class="btn btn-success" @click="submitForm">{{ buttonText }}</button>
+                        <button type="submit" class="btn btn-success" @click="submitForm">{{ buttonText }}</button>
                         <div class="text-center input-type-selector">
                             {{ accountStatusText }} have an account? <a href="javascript:void(0);" @click="switchType">{{ switchText }}</a>
                         </div>
