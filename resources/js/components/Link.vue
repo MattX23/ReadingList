@@ -2,15 +2,11 @@
     <div>
         <div @click="closeOptions" class="card-body">
             <div class="row link-content">
-                <div v-if="link.image" class="col-12 img-block">
-                    <img :src="link.image" class="link-image">
-                </div>
                 <div class="col-12">
-                    <div>
+                    <div class="img-block">
+                        <img :src="link.image" v-if="link.image" class="link-image">
                         <h3 class="link-title"><a :href="link.url" target="_blank">{{ link.title }}</a></h3>
-                    </div>
-                    <div>
-                        {{ link.description }}
+                        <div class="link-body" :title="link.description">{{ link.description }}</div>
                     </div>
                 </div>
             </div>
@@ -136,10 +132,8 @@
     .card-body {
         border-bottom: 1px solid silver;
         background: white;
-        padding-bottom: 15px;
         position: relative;
-        padding-top: 30px;
-        min-height: 275px;
+        padding: 10px;
     }
     .footer {
         border: 1px solid silver;
@@ -155,26 +149,38 @@
     .img-block {
         text-align: center;
     }
+    .link-body {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
     .link-content {
-        min-height: 100px;
+        min-height: 75px;
     }
     .link-image {
-        max-height: 100px;
-        margin-bottom: 10px;
-        max-width: 100%;
+        max-height: 70px;
+        margin-bottom: 5px;
+        max-width: 100px;
+        float: left;
+        padding-right: 5px;
+        border-radius: 20px;
+        padding-left: 3px;
+        margin-right: 5px;
     }
     .link-title {
-        margin: 10px 0px;
+        font-size: 1rem;
+        text-align: left;
+        display: table;
     }
     .options {
-        position: absolute;
+        position: relative;
         border: 1px solid gray;
         bottom: 0;
         right: 1px;
-        width: 10rem;
         background: rgb(244,244,244);
         cursor: pointer;
         border-radius: 15px 15px 0px 15px;
+        text-align: center;
     }
     .option-item {
         padding: 10px;

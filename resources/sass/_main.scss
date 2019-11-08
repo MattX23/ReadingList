@@ -6,7 +6,9 @@
     -o-background-size: cover;
     min-height: 100vh;
 }
-
 .navbar {
     z-index: 9999;
+}
+.main-content {
+    overflow-y: scroll;
 }

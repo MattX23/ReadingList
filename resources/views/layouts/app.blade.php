@@ -20,7 +20,7 @@
 <body>
     <div id="app">
         @include('includes.navbar')
-        <main class="py-4">
+        <main class="py-4 main-content">
             @yield('content')
             <single-input-modal></single-input-modal>
             <selection-modal></selection-modal>
