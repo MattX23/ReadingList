@@ -24,6 +24,13 @@ Route::group([
 ], function(){
     Route::post('/create', 'ReadingListController@store');
     Route::get('/get', 'ReadingListController@get');
-    Route::post('/add-link', 'LinkController@store');
-    Route::post('/delete-link/{link}', 'LinkController@delete');
+});
+
+Route::group([
+    'prefix'=>'link',
+    'as'=>'link'
+], function(){
+    Route::post('/create', 'LinkController@store');
+    Route::post('/move/{link}', 'LinkController@move');
+    Route::post('/delete/{link}', 'LinkController@delete');
 });

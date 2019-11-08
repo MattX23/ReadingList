@@ -10,17 +10,22 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <input class="form-control"
-                               type="text"
-                               v-model="textInput"
-                               :placeholder="placeholder"
-                               @keydown="clearErrors"
-                               autofocus>
+                        <select class="form-control"
+                                v-model="selectedReadingList">
+                            <option value="" :selected="selected">Select a list</option>
+                            <option v-for="readingList in readingLists"
+                                    :value="readingList.id"
+                                    v-if="readingList.id !== readingListId">
+                                {{ readingList.name }}
+                            </option>
+                        </select>
                         <small v-if="error" class="text-danger">
                             {{ error }}
                         </small>
                     </div>
                     <div class="modal-footer">
+                        <button class="btn btn-danger"
+                                @click.stop="closeModal">Cancel</button>
                         <button class="btn btn-success"
                                 v-text="buttonText"
                                 @click.stop="submitModal">
@@ -38,60 +43,66 @@
     export default {
         data() {
             return {
+                readingLists: {},
                 showModal: false,
                 method: '',
                 title: '',
                 buttonText: '',
-                textInput: '',
-                placeholder: '',
-                error: '',
                 readingListId: '',
+                linkId: '',
+                selectedReadingList: '',
+                error: '',
+                selected: true,
             }
         },
         created() {
-            EventBus.$on('toggle-modal', (method, title, buttonText, placeholder, id) => {
-                this.clearErrors();
-                this.showModal = true;
+            EventBus.$on('toggle-selection-modal', (method, title, buttonText, readingListId, linkId) => {
+                this.fetchData();
+                this.selectedReadingList = '';
+                this.selected = true;
                 this.method = method;
                 this.title = title;
                 this.buttonText = buttonText;
-                this.placeholder = placeholder;
-                this.readingListId = id;
+                this.readingListId = readingListId;
+                this.linkId = linkId;
+                this.showModal = true;
             });
             EventBus.$on('close-modal', () => {
                 this.closeModal();
             });
         },
         methods: {
-            clearErrors() {
-                this.error = '';
-            },
             closeModal() {
                 this.showModal = false;
-                this.textInput = '';
+            },
+            errorCheck() {
+                !this.selectedReadingList ? this.error = 'Please select a list' : this.error = '';
+            },
+            fetchData() {
+                axios.get('/api/lists/get')
+                    .then((response) => {
+                        this.readingLists = response.data.readingLists;
+                    });
             },
             doNothing() {
                 return null;
             },
             submitModal() {
-                let data = {};
 
-                if (this.method === 'lists/create') {
-                    data.name = this.textInput;
-                } else if (this.method === 'link/create') {
-                    data.link = this.textInput;
-                    data.id = this.readingListId;
+                this.errorCheck();
+
+                if (!this.error) {
+                    let data = {};
+
+                    data.newListId = this.selectedReadingList;
+
+                    axios.post('/api/link/move/' + this.linkId, data)
+                        .then((response) => {
+                            this.closeModal();
+                            EventBus.$emit('re-render');
+                            EventBus.$emit('flash', response.data, 'success');
+                        });
                 }
-
-                axios.post(`/api/${this.method}`, data)
-                    .then((response) => {
-                        this.closeModal();
-                        EventBus.$emit('re-render');
-                        EventBus.$emit('flash', response.data, 'success');
-                    })
-                    .catch((error) => {
-                        this.error = error.response.data;
-                    })
             },
         }
     }

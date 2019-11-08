@@ -63,13 +63,14 @@
                 return null;
             },
             submitModal() {
-                axios.post(`/api/lists/${this.method}/${this.id}`, {})
+                axios.post(`/api/${this.method}/${this.id}`, {})
                     .then((response) => {
                         EventBus.$emit('close-modal');
                         EventBus.$emit('re-render');
+                        EventBus.$emit('flash', response.data, 'success');
                     })
                     .catch((error) => {
-
+                        EventBus.$emit('flash', error.response.data, 'danger');
                     })
             },
         }
