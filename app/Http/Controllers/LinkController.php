@@ -17,7 +17,7 @@ class LinkController extends Controller
     public function store(Request $request) : JsonResponse
     {
         $data = [
-            'url'             => $request->link,
+            'url'             => $request->name,
             'reading_list_id' => $request->id,
         ];
 

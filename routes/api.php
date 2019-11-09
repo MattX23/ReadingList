@@ -23,6 +23,7 @@ Route::group([
     'as'=>'lists'
 ], function(){
     Route::post('/create', 'ReadingListController@store');
+    Route::put('/edit/{readingList}', 'ReadingListController@edit');
     Route::get('/get', 'ReadingListController@get');
 });
 
@@ -31,6 +32,6 @@ Route::group([
     'as'=>'link'
 ], function(){
     Route::post('/create', 'LinkController@store');
-    Route::post('/move/{link}', 'LinkController@move');
+    Route::put('/move/{link}', 'LinkController@move');
     Route::post('/delete/{link}', 'LinkController@delete');
 });

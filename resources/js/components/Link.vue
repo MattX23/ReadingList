@@ -76,18 +76,11 @@
         data() {
             return {
                 showOptions: false,
-                listId: this.id,
-                deleteModal: {
-                    method: 'link/delete',
-                    title: 'Please confirm',
-                    buttonText: "Delete",
-                    body: `Are you sure you want to delete ${this.link.title}?`,
-                    btnClass: 'delete',
-                },
-                selectModal: {
-                    method: 'link/move',
-                    title: 'Choose a list',
-                    buttonText: "Move",
+                modal: {
+                    route: '',
+                    buttonText: '',
+                    body: '',
+                    btnClass: '',
                 },
             }
         },
@@ -108,22 +101,28 @@
                 this.showOptions = false;
             },
             deleteLink() {
+                this.modal.route = `link/delete/${this.link.id}`;
+                this.modal.buttonText = "Delete";
+                this.modal.body = `Are you sure you want to delete ${this.link.title}?`;
+                this.modal.btnClass = 'delete';
                 EventBus.$emit('toggle-confirmation-modal',
-                    this.deleteModal.method,
-                    this.deleteModal.title,
-                    this.deleteModal.buttonText,
-                    this.deleteModal.body,
-                    this.deleteModal.btnClass,
-                    this.link.id
+                    this.modal.route,
+                    this.modal.buttonText,
+                    this.modal.body,
+                    this.modal.btnClass,
+                    'POST'
                 );
             },
             moveLink() {
+                this.modal.route = `link/move/${this.link.id}`;
+                this.modal.title = 'Choose a list';
+                this.modal.buttonText = "Move";
                 EventBus.$emit('toggle-selection-modal',
-                    this.selectModal.method,
-                    this.selectModal.title,
-                    this.selectModal.buttonText,
-                    this.listId,
-                    this.link.id
+                    this.modal.route,
+                    this.modal.title,
+                    this.modal.buttonText,
+                    this.link.id,
+                    'PUT'
                 );
             },
             toggleOptionsMenu() {
@@ -187,10 +186,11 @@
         border: 1px solid gray;
         bottom: 0;
         right: 1px;
-        background: rgb(244,244,244);
+        background: rgba(244,244,244, 0.5);
         cursor: pointer;
         border-radius: 15px 15px 0px 15px;
         text-align: center;
+        margin-top: 10px;
     }
     .option-item {
         padding: 10px;

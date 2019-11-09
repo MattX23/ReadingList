@@ -4,7 +4,7 @@
             <div @click.stop="doNothing" class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">{{ title }}</h5>
+                        <h5 class="modal-title">Please Confirm</h5>
                         <button @click.stop="closeModal" type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -30,23 +30,21 @@
         data() {
             return {
                 showModal: false,
+                route: '',
                 method: '',
-                title: '',
                 buttonText: '',
                 textInput: '',
                 body: '',
                 btnClass: 'btn btn-success',
-                id: '',
             }
         },
         created() {
-            EventBus.$on('toggle-confirmation-modal', (method, title, buttonText, body, btnClass, id) => {
+            EventBus.$on('toggle-confirmation-modal', (route, buttonText, body, btnClass, method) => {
                 this.showModal = true;
-                this.method = method;
-                this.title = title;
+                this.route = route;
                 this.buttonText = buttonText;
                 this.body = body;
-                this.id = id;
+                this.method = method;
                 if (btnClass === 'delete') {
                     this.btnClass = 'btn btn-danger';
                 }
@@ -63,15 +61,19 @@
                 return null;
             },
             submitModal() {
-                axios.post(`/api/${this.method}/${this.id}`, {})
-                    .then((response) => {
-                        EventBus.$emit('close-modal');
-                        EventBus.$emit('re-render');
-                        EventBus.$emit('flash', response.data, 'success');
-                    })
-                    .catch((error) => {
-                        EventBus.$emit('flash', error.response.data, 'danger');
-                    })
+                axios({
+                    method: this.method,
+                    url: `/api/${this.route}`,
+                    data: {},
+                })
+                .then((response) => {
+                    EventBus.$emit('close-modal');
+                    EventBus.$emit('re-render');
+                    EventBus.$emit('flash', response.data, 'success');
+                })
+                .catch((error) => {
+                    EventBus.$emit('flash', error.response.data, 'danger');
+                })
             },
         }
     }

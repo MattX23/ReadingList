@@ -29,6 +29,27 @@ class ReadingListController extends Controller
     }
 
     /**
+     * @param  ReadingList  $readingList
+     * @param  Request      $request
+     * @return JsonResponse
+     */
+    public function edit(ReadingList $readingList, Request $request) : JsonResponse
+    {
+        $data = [
+            'name'    => $request->name,
+            'user_id' => Auth::user()->id,
+        ];
+
+        if (!$readingList->validate($data)) {
+            return response()->json($readingList->validationErrors(), 422);
+        }
+
+        $readingList->update($data);
+
+        return response()->json("List name updated");
+    }
+
+    /**
      * @param Request $request
      * @return JsonResponse
      */

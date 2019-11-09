@@ -45,7 +45,7 @@
             return {
                 readingLists: {},
                 showModal: false,
-                method: '',
+                route: '',
                 title: '',
                 buttonText: '',
                 readingListId: '',
@@ -53,19 +53,20 @@
                 selectedReadingList: '',
                 error: '',
                 selected: true,
+                method: '',
             }
         },
         created() {
-            EventBus.$on('toggle-selection-modal', (method, title, buttonText, readingListId, linkId) => {
+            EventBus.$on('toggle-selection-modal', (route, title, buttonText, linkId, method) => {
                 this.fetchData();
                 this.selectedReadingList = '';
                 this.selected = true;
-                this.method = method;
+                this.route = route;
                 this.title = title;
                 this.buttonText = buttonText;
-                this.readingListId = readingListId;
                 this.linkId = linkId;
                 this.showModal = true;
+                this.method = method;
             });
             EventBus.$on('close-modal', () => {
                 this.closeModal();
@@ -88,20 +89,23 @@
                 return null;
             },
             submitModal() {
-
                 this.errorCheck();
 
                 if (!this.error) {
-                    let data = {};
+                    let data = {
+                        newListId: this.selectedReadingList,
+                    };
 
-                    data.newListId = this.selectedReadingList;
-
-                    axios.post('/api/link/move/' + this.linkId, data)
-                        .then((response) => {
-                            this.closeModal();
-                            EventBus.$emit('re-render');
-                            EventBus.$emit('flash', response.data, 'success');
-                        });
+                    axios({
+                        method: this.method,
+                        url: `/api/${this.route}`,
+                        data: data
+                    })
+                    .then((response) => {
+                        this.closeModal();
+                        EventBus.$emit('re-render');
+                        EventBus.$emit('flash', response.data, 'success');
+                    });
                 }
             },
         }

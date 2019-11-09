@@ -39,24 +39,25 @@
         data() {
             return {
                 showModal: false,
-                method: '',
+                route: '',
                 title: '',
                 buttonText: '',
                 textInput: '',
                 placeholder: '',
                 error: '',
                 readingListId: '',
+                method: '',
             }
         },
         created() {
-            EventBus.$on('toggle-modal', (method, title, buttonText, placeholder, id) => {
+            EventBus.$on('toggle-modal', (route, title, buttonText, placeholder, method) => {
                 this.clearErrors();
                 this.showModal = true;
-                this.method = method;
+                this.route = route;
                 this.title = title;
                 this.buttonText = buttonText;
                 this.placeholder = placeholder;
-                this.readingListId = id;
+                this.method = method;
             });
             EventBus.$on('close-modal', () => {
                 this.closeModal();
@@ -74,24 +75,24 @@
                 return null;
             },
             submitModal() {
-                let data = {};
+                let data = {
+                    name: this.textInput,
+                    id: this.readingListId,
+                };
 
-                if (this.method === 'lists/create') {
-                    data.name = this.textInput;
-                } else if (this.method === 'link/create') {
-                    data.link = this.textInput;
-                    data.id = this.readingListId;
-                }
-
-                axios.post(`/api/${this.method}`, data)
-                    .then((response) => {
-                        this.closeModal();
-                        EventBus.$emit('re-render');
-                        EventBus.$emit('flash', response.data, 'success');
-                    })
-                    .catch((error) => {
-                        this.error = error.response.data;
-                    })
+                axios({
+                    method: this.method,
+                    url: `/api/${this.route}`,
+                    data: data,
+                })
+                .then((response) => {
+                    this.closeModal();
+                    EventBus.$emit('re-render');
+                    EventBus.$emit('flash', response.data, 'success');
+                })
+                .catch((error) => {
+                    this.error = error.response.data;
+                })
             },
         }
     }

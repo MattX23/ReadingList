@@ -1,11 +1,25 @@
 <template>
     <div class="reading-list-bar">
         <div class="card">
-            <div class="card-header text-center">
+            <div @mouseover="showEditMenu"
+                 @mouseout="hideEditMenu"
+                 class="card-header text-center">
+                <span title="Edit list name"
+                      v-show="showMenu"
+                      @click.stop="editListName">
+                    <img src="/images/icons/pencil-icon.png" alt="" class="list-icon edit-list-icon">
+                </span>
+                <span title="Delete list"
+                      v-show="showMenu"
+                      @click.stop="deleteList">
+                    <img src="/images/icons/trash-icon.jpg" alt="" class="list-icon delete-list-icon">
+                </span>
                 <h3>{{ name }}
                     <span class="add-link"
                           title="Add a link"
-                          @click.stop="addURL">+</span>
+                          @click.stop="addURL">
+                        +
+                    </span>
                 </h3>
             </div>
             <div v-for="link in links">
@@ -15,7 +29,7 @@
             </div>
             <div v-if="links.length < 1"
                  class="card-body">
-                You haven't saved anything in this list yet. To add something, click the plus above.
+                You haven't saved anything in this list yet. To add something, click the plus symbol.
             </div>
         </div>
     </div>
@@ -34,17 +48,62 @@
         data() {
             return {
                 modal: {
-                    method: 'link/create',
-                    title: `Add to ${this.name}`,
-                    buttonText: "Add",
-                    placeholder: "Paste the URL here",
+                    route: '',
+                    buttonText: '',
+                    placeholder: '',
+                    body: '',
+                    btnClass: '',
                 },
                 showOptions: false,
+                showMenu: false,
             }
         },
         methods: {
             addURL() {
-                EventBus.$emit('toggle-modal', this.modal.method, this.modal.title, this.modal.buttonText, this.modal.placeholder, this.id);
+                this.modal.route = 'link/create';
+                this.modal.title = `Add to ${this.name}`;
+                this.modal.buttonText = "Add";
+                this.modal.placeholder = "Paste the URL here";
+                EventBus.$emit('toggle-modal',
+                    this.modal.route,
+                    this.modal.title,
+                    this.modal.buttonText,
+                    this.modal.placeholder,
+                    this.id,
+                    'POST',
+                );
+            },
+            editListName() {
+                this.modal.route = `lists/edit/${this.id}`;
+                this.modal.title = `Change list name - ${this.name}`;
+                this.modal.buttonText = "Edit";
+                this.modal.placeholder = "Enter new list name";
+                EventBus.$emit('toggle-modal',
+                    this.modal.route,
+                    this.modal.title,
+                    this.modal.buttonText,
+                    this.modal.placeholder,
+                    'PUT',
+                );
+            },
+            deleteList() {
+                this.modal.route = `lists/delete/${this.id}`;
+                this.modal.body = `Are you sure you want to delete ${this.name} ?`;
+                this.modal.buttonText = "Delete";
+                this.modal.btnClass = "danger";
+                EventBus.$emit('toggle-confirmation-modal',
+                    this.modal.route,
+                    this.modal.title,
+                    this.modal.buttonText,
+                    this.modal.body,
+                    'POST',
+                );
+            },
+            hideEditMenu() {
+                this.showMenu = false;
+            },
+            showEditMenu() {
+                this.showMenu = true;
             },
         }
     }
@@ -74,6 +133,24 @@
         top: 0;
         background: white;
         z-index: 999;
+    }
+    .list-icon {
+        float: left;
+        cursor: pointer;
+    }
+    .edit-list-icon {
+        width: 20px;
+        margin-top: 5px;
+        margin-right: -30px;
+    }
+    .delete-list-icon {
+        width: 35px;
+        margin-left: 25px;
+        margin-right: -60px;
+        margin-top: 4px;
+    }
+    .hidden {
+        visibility: hidden;
     }
     .reading-list-bar {
         margin-bottom: 15px;
