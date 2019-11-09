@@ -1,5 +1,5 @@
 <template>
-    <div class="container-fluid reading-list-container">
+    <div class="container-fluid reading-list-container" @click="closeMenus">
         <div class="row">
             <div v-for="readingList in readingLists" class="reading-list">
                 <reading-list
@@ -34,6 +34,9 @@
             })
         },
         methods: {
+            closeMenus() {
+                EventBus.$emit('close-options');
+            },
             fetchData() {
                 axios.get('/api/lists/get')
                 .then((response) => {
@@ -48,10 +51,9 @@
     .reading-list {
         display: inline-block;
         width: 25rem;
-        padding: 10px;
+        padding: 0px 10px;
     }
     .reading-list-container {
-        //overflow-y: scroll;
         width: max-content;
     }
 </style>

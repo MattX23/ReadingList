@@ -1,5 +1,5 @@
 <template>
-    <div class="reading-list">
+    <div class="reading-list-bar">
         <div class="card">
             <div class="card-header text-center">
                 <h3>{{ name }}
@@ -62,7 +62,6 @@
     .card {
         border: none;
         max-height: 630px;
-        overflow-x: scroll;
         background: rgba(255,255,255,0.3);
     }
     .card-body {
@@ -76,7 +75,8 @@
         background: white;
         z-index: 999;
     }
-    .reading-list {
+    .reading-list-bar {
         margin-bottom: 15px;
+        overflow-x: scroll;
     }
 </style>

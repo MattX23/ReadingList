@@ -27,6 +27,7 @@
         },
         created() {
             EventBus.$on('toggle-sidebar', (state) => {
+                EventBus.$emit('close-options');
                 !state ? (this.showMenu = true) : (this.showMenu = false);
             });
         },

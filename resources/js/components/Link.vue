@@ -55,7 +55,7 @@
                 </div>
                 <div class="col">
                     <img src="/images/icons/options.png"
-                         @click="toggleOptionsMenu"
+                         @click.stop="toggleOptionsMenu"
                          class="footer-icon"
                          title="Options">
                 </div>
@@ -91,6 +91,11 @@
                 },
             }
         },
+        created() {
+            EventBus.$on('close-options', () => {
+                this.closeOptions();
+            });
+        },
         computed: {
           wideScreen() {
               if (this.windowWidth > 1445) {
@@ -122,7 +127,12 @@
                 );
             },
             toggleOptionsMenu() {
-                this.showOptions = !this.showOptions;
+                if (this.showOptions) {
+                    EventBus.$emit('close-options');
+                } else {
+                    EventBus.$emit('close-options');
+                    this.showOptions = !this.showOptions;
+                }
             },
         }
     }
