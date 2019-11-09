@@ -1,11 +1,19 @@
 <template>
     <div class="reading-list-bar">
         <div class="card">
-            <div class="card-header text-center">
+            <div @mouseover="showEditMenu"
+                 @mouseout="hideEditMenu"
+                 class="card-header text-center">
+                <span title="Edit list name" v-show="showMenu"
+                      @click.stop="editListName">
+                    <img src="/images/icons/pencil-icon.png" alt="" class="edit-list-icon">
+                </span>
                 <h3>{{ name }}
                     <span class="add-link"
                           title="Add a link"
-                          @click.stop="addURL">+</span>
+                          @click.stop="addURL">
+                        +
+                    </span>
                 </h3>
             </div>
             <div v-for="link in links">
@@ -15,7 +23,7 @@
             </div>
             <div v-if="links.length < 1"
                  class="card-body">
-                You haven't saved anything in this list yet. To add something, click the plus above.
+                You haven't saved anything in this list yet. To add something, click the plus symbol.
             </div>
         </div>
     </div>
@@ -34,17 +42,35 @@
         data() {
             return {
                 modal: {
-                    method: 'link/create',
-                    title: `Add to ${this.name}`,
-                    buttonText: "Add",
-                    placeholder: "Paste the URL here",
+                    method: '',
+                    title: '',
+                    buttonText: '',
+                    placeholder: '',
                 },
                 showOptions: false,
+                showMenu: false,
             }
         },
         methods: {
             addURL() {
+                this.modal.method = 'link/create';
+                this.modal.title = `Add to ${this.name}`;
+                this.modal.buttonText = "Add";
+                this.modal.placeholder = "Paste the URL here";
                 EventBus.$emit('toggle-modal', this.modal.method, this.modal.title, this.modal.buttonText, this.modal.placeholder, this.id);
+            },
+            editListName() {
+                this.modal.method = `lists/edit/${this.id}`;
+                this.modal.title = `Change list name - ${this.name}`;
+                this.modal.buttonText = "Edit";
+                this.modal.placeholder = "Enter new list name";
+                EventBus.$emit('toggle-modal', this.modal.method, this.modal.title, this.modal.buttonText, this.modal.placeholder);
+            },
+            hideEditMenu() {
+                this.showMenu = false;
+            },
+            showEditMenu() {
+                this.showMenu = true;
             },
         }
     }
@@ -74,6 +100,16 @@
         top: 0;
         background: white;
         z-index: 999;
+    }
+    .edit-list-icon {
+        float: left;
+        width: 20px;
+        margin-top: 5px;
+        margin-right: -30px;
+        cursor: pointer;
+    }
+    .hidden {
+        visibility: hidden;
     }
     .reading-list-bar {
         margin-bottom: 15px;

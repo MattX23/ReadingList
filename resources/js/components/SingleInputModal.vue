@@ -74,14 +74,10 @@
                 return null;
             },
             submitModal() {
-                let data = {};
-
-                if (this.method === 'lists/create') {
-                    data.name = this.textInput;
-                } else if (this.method === 'link/create') {
-                    data.link = this.textInput;
-                    data.id = this.readingListId;
-                }
+                let data = {
+                    name: this.textInput,
+                    id: this.readingListId,
+                };
 
                 axios.post(`/api/${this.method}`, data)
                     .then((response) => {

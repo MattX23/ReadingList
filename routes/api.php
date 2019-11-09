@@ -23,6 +23,7 @@ Route::group([
     'as'=>'lists'
 ], function(){
     Route::post('/create', 'ReadingListController@store');
+    Route::post('/edit/{readingList}', 'ReadingListController@edit');
     Route::get('/get', 'ReadingListController@get');
 });
 

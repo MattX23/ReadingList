@@ -187,10 +187,11 @@
         border: 1px solid gray;
         bottom: 0;
         right: 1px;
-        background: rgb(244,244,244);
+        background: rgba(244,244,244, 0.5);
         cursor: pointer;
         border-radius: 15px 15px 0px 15px;
         text-align: center;
+        margin-top: 10px;
     }
     .option-item {
         padding: 10px;
