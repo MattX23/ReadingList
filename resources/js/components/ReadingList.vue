@@ -4,9 +4,15 @@
             <div @mouseover="showEditMenu"
                  @mouseout="hideEditMenu"
                  class="card-header text-center">
-                <span title="Edit list name" v-show="showMenu"
+                <span title="Edit list name"
+                      v-show="showMenu"
                       @click.stop="editListName">
-                    <img src="/images/icons/pencil-icon.png" alt="" class="edit-list-icon">
+                    <img src="/images/icons/pencil-icon.png" alt="" class="list-icon edit-list-icon">
+                </span>
+                <span title="Delete list"
+                      v-show="showMenu"
+                      @click.stop="deleteList">
+                    <img src="/images/icons/trash-icon.jpg" alt="" class="list-icon delete-list-icon">
                 </span>
                 <h3>{{ name }}
                     <span class="add-link"
@@ -42,10 +48,11 @@
         data() {
             return {
                 modal: {
-                    method: '',
-                    title: '',
+                    route: '',
                     buttonText: '',
                     placeholder: '',
+                    body: '',
+                    btnClass: '',
                 },
                 showOptions: false,
                 showMenu: false,
@@ -53,18 +60,44 @@
         },
         methods: {
             addURL() {
-                this.modal.method = 'link/create';
+                this.modal.route = 'link/create';
                 this.modal.title = `Add to ${this.name}`;
                 this.modal.buttonText = "Add";
                 this.modal.placeholder = "Paste the URL here";
-                EventBus.$emit('toggle-modal', this.modal.method, this.modal.title, this.modal.buttonText, this.modal.placeholder, this.id);
+                EventBus.$emit('toggle-modal',
+                    this.modal.route,
+                    this.modal.title,
+                    this.modal.buttonText,
+                    this.modal.placeholder,
+                    this.id,
+                    'POST',
+                );
             },
             editListName() {
-                this.modal.method = `lists/edit/${this.id}`;
+                this.modal.route = `lists/edit/${this.id}`;
                 this.modal.title = `Change list name - ${this.name}`;
                 this.modal.buttonText = "Edit";
                 this.modal.placeholder = "Enter new list name";
-                EventBus.$emit('toggle-modal', this.modal.method, this.modal.title, this.modal.buttonText, this.modal.placeholder);
+                EventBus.$emit('toggle-modal',
+                    this.modal.route,
+                    this.modal.title,
+                    this.modal.buttonText,
+                    this.modal.placeholder,
+                    'PUT',
+                );
+            },
+            deleteList() {
+                this.modal.route = `lists/delete/${this.id}`;
+                this.modal.body = `Are you sure you want to delete ${this.name} ?`;
+                this.modal.buttonText = "Delete";
+                this.modal.btnClass = "danger";
+                EventBus.$emit('toggle-confirmation-modal',
+                    this.modal.route,
+                    this.modal.title,
+                    this.modal.buttonText,
+                    this.modal.body,
+                    'POST',
+                );
             },
             hideEditMenu() {
                 this.showMenu = false;
@@ -101,12 +134,20 @@
         background: white;
         z-index: 999;
     }
-    .edit-list-icon {
+    .list-icon {
         float: left;
+        cursor: pointer;
+    }
+    .edit-list-icon {
         width: 20px;
         margin-top: 5px;
         margin-right: -30px;
-        cursor: pointer;
+    }
+    .delete-list-icon {
+        width: 35px;
+        margin-left: 25px;
+        margin-right: -60px;
+        margin-top: 4px;
     }
     .hidden {
         visibility: hidden;
