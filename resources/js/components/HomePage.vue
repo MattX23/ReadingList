@@ -1,7 +1,7 @@
 <template>
-    <div class="container-fluid">
+    <div class="container-fluid reading-list-container">
         <div class="row">
-            <div v-for="readingList in readingLists" class="col-xl-3 col-md-4 col-sm-6">
+            <div v-for="readingList in readingLists" class="reading-list">
                 <reading-list
                 :name="readingList.name"
                 :id="readingList.id"
@@ -45,5 +45,13 @@
 </script>
 
 <style type="scss" scoped>
-
+    .reading-list {
+        display: inline-block;
+        width: 25rem;
+        padding: 10px;
+    }
+    .reading-list-container {
+        //overflow-y: scroll;
+        width: max-content;
+    }
 </style>

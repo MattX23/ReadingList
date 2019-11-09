@@ -18,23 +18,17 @@
             return {
                 showMenu: false,
                 modal: {
-                    method: 'list/create',
+                    method: 'lists/create',
                     title: 'What is this list about?',
                     buttonText: 'Create new list',
                     placeholder: 'Give your list a name',
                 }
             }
         },
-        mounted() {
-
-        },
         created() {
             EventBus.$on('toggle-sidebar', (state) => {
                 !state ? (this.showMenu = true) : (this.showMenu = false);
             });
-        },
-        computed: {
-
         },
         methods: {
             closeSideBar() {
