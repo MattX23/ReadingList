@@ -45,7 +45,7 @@ class User extends Authenticatable
 
     public function readingLists() : HasMany
     {
-        return $this->hasMany(ReadingList::class);
+        return $this->hasMany(ReadingList::class)->orderBy('position');
     }
 
     public static function checkIfEmailExists(string $email) : ?bool

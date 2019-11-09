@@ -69,7 +69,6 @@
                     this.modal.title,
                     this.modal.buttonText,
                     this.modal.placeholder,
-                    this.id,
                     'POST',
                 );
             },

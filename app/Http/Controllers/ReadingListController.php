@@ -35,9 +35,11 @@ class ReadingListController extends Controller
      */
     public function edit(ReadingList $readingList, Request $request) : JsonResponse
     {
+        $user = Auth::user();
+
         $data = [
-            'name'    => $request->name,
-            'user_id' => Auth::user()->id,
+            'name'     => $request->name,
+            'user_id'  => $user->id,
         ];
 
         if (!$readingList->validate($data)) {
@@ -49,15 +51,28 @@ class ReadingListController extends Controller
         return response()->json("List name updated");
     }
 
+
+    /**
+     * @param Request $request
+     */
+    public function reorder(Request $request)
+    {
+        $ids = $request->toArray();
+        (new ReadingList())->reorderLists($ids);
+    }
+
     /**
      * @param Request $request
      * @return JsonResponse
      */
     public function store(Request $request) : JsonResponse
     {
+        $user = Auth::user();
+
         $data = [
-            'name'    => $request->name,
-            'user_id' => Auth::user()->id,
+            'name'     => $request->name,
+            'user_id'  => Auth::user()->id,
+            'position' => (new ReadingList())->getNewReadingListPosition($user),
         ];
 
         $list = new ReadingList($data);

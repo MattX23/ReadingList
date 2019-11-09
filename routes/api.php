@@ -24,6 +24,7 @@ Route::group([
 ], function(){
     Route::post('/create', 'ReadingListController@store');
     Route::put('/edit/{readingList}', 'ReadingListController@edit');
+    Route::put('/reorder', 'ReadingListController@reorder');
     Route::get('/get', 'ReadingListController@get');
 });
 
