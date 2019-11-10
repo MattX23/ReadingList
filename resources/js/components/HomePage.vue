@@ -1,24 +1,34 @@
 <template>
-    <div class="container-fluid reading-list-container" @click="closeMenus">
-        <div class="row">
-            <div v-for="readingList in readingLists" class="reading-list">
-                <reading-list
-                :name="readingList.name"
-                :id="readingList.id"
-                :links="readingList.links"
-                :windowWidth="windowWidth"></reading-list>
-            </div>
+    <div>
+        <div class="container-fluid reading-list-container" @click="closeMenus">
+            <draggable class="row" v-model="readingLists"
+                       @start="drag=true"
+                       @end="endDrag">
+                    <reading-list
+                        v-for="readingList in readingLists"
+                        class="reading-list"
+                        :name="readingList.name"
+                        :id="readingList.id"
+                        :readingList="readingList"
+                        :windowWidth="windowWidth"
+                        :key="readingList.id"
+                        ></reading-list>
+            </draggable>
         </div>
     </div>
 </template>
 
 <script>
+    import draggable from 'vuedraggable';
     import { EventBus } from '../eventbus/event-bus.js';
 
     export default {
+        components: {
+            draggable,
+        },
         data() {
             return {
-                readingLists: {},
+                readingLists: [],
                 windowWidth: window.innerWidth,
             }
         },
@@ -31,17 +41,28 @@
         created() {
             EventBus.$on('re-render', () => {
                 this.fetchData();
-            })
+            });
         },
         methods: {
             closeMenus() {
                 EventBus.$emit('close-options');
+            },
+            endDrag() {
+                this.drag = false;
+                let order = [];
+                this.readingLists.forEach(function(list) {
+                   order.push(list.id);
+                });
+                this.reorderReadingLists(order);
             },
             fetchData() {
                 axios.get('/api/lists/get')
                 .then((response) => {
                     this.readingLists = response.data.readingLists;
                 });
+            },
+            reorderReadingLists(order) {
+                axios.put('/api/lists/reorder', order);
             },
         }
     }

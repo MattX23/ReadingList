@@ -19,6 +19,7 @@ class ReadingList extends Model
     protected $fillable = [
         'name',
         'user_id',
+        'position',
     ];
 
     public $rules = [
@@ -40,6 +41,28 @@ class ReadingList extends Model
 
     public function links() : HasMany
     {
-        return $this->hasMany(Link::class);
+        return $this->hasMany(Link::class)->orderBy('position');
+    }
+
+    /**
+     * @param User $user
+     * @return int
+     */
+    public function getNewReadingListPosition(User $user) : int
+    {
+        return ReadingList::where('user_id', '=', $user->id)->count() + 1;
+    }
+
+    /**
+     * @param array $ids
+     */
+    public function reorderLists(array $ids)
+    {
+        for ($i = 0; $i < sizeof($ids); $i++) {
+            ReadingList::where('id', '=', $ids[$i])
+                ->update([
+                    'position' => $i + 1,
+                ]);
+        }
     }
 }

@@ -57,7 +57,7 @@
             }
         },
         created() {
-            EventBus.$on('toggle-selection-modal', (route, title, buttonText, linkId, method) => {
+            EventBus.$on('toggle-selection-modal', (route, title, buttonText, linkId, method, readingListId) => {
                 this.fetchData();
                 this.selectedReadingList = '';
                 this.selected = true;
@@ -67,6 +67,7 @@
                 this.linkId = linkId;
                 this.showModal = true;
                 this.method = method;
+                this.readingListId = readingListId;
             });
             EventBus.$on('close-modal', () => {
                 this.closeModal();
@@ -105,6 +106,7 @@
                         this.closeModal();
                         EventBus.$emit('re-render');
                         EventBus.$emit('flash', response.data, 'success');
+                        EventBus.$emit('reorder-lists');
                     });
                 }
             },

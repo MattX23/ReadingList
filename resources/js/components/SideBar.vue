@@ -18,10 +18,10 @@
             return {
                 showMenu: false,
                 modal: {
-                    method: 'lists/create',
-                    title: 'What is this list about?',
-                    buttonText: 'Create new list',
-                    placeholder: 'Give your list a name',
+                    method: '',
+                    title: '',
+                    buttonText: '',
+                    placeholder: '',
                 }
             }
         },
@@ -44,7 +44,17 @@
             },
             newList() {
                 this.closeSideBar();
-                EventBus.$emit('toggle-modal', this.modal.method, this.modal.title, this.modal.buttonText, this.modal.placeholder);
+                this.modal.method = 'lists/create';
+                this.modal.title = 'What is this list about?';
+                this.modal.buttonText = 'Create new list';
+                this.modal.placeholder = 'Give your list a name';
+                EventBus.$emit('toggle-modal',
+                    this.modal.method,
+                    this.modal.title,
+                    this.modal.buttonText,
+                    this.modal.placeholder,
+                    'POST'
+                );
             },
         }
     }

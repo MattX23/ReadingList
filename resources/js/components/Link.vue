@@ -122,7 +122,8 @@
                     this.modal.title,
                     this.modal.buttonText,
                     this.link.id,
-                    'PUT'
+                    'PUT',
+                    this.id,
                 );
             },
             toggleOptionsMenu() {
