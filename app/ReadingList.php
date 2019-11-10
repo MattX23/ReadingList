@@ -41,7 +41,7 @@ class ReadingList extends Model
 
     public function links() : HasMany
     {
-        return $this->hasMany(Link::class);
+        return $this->hasMany(Link::class)->orderBy('position');
     }
 
     /**

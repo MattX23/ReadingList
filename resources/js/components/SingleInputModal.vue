@@ -50,7 +50,7 @@
             }
         },
         created() {
-            EventBus.$on('toggle-modal', (route, title, buttonText, placeholder, method) => {
+            EventBus.$on('toggle-modal', (route, title, buttonText, placeholder, method, id) => {
                 this.clearErrors();
                 this.showModal = true;
                 this.route = route;
@@ -58,6 +58,7 @@
                 this.buttonText = buttonText;
                 this.placeholder = placeholder;
                 this.method = method;
+                this.readingListId = id;
             });
             EventBus.$on('close-modal', () => {
                 this.closeModal();

@@ -1,12 +1,12 @@
 <template>
     <div>
         <div class="container-fluid reading-list-container" @click="closeMenus">
-            <draggable class="row" v-model="readingLists" group="lists" @start="drag=true" @end="endDrag">
+            <draggable class="row" v-model="readingLists" @start="drag=true" @end="endDrag">
                 <div v-for="readingList in readingLists" class="reading-list">
                     <reading-list
                         :name="readingList.name"
                         :id="readingList.id"
-                        :links="readingList.links"
+                        :readingList="readingList"
                         :windowWidth="windowWidth"
                         :key="readingList.id"
                         ></reading-list>
@@ -39,7 +39,7 @@
         created() {
             EventBus.$on('re-render', () => {
                 this.fetchData();
-            })
+            });
         },
         methods: {
             closeMenus() {

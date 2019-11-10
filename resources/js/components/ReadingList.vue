@@ -22,12 +22,15 @@
                     </span>
                 </h3>
             </div>
-            <div v-for="link in links">
-                <reading-link :link="link"
-                :windowWidth="windowWidth"
-                :id="id"></reading-link>
-            </div>
-            <div v-if="links.length < 1"
+            <draggable v-model="readingList.links" @start="drag=true" @end="endDrag">
+                <div v-for="link in readingList.links" :key="link.id">
+                    <reading-link :link="link"
+                                  :windowWidth="windowWidth"
+                                  :id="id">
+                    </reading-link>
+                </div>
+            </draggable>
+            <div v-if="readingList.links.length < 1"
                  class="card-body">
                 You haven't saved anything in this list yet. To add something, click the plus symbol.
             </div>
@@ -36,14 +39,18 @@
 </template>
 
 <script>
+    import draggable from 'vuedraggable';
     import { EventBus } from '../eventbus/event-bus.js';
 
     export default {
+        components: {
+            draggable,
+        },
         props: {
             name: String,
             id: Number,
-            links: Array,
             windowWidth: Number,
+            readingList: Object
         },
         data() {
             return {
@@ -70,6 +77,7 @@
                     this.modal.buttonText,
                     this.modal.placeholder,
                     'POST',
+                    this.id,
                 );
             },
             editListName() {
@@ -84,6 +92,14 @@
                     this.modal.placeholder,
                     'PUT',
                 );
+            },
+            endDrag() {
+                this.drag = false;
+                let order = [];
+                this.readingList.links.forEach(function(link) {
+                    order.push(link.id);
+                });
+                this.reorderLinks(order);
             },
             deleteList() {
                 this.modal.route = `lists/delete/${this.id}`;
@@ -100,6 +116,9 @@
             },
             hideEditMenu() {
                 this.showMenu = false;
+            },
+            reorderLinks(order) {
+                axios.put('/api/link/reorder', order);
             },
             showEditMenu() {
                 this.showMenu = true;

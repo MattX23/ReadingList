@@ -19,6 +19,7 @@ class LinkController extends Controller
         $data = [
             'url'             => $request->name,
             'reading_list_id' => $request->id,
+            'position' => (new Link())->getNewLinkPosition($request->id),
         ];
 
         $link = new Link($data);
@@ -33,6 +34,15 @@ class LinkController extends Controller
     }
 
     /**
+     * @param Request $request
+     */
+    public function reorder(Request $request)
+    {
+        $ids = $request->toArray();
+        (new Link())->reorderLinks($ids);
+    }
+
+    /**
      * @param Link $link
      * @param Request $request
      * @return JsonResponse
@@ -40,11 +50,13 @@ class LinkController extends Controller
      */
     public function move(Link $link, Request $request) : JsonResponse
     {
-        $newList = $request->newListId;
+        $oldList = $link->readingList->id;
 
         $link->update([
-           'reading_list_id' => $newList,
+            'reading_list_id' => $request->newListId,
         ]);
+
+        (new Link())->redefinePositions($link, $oldList);
 
         return response()->json("Link moved");
     }

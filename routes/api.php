@@ -34,5 +34,6 @@ Route::group([
 ], function(){
     Route::post('/create', 'LinkController@store');
     Route::put('/move/{link}', 'LinkController@move');
+    Route::put('/reorder', 'LinkController@reorder');
     Route::post('/delete/{link}', 'LinkController@delete');
 });
