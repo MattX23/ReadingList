@@ -36,7 +36,7 @@ class LinkController extends Controller
     /**
      * @param Request $request
      */
-    public function reorder(Request $request)
+    public function reorderLinks(Request $request)
     {
         $ids = $request->toArray();
         (new Link())->reorderLinks($ids);

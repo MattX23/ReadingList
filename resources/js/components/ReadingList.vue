@@ -22,18 +22,29 @@
                     </span>
                 </h3>
             </div>
-            <draggable v-model="readingList.links" @start="drag=true" @end="endDrag">
-                <div v-for="link in readingList.links" :key="link.id">
-                    <reading-link :link="link"
-                                  :windowWidth="windowWidth"
-                                  :id="id">
-                    </reading-link>
-                </div>
-            </draggable>
+            <div>
+                <draggable v-model="readingList.links"
+                           group="readingList.links"
+                           @start="drag=true"
+                           @end="endDrag"
+                >
+                    <div v-for="link in readingList.links" :key="link.id">
+                        <reading-link
+                            :link="link"
+                            :windowWidth="windowWidth"
+                            :id="id"
+                        >
+                        </reading-link>
+                    </div>
+                </draggable>
+            </div>
+
             <div v-if="readingList.links.length < 1"
                  class="card-body">
                 You haven't saved anything in this list yet. To add something, click the plus symbol.
             </div>
+            <input type="hidden" v-model="noListItems">
+            <input type="hidden" v-model="checkForListChanges">
         </div>
     </div>
 </template>
@@ -63,7 +74,19 @@
                 },
                 showOptions: false,
                 showMenu: false,
+                noItems: this.readingList.links.length,
             }
+        },
+        computed: {
+            noListItems() {
+                return this.readingList.links.length;
+            },
+            checkForListChanges() {
+                if (this.noListItems !== this.noItems) {
+                    this.reorderMultipleLists();
+                    return true;
+                }
+            },
         },
         methods: {
             addURL() {
@@ -93,14 +116,6 @@
                     'PUT',
                 );
             },
-            endDrag() {
-                this.drag = false;
-                let order = [];
-                this.readingList.links.forEach(function(link) {
-                    order.push(link.id);
-                });
-                this.reorderLinks(order);
-            },
             deleteList() {
                 this.modal.route = `lists/delete/${this.id}`;
                 this.modal.body = `Are you sure you want to delete ${this.name} ?`;
@@ -114,11 +129,22 @@
                     'POST',
                 );
             },
+            endDrag() {
+                this.drag = false;
+                let order = [];
+                this.readingList.links.forEach(function(link) {
+                    order.push(link.id);
+                });
+                this.reorderLinks(order);
+            },
             hideEditMenu() {
                 this.showMenu = false;
             },
             reorderLinks(order) {
                 axios.put('/api/link/reorder', order);
+            },
+            reorderMultipleLists() {
+                axios.put('/api/lists/reorder-multiple', this.readingList);
             },
             showEditMenu() {
                 this.showMenu = true;
@@ -172,6 +198,5 @@
     }
     .reading-list-bar {
         margin-bottom: 15px;
-        overflow-x: scroll;
     }
 </style>

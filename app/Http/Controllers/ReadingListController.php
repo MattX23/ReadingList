@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Link;
 use App\ReadingList;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -51,14 +52,30 @@ class ReadingListController extends Controller
         return response()->json("List name updated");
     }
 
+    /**
+     * @param Request $request
+     */
+    public function reorderList(Request $request)
+    {
+        $ids = $request->toArray();
+        (new ReadingList())->reorderLists($ids);
+    }
 
     /**
      * @param Request $request
      */
-    public function reorder(Request $request)
+    public function reorderMultipleLists(Request $request)
     {
-        $ids = $request->toArray();
-        (new ReadingList())->reorderLists($ids);
+        $i = 1;
+        $list_id = $request->id;
+
+        foreach ($request->links as $link) {
+            Link::where('id', '=', $link['id'])->update([
+                'position'        => $i,
+                'reading_list_id' => $list_id,
+            ]);
+            $i++;
+        }
     }
 
     /**

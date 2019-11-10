@@ -1,16 +1,18 @@
 <template>
     <div>
         <div class="container-fluid reading-list-container" @click="closeMenus">
-            <draggable class="row" v-model="readingLists" @start="drag=true" @end="endDrag">
-                <div v-for="readingList in readingLists" class="reading-list">
+            <draggable class="row" v-model="readingLists"
+                       @start="drag=true"
+                       @end="endDrag">
                     <reading-list
+                        v-for="readingList in readingLists"
+                        class="reading-list"
                         :name="readingList.name"
                         :id="readingList.id"
                         :readingList="readingList"
                         :windowWidth="windowWidth"
                         :key="readingList.id"
                         ></reading-list>
-                </div>
             </draggable>
         </div>
     </div>
