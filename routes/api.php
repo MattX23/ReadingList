@@ -27,6 +27,7 @@ Route::group([
     Route::put('/reorder', 'ReadingListController@reorderList');
     Route::put('/reorder-multiple', 'ReadingListController@reorderMultipleLists');
     Route::get('/get', 'ReadingListController@get');
+    Route::delete('/delete/{id}', 'ReadingListController@destroy');
 });
 
 Route::group([
