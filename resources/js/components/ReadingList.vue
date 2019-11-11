@@ -65,16 +65,10 @@
         },
         data() {
             return {
-                modal: {
-                    route: '',
-                    buttonText: '',
-                    placeholder: '',
-                    body: '',
-                    btnClass: '',
-                },
                 showOptions: false,
                 showMenu: false,
                 noItems: this.readingList.links.length,
+                // TODO remove this variable
             }
         },
         computed: {
@@ -90,44 +84,35 @@
         },
         methods: {
             addURL() {
-                this.modal.route = 'link/create';
-                this.modal.title = `Add to ${this.name}`;
-                this.modal.buttonText = "Add";
-                this.modal.placeholder = "Paste the URL here";
-                EventBus.$emit('toggle-modal',
-                    this.modal.route,
-                    this.modal.title,
-                    this.modal.buttonText,
-                    this.modal.placeholder,
-                    'POST',
-                    this.id,
-                );
+                let data = {
+                    route: 'link/create',
+                    title: `Add to ${this.name}`,
+                    buttonText: 'Add',
+                    placeholder: 'Paste the URL here',
+                    method: 'POST',
+                    readingListId: this.id,
+                };
+                EventBus.$emit('toggle-modal', data);
             },
             editListName() {
-                this.modal.route = `lists/edit/${this.id}`;
-                this.modal.title = `Change list name - ${this.name}`;
-                this.modal.buttonText = "Edit";
-                this.modal.placeholder = "Enter new list name";
-                EventBus.$emit('toggle-modal',
-                    this.modal.route,
-                    this.modal.title,
-                    this.modal.buttonText,
-                    this.modal.placeholder,
-                    'PUT',
-                );
+                let data = {
+                    route: `lists/edit/${this.id}`,
+                    title: `Change list name - ${this.name}`,
+                    buttonText: 'Edit',
+                    placeholder: 'Enter new list name',
+                    method: 'PUT',
+                };
+                EventBus.$emit('toggle-modal', data);
             },
             deleteList() {
-                this.modal.route = `lists/delete/${this.id}`;
-                this.modal.body = `Are you sure you want to delete ${this.name} ?`;
-                this.modal.buttonText = "Delete";
-                this.modal.btnClass = "danger";
-                EventBus.$emit('toggle-confirmation-modal',
-                    this.modal.route,
-                    this.modal.title,
-                    this.modal.buttonText,
-                    this.modal.body,
-                    'POST',
-                );
+                let data = {
+                    route: `lists/delete/${this.id}`,
+                    buttonText: 'Delete',
+                    btnClass: 'delete',
+                    body: `Are you sure you want to delete ${this.name} ?`,
+                    method: 'POST',
+                };
+                EventBus.$emit('toggle-confirmation-modal', data);
             },
             endDrag() {
                 this.drag = false;

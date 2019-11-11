@@ -101,30 +101,14 @@
                 this.showOptions = false;
             },
             deleteLink() {
-                this.modal.route = `link/delete/${this.link.id}`;
-                this.modal.buttonText = "Delete";
-                this.modal.body = `Are you sure you want to delete ${this.link.title}?`;
-                this.modal.btnClass = 'delete';
-                EventBus.$emit('toggle-confirmation-modal',
-                    this.modal.route,
-                    this.modal.buttonText,
-                    this.modal.body,
-                    this.modal.btnClass,
-                    'POST'
-                );
-            },
-            moveLink() {
-                this.modal.route = `link/move/${this.link.id}`;
-                this.modal.title = 'Choose a list';
-                this.modal.buttonText = "Move";
-                EventBus.$emit('toggle-selection-modal',
-                    this.modal.route,
-                    this.modal.title,
-                    this.modal.buttonText,
-                    this.link.id,
-                    'PUT',
-                    this.id,
-                );
+                let data = {
+                    route: `link/delete/${this.link.id}`,
+                    buttonText: 'Delete',
+                    body: `Are you sure you want to delete ${this.link.title}?`,
+                    btnClass: 'delete',
+                    method: 'POST',
+                };
+                EventBus.$emit('toggle-confirmation-modal', data);
             },
             toggleOptionsMenu() {
                 if (this.showOptions) {

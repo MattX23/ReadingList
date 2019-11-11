@@ -39,13 +39,13 @@
             }
         },
         created() {
-            EventBus.$on('toggle-confirmation-modal', (route, buttonText, body, btnClass, method) => {
+            EventBus.$on('toggle-confirmation-modal', (data) => {
                 this.showModal = true;
-                this.route = route;
-                this.buttonText = buttonText;
-                this.body = body;
-                this.method = method;
-                if (btnClass === 'delete') {
+                this.route = data.route;
+                this.buttonText = data.buttonText;
+                this.body = data.body;
+                this.method = data.method;
+                if (data.btnClass === 'delete') {
                     this.btnClass = 'btn btn-danger';
                 }
             });
