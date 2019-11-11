@@ -120,13 +120,13 @@
                 this.modal.route = `lists/delete/${this.id}`;
                 this.modal.body = `Are you sure you want to delete ${this.name} ?`;
                 this.modal.buttonText = "Delete";
-                this.modal.btnClass = "danger";
+                this.modal.btnClass = "delete";
                 EventBus.$emit('toggle-confirmation-modal',
                     this.modal.route,
-                    this.modal.title,
                     this.modal.buttonText,
                     this.modal.body,
-                    'POST',
+                    this.modal.btnClass,
+                    'DELETE',
                 );
             },
             endDrag() {
