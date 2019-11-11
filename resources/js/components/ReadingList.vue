@@ -43,7 +43,7 @@
                  class="card-body">
                 You haven't saved anything in this list yet. To add something, click the plus symbol.
             </div>
-            <input type="hidden" v-model="noListItems">
+
             <input type="hidden" v-model="checkForListChanges">
         </div>
     </div>
@@ -67,6 +67,7 @@
             return {
                 showOptions: false,
                 showMenu: false,
+                noItems: this.readingList.links.length,
             }
         },
         computed: {
@@ -74,7 +75,8 @@
                 return this.readingList.links.length;
             },
             checkForListChanges() {
-                if (this.noListItems !== this.readingList.links.length) {
+                if (this.noListItems !== this.noItems) {
+                    this.noItems = this.noListItems;
                     this.reorderMultipleLists();
                     return true;
                 }
