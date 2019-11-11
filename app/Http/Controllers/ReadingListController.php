@@ -102,4 +102,17 @@ class ReadingListController extends Controller
 
         return response()->json("New list created");
     }
+
+    /**
+     * @param integer $id
+     * @return JsonResponse
+     */
+    public function destroy(int $id) : JsonResponse
+    {
+        if (!ReadingList::find($id)->links()->exists())
+
+        if (ReadingList::destroy($id)) return response()->json("List deleted");
+
+        return response()->json('List not empty', 422);
+    }
 }

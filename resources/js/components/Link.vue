@@ -14,22 +14,11 @@
                 <div class="option-item">
                     Change title
                 </div>
-                <div class="option-item">
-                    Change description
-                </div>
                 <div v-if="!wideScreen" class="option-item">
                     Share
                 </div>
-                <div class="option-item"
-                @click="moveLink">
-                    Move
-                </div>
                 <div class="option-item">
                     Archive
-                </div>
-                <div @click="deleteLink"
-                     class="option-item">
-                    Delete
                 </div>
             </div>
         </div>
@@ -101,14 +90,17 @@
                 this.showOptions = false;
             },
             deleteLink() {
-                let data = {
-                    route: `link/delete/${this.link.id}`,
-                    buttonText: 'Delete',
-                    body: `Are you sure you want to delete ${this.link.title}?`,
-                    btnClass: 'delete',
-                    method: 'POST',
-                };
-                EventBus.$emit('toggle-confirmation-modal', data);
+                this.modal.route = `link/delete/${this.link.id}`;
+                this.modal.buttonText = "Delete";
+                this.modal.body = `Are you sure you want to delete ${this.link.title}?`;
+                this.modal.btnClass = 'delete';
+                EventBus.$emit('toggle-confirmation-modal',
+                    this.modal.route,
+                    this.modal.buttonText,
+                    this.modal.body,
+                    this.modal.btnClass,
+                    'POST'
+                );
             },
             toggleOptionsMenu() {
                 if (this.showOptions) {
