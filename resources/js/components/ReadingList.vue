@@ -67,8 +67,6 @@
             return {
                 showOptions: false,
                 showMenu: false,
-                noItems: this.readingList.links.length,
-                // TODO remove this variable
             }
         },
         computed: {
@@ -76,7 +74,7 @@
                 return this.readingList.links.length;
             },
             checkForListChanges() {
-                if (this.noListItems !== this.noItems) {
+                if (this.noListItems !== this.readingList.links.length) {
                     this.reorderMultipleLists();
                     return true;
                 }
