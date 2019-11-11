@@ -110,7 +110,7 @@
                     buttonText: 'Delete',
                     btnClass: 'delete',
                     body: `Are you sure you want to delete ${this.name} ?`,
-                    method: 'POST',
+                    method: 'DELETE',
                 };
                 EventBus.$emit('toggle-confirmation-modal', data);
             },
