@@ -14,22 +14,11 @@
                 <div class="option-item">
                     Change title
                 </div>
-                <div class="option-item">
-                    Change description
-                </div>
                 <div v-if="!wideScreen" class="option-item">
                     Share
                 </div>
-                <div class="option-item"
-                @click="moveLink">
-                    Move
-                </div>
                 <div class="option-item">
                     Archive
-                </div>
-                <div @click="deleteLink"
-                     class="option-item">
-                    Delete
                 </div>
             </div>
         </div>
@@ -111,19 +100,6 @@
                     this.modal.body,
                     this.modal.btnClass,
                     'POST'
-                );
-            },
-            moveLink() {
-                this.modal.route = `link/move/${this.link.id}`;
-                this.modal.title = 'Choose a list';
-                this.modal.buttonText = "Move";
-                EventBus.$emit('toggle-selection-modal',
-                    this.modal.route,
-                    this.modal.title,
-                    this.modal.buttonText,
-                    this.link.id,
-                    'PUT',
-                    this.id,
                 );
             },
             toggleOptionsMenu() {
