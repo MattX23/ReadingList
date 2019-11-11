@@ -50,15 +50,15 @@
             }
         },
         created() {
-            EventBus.$on('toggle-modal', (route, title, buttonText, placeholder, method, id) => {
+            EventBus.$on('toggle-modal', (data) => {
                 this.clearErrors();
                 this.showModal = true;
-                this.route = route;
-                this.title = title;
-                this.buttonText = buttonText;
-                this.placeholder = placeholder;
-                this.method = method;
-                this.readingListId = id;
+                this.route = data.route;
+                this.title = data.title;
+                this.buttonText = data.buttonText;
+                this.placeholder = data.placeholder;
+                this.method = data.method;
+                this.readingListId = data.readingListId;
             });
             EventBus.$on('close-modal', () => {
                 this.closeModal();
