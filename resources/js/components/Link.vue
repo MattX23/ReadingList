@@ -94,17 +94,14 @@
                 this.showOptions = false;
             },
             deleteLink() {
-                this.modal.route = `link/delete/${this.link.id}`;
-                this.modal.buttonText = "Delete";
-                this.modal.body = `Are you sure you want to delete ${this.link.title}?`;
-                this.modal.btnClass = 'delete';
-                EventBus.$emit('toggle-confirmation-modal',
-                    this.modal.route,
-                    this.modal.buttonText,
-                    this.modal.body,
-                    this.modal.btnClass,
-                    'POST'
-                );
+                let data = {
+                    route: `link/delete/${this.link.id}`,
+                    body: `Are you sure you want to delete ${this.link.title}?`,
+                    buttonText: 'Delete',
+                    btnClass: 'delete',
+                    method: 'POST',
+                };
+                EventBus.$emit('toggle-confirmation-modal', data);
             },
             toggleOptionsMenu() {
                 if (this.showOptions) {
@@ -161,6 +158,7 @@
         font-size: 1rem;
         text-align: left;
         display: table;
+        word-break: break-word;
     }
     .options {
         position: relative;

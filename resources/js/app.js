@@ -26,7 +26,6 @@ Vue.component('login-form', require('./components/LoginForm.vue').default);
 Vue.component('reading-link', require('./components/Link.vue').default);
 Vue.component('reading-list', require('./components/ReadingList.vue').default);
 Vue.component('side-bar', require('./components/SideBar.vue').default);
-Vue.component('selection-modal', require('./components/SelectionModal.vue').default);
 Vue.component('single-input-modal', require('./components/SingleInputModal.vue').default);
 Vue.component('toggler', require('./components/NavBarToggler.vue').default);
 

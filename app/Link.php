@@ -37,6 +37,7 @@ class Link extends Model
     /**
      * @param Link      $link
      * @param string    $url
+     *
      * @return          Link|\Illuminate\Http\JsonResponse
      * @throws          \GuzzleHttp\Exception\GuzzleException
      */
@@ -62,7 +63,23 @@ class Link extends Model
     }
 
     /**
+     * @param Link $link
+     * @param string $url
+     *
+     * @return Link
+     */
+    public function generateDefaultMetaData(Link $link, string $url) : Link
+    {
+        $link->title = $url;
+        $link->description = 'No description found for this link...';
+        $link->image = '/images/icons/link-icon.png';
+
+        return $link;
+    }
+
+    /**
      * @param int           $readingList_id
+     *
      * @return              int
      */
     public function getNewLinkPosition(int $readingList_id) : int
@@ -85,6 +102,7 @@ class Link extends Model
 
     /**
      * @param Link $link
+     *
      * @param int $oldListId
      */
     public function redefinePositions(Link $link, int $oldListId)

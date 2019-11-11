@@ -26,7 +26,10 @@ class LinkController extends Controller
 
         if (!$link->validate($data)) return response()->json($link->validationErrors(), 422);
 
-        if (!$link->getPreview($link, $data['url'])) return response()->json('Link could not be saved', 422);;
+        if (!$link->getPreview($link, $data['url'])) {
+
+            $link->generateDefaultMetaData($link, $data['url']);
+        }
 
         $link->save();
 
