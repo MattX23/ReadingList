@@ -20,6 +20,10 @@
                 <div class="option-item">
                     Archive
                 </div>
+                <div @click="deleteLink"
+                     class="option-item">
+                    Delete
+                </div>
             </div>
         </div>
         <div class="col-12 footer">
