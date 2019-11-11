@@ -32,6 +32,7 @@ class ReadingListController extends Controller
     /**
      * @param  ReadingList  $readingList
      * @param  Request      $request
+     *
      * @return JsonResponse
      */
     public function edit(ReadingList $readingList, Request $request) : JsonResponse
@@ -80,6 +81,7 @@ class ReadingListController extends Controller
 
     /**
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function store(Request $request) : JsonResponse
@@ -105,6 +107,7 @@ class ReadingListController extends Controller
 
     /**
      * @param integer $id
+     *
      * @return JsonResponse
      */
     public function destroy(int $id) : JsonResponse
