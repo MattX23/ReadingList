@@ -14,4 +14,4 @@ Run `php artisan migrate`
 <b>Dependencies:</b>
 
 This project uses Guzzle to scrape link images, titles, and descriptions.<br><br>
-This project uses VueDraggable for drap and drop functionality between lists.
+This project uses VueDraggable for drag and drop functionality between lists.

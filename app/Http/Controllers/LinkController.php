@@ -11,6 +11,7 @@ class LinkController extends Controller
 {
     /**
      * @param Request $request
+     *
      * @return JsonResponse
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
@@ -48,10 +49,9 @@ class LinkController extends Controller
     /**
      * @param Link $link
      * @param Request $request
-     * @return JsonResponse
      * @throws Exception
      */
-    public function move(Link $link, Request $request) : JsonResponse
+    public function move(Link $link, Request $request)
     {
         $oldList = $link->readingList->id;
 
@@ -60,12 +60,11 @@ class LinkController extends Controller
         ]);
 
         (new Link())->redefinePositions($link, $oldList);
-
-        return response()->json("Link moved");
     }
 
     /**
      * @param Link $link
+     *
      * @return JsonResponse
      * @throws Exception
      */

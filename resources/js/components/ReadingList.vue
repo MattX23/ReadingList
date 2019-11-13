@@ -183,5 +183,6 @@
     }
     .reading-list-bar {
         margin-bottom: 15px;
+        overflow-x: scroll;
     }
 </style>
