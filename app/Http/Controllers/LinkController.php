@@ -21,7 +21,8 @@ class LinkController extends Controller
         $data = [
             'url'             => $request->name,
             'reading_list_id' => $request->id,
-            'position' => (new Link())->getNewLinkPosition($request->id),
+            'position'        => (new Link())->getNewLinkPosition($request->id),
+            'title'           => $request->name,
         ];
 
         $link = new Link($data);
