@@ -11,7 +11,7 @@
                 </div>
             </div>
             <div v-show="showOptions" class="options">
-                <div class="option-item">
+                <div class="option-item" @click="editTitle">
                     Change title
                 </div>
                 <div v-if="!wideScreen" class="option-item">
@@ -102,6 +102,17 @@
                     method: 'POST',
                 };
                 EventBus.$emit('toggle-confirmation-modal', data);
+            },
+            editTitle() {
+                let data = {
+                    route: `link/edit/${this.link.id}`,
+                    title: 'Edit link title',
+                    buttonText: 'Edit',
+                    placeholder: 'Add a new link name',
+                    textInput: this.link.title,
+                    method: 'PUT',
+                };
+                EventBus.$emit('toggle-modal', data);
             },
             toggleOptionsMenu() {
                 if (this.showOptions) {

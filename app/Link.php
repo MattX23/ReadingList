@@ -26,13 +26,13 @@ class Link extends Model
     public $rules = [
         'url'               => 'required|url',
         'reading_list_id'   => 'required|integer',
+        'title'             => 'required|string',
     ];
 
     public function readingList() : BelongsTo
     {
         return $this->belongsTo(ReadingList::class);
     }
-
 
     /**
      * @param Link      $link

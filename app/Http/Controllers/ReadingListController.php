@@ -10,9 +10,21 @@ use Illuminate\Support\Facades\Auth;
 
 class ReadingListController extends Controller
 {
+    /**
+     * @var string
+     */
     protected $name;
+
+    /**
+     * @var int
+     */
     protected $user_id;
 
+    /**
+     * ReadingListController constructor.
+     * @param string $name
+     * @param int|null $user_id
+     */
     public function __construct(string $name = '', int $user_id = null)
     {
         $this->name     = $name;
@@ -30,10 +42,11 @@ class ReadingListController extends Controller
     }
 
     /**
-     * @param  ReadingList  $readingList
-     * @param  Request      $request
+     * @param ReadingList $readingList
+     * @param Request $request
      *
      * @return JsonResponse
+     * @throws \ReflectionException
      */
     public function edit(ReadingList $readingList, Request $request) : JsonResponse
     {
@@ -44,9 +57,7 @@ class ReadingListController extends Controller
             'user_id'  => $user->id,
         ];
 
-        if (!$readingList->validate($data)) {
-            return response()->json($readingList->validationErrors(), 422);
-        }
+        if (!$readingList->validate($data)) return response()->json($readingList->validationErrors(), 422);
 
         $readingList->update($data);
 
@@ -83,6 +94,7 @@ class ReadingListController extends Controller
      * @param Request $request
      *
      * @return JsonResponse
+     * @throws \ReflectionException
      */
     public function store(Request $request) : JsonResponse
     {
@@ -96,9 +108,7 @@ class ReadingListController extends Controller
 
         $list = new ReadingList($data);
 
-        if (!$list->validate($data)) {
-            return response()->json($list->validationErrors(), 422);
-        }
+        if (!$list->validate($data)) return response()->json($list->validationErrors(), 422);
 
         $list->save();
 
