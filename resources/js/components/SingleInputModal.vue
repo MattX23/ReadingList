@@ -10,12 +10,13 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <input class="form-control"
+                        <input id="selection-modal-input"
+                               class="form-control"
                                type="text"
                                v-model="textInput"
                                :placeholder="placeholder"
                                @keydown="clearErrors"
-                               autofocus>
+                               @keyup.enter="submitModal">
                         <small v-if="error" class="text-danger">
                             {{ error }}
                         </small>
@@ -46,7 +47,7 @@
                 placeholder: '',
                 error: '',
                 readingListId: '',
-                method: '',
+                method: ''
             }
         },
         created() {
@@ -59,6 +60,10 @@
                 this.placeholder = data.placeholder;
                 this.method = data.method;
                 this.readingListId = data.readingListId;
+                this.textInput = data.textInput;
+                setTimeout(function() {
+                    document.getElementById("selection-modal-input").focus();
+                }, 0);
             });
             EventBus.$on('close-modal', () => {
                 this.closeModal();

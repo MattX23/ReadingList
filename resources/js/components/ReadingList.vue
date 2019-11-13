@@ -100,6 +100,7 @@
                     title: `Change list name - ${this.name}`,
                     buttonText: 'Edit',
                     placeholder: 'Enter new list name',
+                    textInput: this.name,
                     method: 'PUT',
                 };
                 EventBus.$emit('toggle-modal', data);

@@ -6,8 +6,17 @@ use Illuminate\Support\Facades\Validator;
 
 trait ValidationTrait {
 
+    /**
+     * @var
+     */
     public $errors;
 
+    /**
+     * @param $data
+     *
+     * @return bool
+     * @throws \ReflectionException
+     */
     public function validate($data) : bool {
         $Reflection = new \ReflectionClass(__CLASS__);
         $ReflectionClass = $Reflection->newInstance();

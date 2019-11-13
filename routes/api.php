@@ -23,11 +23,11 @@ Route::group([
     'as'=>'lists'
 ], function(){
     Route::post('/create', 'ReadingListController@store');
+    Route::delete('/delete/{id}', 'ReadingListController@destroy');
     Route::put('/edit/{readingList}', 'ReadingListController@edit');
+    Route::get('/get', 'ReadingListController@get');
     Route::put('/reorder', 'ReadingListController@reorderList');
     Route::put('/reorder-multiple', 'ReadingListController@reorderMultipleLists');
-    Route::get('/get', 'ReadingListController@get');
-    Route::delete('/delete/{id}', 'ReadingListController@destroy');
 });
 
 Route::group([
@@ -35,7 +35,8 @@ Route::group([
     'as'=>'link'
 ], function(){
     Route::post('/create', 'LinkController@store');
+    Route::post('/delete/{link}', 'LinkController@delete');
+    Route::put('/edit/{link}', 'LinkController@rename');
     Route::put('/move/{link}', 'LinkController@move');
     Route::put('/reorder', 'LinkController@reorderLinks');
-    Route::post('/delete/{link}', 'LinkController@delete');
 });
