@@ -11,8 +11,10 @@ class LinkController extends Controller
 {
     /**
      * @param Request $request
+     *
      * @return JsonResponse
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \ReflectionException
      */
     public function store(Request $request) : JsonResponse
     {
@@ -26,10 +28,7 @@ class LinkController extends Controller
 
         if (!$link->validate($data)) return response()->json($link->validationErrors(), 422);
 
-        if (!$link->getPreview($link, $data['url'])) {
-
-            $link->generateDefaultMetaData($link, $data['url']);
-        }
+        if (!$link->getPreview($link, $data['url'])) $link->generateDefaultMetaData($link, $data['url']);
 
         $link->save();
 
@@ -48,6 +47,7 @@ class LinkController extends Controller
     /**
      * @param Link $link
      * @param Request $request
+     *
      * @return JsonResponse
      * @throws Exception
      */
@@ -66,6 +66,7 @@ class LinkController extends Controller
 
     /**
      * @param Link $link
+     *
      * @return JsonResponse
      * @throws Exception
      */
@@ -74,5 +75,26 @@ class LinkController extends Controller
         $link->delete();
 
         return response()->json("Link deleted");
+    }
+
+    /**
+     * @param Link $link
+     * @param Request $request
+     *
+     * @return JsonResponse
+     * @throws \ReflectionException
+     */
+    public function rename(Link $link, Request $request) : JsonResponse
+    {
+        $link->title = $request->name;
+        $data = $link->toArray();
+
+        if (!$link->validate($data)) return response()->json($link->validationErrors(), 422);
+
+        $link->update([
+            'title' => $data['title'],
+        ]);
+
+        return response()->json("Link title updated");
     }
 }
