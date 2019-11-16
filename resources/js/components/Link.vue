@@ -172,15 +172,17 @@
         word-break: break-word;
     }
     .options {
-        position: relative;
+        position: absolute;
         border: 1px solid gray;
-        bottom: 0;
-        right: 1px;
-        background: rgba(244,244,244, 0.5);
+        bottom: -200px;
+        right: 45px;
+        background: rgba(244,244,244, 0.9);
         cursor: pointer;
-        border-radius: 15px 15px 0px 15px;
+        border-radius: 15px 0px 15px 15px;
         text-align: center;
         margin-top: 10px;
+        z-index: 9999;
+        min-width:200px;
     }
     .option-item {
         padding: 10px;
@@ -194,10 +196,10 @@
         color: white;
     }
     .option-item:hover:first-child {
-        border-radius: 13px 13px 0px 0px;
+        border-radius: 13px 0px 0px 0px;
     }
     .option-item:hover:last-child {
         background: darkred;
-        border-radius: 0px 0px 0px 13px;
+        border-radius: 0px 0px 13px 13px;
     }
 </style>
