@@ -33,6 +33,7 @@
                             :link="link"
                             :windowWidth="windowWidth"
                             :id="id"
+                            :numLinks="readingList.links.length"
                         >
                         </reading-link>
                     </div>

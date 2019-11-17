@@ -10,7 +10,7 @@
                     </div>
                 </div>
             </div>
-            <div v-show="showOptions" class="options">
+            <div v-show="showOptions" :class="optionsClass">
                 <div class="option-item" @click="editTitle">
                     Change title
                 </div>
@@ -65,6 +65,7 @@
             link: Object,
             windowWidth: Number,
             id: Number,
+            numLinks: Number,
         },
         data() {
             return {
@@ -83,11 +84,18 @@
             });
         },
         computed: {
-          wideScreen() {
-              if (this.windowWidth > 1445) {
-                  return true;
-              }
-          }
+            wideScreen() {
+                if (this.windowWidth > 1445) {
+                    return true;
+                }
+            },
+            optionsClass() {
+                let classList = 'options';
+                if (this.link.position === this.numLinks && this.numLinks > 1) {
+                    classList += ' options-last';
+                }
+                return classList;
+            },
         },
         methods: {
             closeOptions() {
@@ -184,6 +192,11 @@
         z-index: 9999;
         min-width:200px;
     }
+    .options-last {
+        bottom: -19px;
+        right: 40px;
+        border-radius: 15px 15px 0px 15px;
+    }
     .option-item {
         padding: 10px;
         border-bottom: 1px solid gray;
@@ -201,5 +214,12 @@
     .option-item:hover:last-child {
         background: darkred;
         border-radius: 0px 0px 13px 13px;
+    }
+    .options-last .option-item:hover:first-child {
+        border-radius: 13px 13px 0px 0px;
+    }
+    .options-last .option-item:hover:last-child {
+        background: darkred;
+        border-radius: 0px 0px 0px 13px;
     }
 </style>
