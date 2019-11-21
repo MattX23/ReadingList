@@ -11,14 +11,20 @@
                 </div>
             </div>
             <div v-show="showOptions" :class="optionsClass">
-                <div class="option-item" @click="editTitle">
+                <div v-if="!archived"
+                     class="option-item"
+                     @click="editTitle">
                     Change title
                 </div>
-                <div v-if="!wideScreen" class="option-item">
+                <div v-if="!wideScreen && !archived" class="option-item">
                     Share
                 </div>
-                <div class="option-item">
+                <div @click="archiveLink"
+                     v-if="!archived" class="option-item">
                     Archive
+                </div>
+                <div v-if="archived" class="option-item">
+                    Add back to list
                 </div>
                 <div @click="deleteLink"
                      class="option-item">
@@ -27,7 +33,13 @@
             </div>
         </div>
         <div class="col-12 footer">
-            <div class="row">
+            <div class="row text-right" v-if="archived">
+                <div class="col">
+                    <button class="btn btn-sm btn-success">Add back to list</button>
+                    <button @click="deleteLink" class="btn btn-sm btn-danger">Delete</button>
+                </div>
+            </div>
+            <div class="row" v-if="!archived">
                 <div class="col">
                     <img src="/images/icons/email.png" class="footer-icon">
                 </div>
@@ -76,6 +88,7 @@
                     body: '',
                     btnClass: '',
                 },
+                archived: !!this.link.deleted_at,
             }
         },
         created() {
@@ -100,6 +113,16 @@
         methods: {
             closeOptions() {
                 this.showOptions = false;
+            },
+            archiveLink() {
+                let data = {
+                    route: `link/archive/${this.link.id}`,
+                    body: `Are you sure you want to archive ${this.link.title}?`,
+                    buttonText: 'Archive',
+                    btnClass: 'primary',
+                    method: 'POST',
+                };
+                EventBus.$emit('toggle-confirmation-modal', data);
             },
             deleteLink() {
                 let data = {

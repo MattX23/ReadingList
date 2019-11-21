@@ -34,7 +34,7 @@
 </template>
 
 <script>
-    import { EventBus } from '../eventbus/event-bus.js';
+    import { EventBus } from '../../eventbus/event-bus.js';
 
     export default {
         data() {
@@ -85,7 +85,6 @@
                     name: this.textInput,
                     id: this.readingListId,
                 };
-
                 axios({
                     method: this.method,
                     url: `/api/${this.route}`,

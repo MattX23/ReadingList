@@ -10,6 +10,17 @@ use Illuminate\Http\Request;
 class LinkController extends Controller
 {
     /**
+     * @return JsonResponse
+     * @throws Exception
+     */
+    public function getArchives() : JsonResponse
+    {
+        $links = Link::onlyTrashed()->orderByDesc('deleted_at')->get();
+
+        return response()->json($links);
+    }
+
+    /**
      * @param Request $request
      *
      * @return JsonResponse
@@ -47,6 +58,33 @@ class LinkController extends Controller
 
     /**
      * @param Link $link
+     *
+     * @return JsonResponse
+     * @throws Exception
+     */
+    public function archive(Link $link) : JsonResponse
+    {
+        $link->delete();
+
+        return response()->json("Link archived");
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return JsonResponse
+     */
+    public function delete(int $id) : JsonResponse
+    {
+        $link = Link::withTrashed()->find($id);
+
+        $link->forceDelete();
+
+        return response()->json("Link permanently deleted");
+    }
+
+    /**
+     * @param Link $link
      * @param Request $request
      * @throws Exception
      */
@@ -59,19 +97,6 @@ class LinkController extends Controller
         ]);
 
         (new Link())->redefinePositions($link, $oldList);
-    }
-
-    /**
-     * @param Link $link
-     *
-     * @return JsonResponse
-     * @throws Exception
-     */
-    public function delete(Link $link) : JsonResponse
-    {
-        $link->delete();
-
-        return response()->json("Link deleted");
     }
 
     /**

@@ -186,5 +186,6 @@
     .reading-list-bar {
         margin-bottom: 15px;
         overflow-x: scroll;
+        min-height: 500px;
     }
 </style>

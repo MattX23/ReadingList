@@ -3,7 +3,8 @@
         <div class="side-bar">
             <div class="menu-item"
                  @click.stop="newList">New List</div>
-            <div class="menu-item">Archives</div>
+            <div class="menu-item"
+                 @click.stop="openArchives">Archives</div>
             <div class="menu-item"
                  @click="logout">Logout</div>
         </div>
@@ -11,7 +12,7 @@
 </template>
 
 <script>
-    import { EventBus } from '../eventbus/event-bus.js';
+    import { EventBus } from '../../eventbus/event-bus.js';
 
     export default {
         data() {
@@ -47,6 +48,11 @@
                 };
                 EventBus.$emit('toggle-modal', data);
             },
+            openArchives() {
+                this.closeSideBar();
+                EventBus.$emit('re-render');
+                EventBus.$emit('toggle-archive-modal');
+            }
         }
     }
 </script>

@@ -6,11 +6,12 @@ use App\Traits\ValidationTrait;
 use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Config;
 
 class Link extends Model
 {
-    use ValidationTrait;
+    use ValidationTrait, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
