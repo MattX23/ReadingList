@@ -13,6 +13,8 @@ class Link extends Model
 {
     use ValidationTrait, SoftDeletes;
 
+    const DEFAULT_IMAGE = '/images/icons/link-icon.png';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -53,12 +55,11 @@ class Link extends Model
 
             $link->title = $metaData->title;
             $link->description = $metaData->description;
-            $link->image = $metaData->image;
+            $link->image = $metaData->image ? $metaData->image : self::DEFAULT_IMAGE;
 
             return $link;
         }
         catch (\Exception $e) {
-
             return null;
         }
     }
@@ -73,7 +74,7 @@ class Link extends Model
     {
         $link->title = $url;
         $link->description = 'No description found for this link...';
-        $link->image = '/images/icons/link-icon.png';
+        $link->image = self::DEFAULT_IMAGE;
 
         return $link;
     }
