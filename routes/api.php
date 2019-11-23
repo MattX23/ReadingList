@@ -34,9 +34,12 @@ Route::group([
     'prefix'=>'link',
     'as'=>'link'
 ], function(){
+    Route::get('/archives', 'LinkController@getArchives');
     Route::post('/create', 'LinkController@store');
-    Route::post('/delete/{link}', 'LinkController@delete');
+    Route::post('/archive/{link}', 'LinkController@archive');
+    Route::post('/delete/{id}', 'LinkController@delete');
     Route::put('/edit/{link}', 'LinkController@rename');
     Route::put('/move/{link}', 'LinkController@move');
     Route::put('/reorder', 'LinkController@reorderLinks');
+    Route::put('/restore/{id}', 'LinkController@restore');
 });

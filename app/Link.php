@@ -6,11 +6,12 @@ use App\Traits\ValidationTrait;
 use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Config;
 
 class Link extends Model
 {
-    use ValidationTrait;
+    use ValidationTrait, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -41,7 +42,7 @@ class Link extends Model
      * @return          Link|\Illuminate\Http\JsonResponse
      * @throws          \GuzzleHttp\Exception\GuzzleException
      */
-    public function getPreview(Link $link, string $url) : ?Link
+    public function getPreview(Link $link, string $url): ?Link
     {
         try {
             $client = new Client();
@@ -68,7 +69,7 @@ class Link extends Model
      *
      * @return Link
      */
-    public function generateDefaultMetaData(Link $link, string $url) : Link
+    public function generateDefaultMetaData(Link $link, string $url): Link
     {
         $link->title = $url;
         $link->description = 'No description found for this link...';

@@ -4,18 +4,26 @@
             <div @click.stop="doNothing" class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Please Confirm</h5>
+                        <h5 class="modal-title">Archives</h5>
                         <button @click.stop="closeModal" type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        {{ body }}
+                        <div v-for="link in links"
+                             :key="link.id">
+                            <reading-link
+                                :link="link"
+                                :id="link.id"
+                            >
+                            </reading-link>
+                        </div>
+                        <div v-if="!links.length">
+                            <p>There is nothing saved in your archives.</p>
+                        </div>
                     </div>
                     <div class="modal-footer">
-                        <button :class="btnClass"
-                                v-text="buttonText"
-                                @click="submitModal"></button>
+
                     </div>
                 </div>
             </div>
@@ -24,30 +32,22 @@
 </template>
 
 <script>
-    import { EventBus } from '../eventbus/event-bus.js';
+    import { EventBus } from '../../eventbus/event-bus.js';
 
     export default {
         data() {
             return {
                 showModal: false,
-                route: '',
-                method: '',
-                buttonText: '',
-                textInput: '',
-                body: '',
-                btnClass: 'btn btn-success',
+                links: {},
             }
         },
         created() {
-            EventBus.$on('toggle-confirmation-modal', (data) => {
-                this.showModal = true;
-                this.route = data.route;
-                this.buttonText = data.buttonText;
-                this.body = data.body;
-                this.method = data.method;
-                if (data.btnClass === 'delete') {
-                    this.btnClass = 'btn btn-danger';
-                }
+            EventBus.$on('toggle-archive-modal', () => {
+                axios.get('/api/link/archives')
+                .then((response) => {
+                    this.links = response.data;
+                    this.showModal = true;
+                })
             });
             EventBus.$on('close-modal', () => {
                 this.closeModal();
@@ -59,22 +59,6 @@
             },
             doNothing() {
                 return null;
-            },
-            submitModal() {
-                axios({
-                    method: this.method,
-                    url: `/api/${this.route}`,
-                    data: {},
-                })
-                .then((response) => {
-                    EventBus.$emit('close-modal');
-                    EventBus.$emit('re-render');
-                    EventBus.$emit('flash', response.data, 'success');
-                })
-                .catch((error) => {
-                    EventBus.$emit('close-modal');
-                    EventBus.$emit('flash', error.response.data, 'danger');
-                })
             },
         }
     }
@@ -90,5 +74,9 @@
         height: 100%;
         background-color: rgba(0, 0, 0, .5);
         transition: opacity .3s ease;
+    }
+    .modal-body {
+        max-height: 500px;
+        overflow-y: scroll;
     }
 </style>

@@ -22,6 +22,7 @@ class ReadingListController extends Controller
 
     /**
      * ReadingListController constructor.
+     *
      * @param string $name
      * @param int|null $user_id
      */
@@ -78,8 +79,14 @@ class ReadingListController extends Controller
      */
     public function reorderMultipleLists(Request $request)
     {
-        $i = 1;
         $list_id = $request->id;
+
+        $oldList = ReadingList::find($list_id);
+
+        if ($oldList->name === ReadingList::RESTORED_LIST &&
+            count($oldList->links) < 1) ReadingList::destroy($oldList->id);
+
+        $i = 1;
 
         foreach ($request->links as $link) {
             Link::where('id', '=', $link['id'])->update([
@@ -124,8 +131,26 @@ class ReadingListController extends Controller
     {
         if (!ReadingList::find($id)->links()->exists())
 
-        if (ReadingList::destroy($id)) return response()->json("List deleted");
+        if (ReadingList::destroy($id)) {
+            $this->reorderListsAfterDelete();
+
+            return response()->json("List deleted");
+        }
 
         return response()->json('List not empty', 422);
+    }
+
+    protected function reorderListsAfterDelete()
+    {
+        $lists = ReadingList::all()->sortBy('position');
+
+        $i = 1;
+
+        foreach ($lists as $list) {
+            $list->update([
+               'position' => $i
+            ]);
+            $i++;
+        }
     }
 }

@@ -131,7 +131,10 @@
                 axios.put('/api/link/reorder', order);
             },
             reorderMultipleLists() {
-                axios.put('/api/lists/reorder-multiple', this.readingList);
+                axios.put('/api/lists/reorder-multiple', this.readingList)
+                    .then(() => {
+                        EventBus.$emit('re-render');
+                    });
             },
             showEditMenu() {
                 this.showMenu = true;
@@ -186,5 +189,6 @@
     .reading-list-bar {
         margin-bottom: 15px;
         overflow-x: scroll;
+        min-height: 500px;
     }
 </style>
