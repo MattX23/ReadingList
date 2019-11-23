@@ -35,8 +35,10 @@
         <div class="col-12 footer">
             <div class="row text-right" v-if="archived">
                 <div class="col">
-                    <button class="btn btn-sm btn-success">Add back to list</button>
-                    <button @click="deleteLink" class="btn btn-sm btn-danger">Delete</button>
+                    <button @click="reAddLink"
+                            class="btn btn-sm btn-success">Add back to list</button>
+                    <button @click="deleteLink"
+                            class="btn btn-sm btn-danger">Delete</button>
                 </div>
             </div>
             <div class="row" v-if="!archived">
@@ -111,9 +113,6 @@
             },
         },
         methods: {
-            closeOptions() {
-                this.showOptions = false;
-            },
             archiveLink() {
                 let data = {
                     route: `link/archive/${this.link.id}`,
@@ -123,6 +122,9 @@
                     method: 'POST',
                 };
                 EventBus.$emit('toggle-confirmation-modal', data);
+            },
+            closeOptions() {
+                this.showOptions = false;
             },
             deleteLink() {
                 let data = {
@@ -144,6 +146,14 @@
                     method: 'PUT',
                 };
                 EventBus.$emit('toggle-modal', data);
+            },
+            reAddLink() {
+                axios.put(`/api/link/restore/${this.link.id}`)
+                    .then((response) => {
+                        EventBus.$emit('close-modal');
+                        EventBus.$emit('re-render');
+                        EventBus.$emit('flash', response.data, 'success');
+                    })
             },
             toggleOptionsMenu() {
                 if (this.showOptions) {

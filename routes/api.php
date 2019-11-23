@@ -41,4 +41,5 @@ Route::group([
     Route::put('/edit/{link}', 'LinkController@rename');
     Route::put('/move/{link}', 'LinkController@move');
     Route::put('/reorder', 'LinkController@reorderLinks');
+    Route::put('/restore/{id}', 'LinkController@restore');
 });

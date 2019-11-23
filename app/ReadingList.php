@@ -34,12 +34,12 @@ class ReadingList extends Model
      */
     protected $with = ['links'];
 
-    public function user() : BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function links() : HasMany
+    public function links(): HasMany
     {
         return $this->hasMany(Link::class)->orderBy('position');
     }

@@ -42,7 +42,7 @@ class Link extends Model
      * @return          Link|\Illuminate\Http\JsonResponse
      * @throws          \GuzzleHttp\Exception\GuzzleException
      */
-    public function getPreview(Link $link, string $url) : ?Link
+    public function getPreview(Link $link, string $url): ?Link
     {
         try {
             $client = new Client();
@@ -69,7 +69,7 @@ class Link extends Model
      *
      * @return Link
      */
-    public function generateDefaultMetaData(Link $link, string $url) : Link
+    public function generateDefaultMetaData(Link $link, string $url): Link
     {
         $link->title = $url;
         $link->description = 'No description found for this link...';

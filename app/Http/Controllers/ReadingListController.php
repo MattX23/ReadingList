@@ -22,6 +22,7 @@ class ReadingListController extends Controller
 
     /**
      * ReadingListController constructor.
+     *
      * @param string $name
      * @param int|null $user_id
      */
@@ -124,8 +125,26 @@ class ReadingListController extends Controller
     {
         if (!ReadingList::find($id)->links()->exists())
 
-        if (ReadingList::destroy($id)) return response()->json("List deleted");
+        if (ReadingList::destroy($id)) {
+            $this->reorderListsAfterDelete();
+
+            return response()->json("List deleted");
+        }
 
         return response()->json('List not empty', 422);
+    }
+
+    protected function reorderListsAfterDelete()
+    {
+        $lists = ReadingList::all()->sortBy('position');
+
+        $i = 1;
+
+        foreach ($lists as $list) {
+            $list->update([
+               'position' => $i
+            ]);
+            $i++;
+        }
     }
 }
