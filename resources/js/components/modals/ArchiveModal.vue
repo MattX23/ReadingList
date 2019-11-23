@@ -10,12 +10,16 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <div v-for="link in links" :key="link.id">
+                        <div v-for="link in links"
+                             :key="link.id">
                             <reading-link
                                 :link="link"
                                 :id="link.id"
                             >
                             </reading-link>
+                        </div>
+                        <div v-if="!links.length">
+                            <p>There is nothing saved in your archives.</p>
                         </div>
                     </div>
                     <div class="modal-footer">

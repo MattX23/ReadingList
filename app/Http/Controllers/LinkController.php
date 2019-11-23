@@ -8,12 +8,9 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class LinkController extends Controller
 {
-    const RESTORED_LIST = 'Restored Links';
-
     /**
      * @param Link $link
      *
@@ -25,22 +22,6 @@ class LinkController extends Controller
         $link->delete();
 
         return response()->json("Link archived");
-    }
-
-    /**
-     * @return ReadingList
-     */
-    protected function createRestoredLinksList(): ReadingList
-    {
-        $readingList = new ReadingList([
-            'name'     => self::RESTORED_LIST,
-            'user_id'  => Auth::user()->id,
-            'position' => count(Auth::user()->readingLists) + 1
-        ]);
-
-        $readingList->save();
-
-        return $readingList;
     }
 
     /**
@@ -69,23 +50,12 @@ class LinkController extends Controller
     }
 
     /**
-     * @return array
-     */
-    protected function getReadingListIds(): array
-    {
-        return DB::table('reading_lists')
-            ->where('user_id', '=', Auth::user()->id)
-            ->pluck('id')
-            ->toArray();
-    }
-
-    /**
      * @return ReadingList|null
      */
     protected function getRestoredList(): ?ReadingList
     {
         return ReadingList::where('user_id', '=', Auth::user()->id)
-            ->where('name', '=', self::RESTORED_LIST)
+            ->where('name', '=', ReadingList::RESTORED_LIST)
             ->first();
     }
 
@@ -143,17 +113,17 @@ class LinkController extends Controller
     {
         $link = Link::withTrashed()->find($id);
 
-        $readingListIds = $this->getReadingListIds();
+        $readingListIds = (new ReadingList())->getReadingListIds();
 
         if (!in_array($link->reading_list_id, $readingListIds)) {
             $restoredList = $this->getRestoredList();
 
-            if ($restoredList) $this->updateReadingList($link, $restoredList->id);
+            if ($restoredList) (new ReadingList())->updateReadingList($link, $restoredList->id);
 
             if (!$restoredList) {
-                $readingList = $this->createRestoredLinksList();
+                $readingList = (new ReadingList())->createRestoredLinksList();
 
-                $this->updateReadingList($link, $readingList->id);
+                (new ReadingList())->updateReadingList($link, $readingList->id);
             }
         }
 
@@ -187,16 +157,5 @@ class LinkController extends Controller
         $link->save();
 
         return response()->json("Link added");
-    }
-
-    /**
-     * @param Link $link
-     * @param int $id
-     */
-    protected function updateReadingList(Link $link, int $id)
-    {
-        $link->update([
-            'reading_list_id' => $id
-        ]);
     }
 }

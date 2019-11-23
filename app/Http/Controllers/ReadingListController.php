@@ -79,8 +79,14 @@ class ReadingListController extends Controller
      */
     public function reorderMultipleLists(Request $request)
     {
-        $i = 1;
         $list_id = $request->id;
+
+        $oldList = ReadingList::find($list_id);
+
+        if ($oldList->name === ReadingList::RESTORED_LIST &&
+            count($oldList->links) < 1) ReadingList::destroy($oldList->id);
+
+        $i = 1;
 
         foreach ($request->links as $link) {
             Link::where('id', '=', $link['id'])->update([
