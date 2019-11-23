@@ -41,25 +41,7 @@
                             class="btn btn-sm btn-danger">Delete</button>
                 </div>
             </div>
-            <div class="row" v-if="!archived">
-                <div class="col">
-                    <img src="/images/icons/email.png" class="footer-icon">
-                </div>
-                <div class="col">
-                    <img src="/images/icons/archive.png" class="footer-icon">
-                </div>
-                <div class="col">
-                    <img src="/images/icons/calendar.png" class="footer-icon">
-                </div>
-                <div class="col" v-if="wideScreen">
-                    <img src="/images/icons/facebook.png" class="footer-icon">
-                </div>
-                <div class="col" v-if="wideScreen">
-                    <img src="/images/icons/twitter.png" class="footer-icon">
-                </div>
-                <div class="col">
-                    <img src="/images/icons/view.png" class="footer-icon">
-                </div>
+            <div class="row text-right" v-if="!archived">
                 <div class="col">
                     <img src="/images/icons/options.png"
                          @click.stop="toggleOptionsMenu"
@@ -183,6 +165,7 @@
     }
     .footer-icon {
         max-width: 1.5rem;
+        margin-right: 15px;
         cursor: pointer;
     }
     .img-block {
