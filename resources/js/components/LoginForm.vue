@@ -157,6 +157,14 @@
                     this.errors.passwordConfirm = 'Your passwords do not match';
                 }
             },
+            clearAllErrors() {
+                this.errors = {
+                    email: '',
+                    password: '',
+                    passwordConfirm: '',
+                    username: '',
+                }
+            },
             clearError(input) {
                 if (input === 'email') {
                     this.errors.email = '';
@@ -193,6 +201,7 @@
                 }
             },
             switchType() {
+                this.clearAllErrors();
                 if (!this.register) {
                     this.register = true;
                     this.passwordPlaceHolder = 'Choose a password';
