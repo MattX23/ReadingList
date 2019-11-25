@@ -15,16 +15,14 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         factory(User::class, 10)->create()->each(function ($user) {
-            factory(ReadingList::class, 2)
-                ->create([
+            factory(ReadingList::class, 2)->create([
                     'user_id'  => $user->id,
-                ])->each(function ($readingList) {
-                    factory(Link::class, 5)
-                        ->create([
-                            'reading_list_id' => $readingList->id,
-                        ]);
-                });
+            ])->each(function ($readingList) {
+                factory(Link::class, 5)->create([
+                        'reading_list_id' => $readingList->id,
+                ]);
             });
+        });
 
         $users = User::all();
 
