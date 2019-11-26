@@ -14,7 +14,7 @@ class AlterReadingListsTableAddPositionColumn extends Migration
     public function up()
     {
         Schema::table('reading_lists', function (Blueprint $table) {
-            $table->integer('position')->unsigned()->after('name');
+            $table->integer('position')->unsigned()->nullable()->after('name');
         });
     }
 

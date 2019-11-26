@@ -14,7 +14,7 @@ class AlterLinksTableAddPositionColumn extends Migration
     public function up()
     {
         Schema::table('links', function (Blueprint $table) {
-            $table->integer('position')->unsigned()->after('reading_list_id');
+            $table->integer('position')->unsigned()->nullable()->after('reading_list_id');
         });
     }
 

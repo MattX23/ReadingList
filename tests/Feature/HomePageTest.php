@@ -3,10 +3,13 @@
 namespace Tests\Feature;
 
 use App\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class HomePageTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function testHomePageRedirectsToLoginWhenNotLoggedIn()
     {
         $response = $this->get(route('home'));
