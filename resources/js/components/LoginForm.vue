@@ -149,13 +149,15 @@
                 }
             },
             checkPasswordConfirmation() {
-                if (
-                    this.user.password &&
-                    this.user.passwordConfirm.length < 1
-                ) {
-                    this.errors.passwordConfirm = 'You must confirm your password';
-                } else if (this.user.passwordConfirm !== this.user.password) {
-                    this.errors.passwordConfirm = 'Your passwords do not match';
+                if (this.register) {
+                    if (
+                        this.user.password &&
+                        this.user.passwordConfirm.length < 1
+                    ) {
+                        this.errors.passwordConfirm = 'You must confirm your password';
+                    } else if (this.user.passwordConfirm !== this.user.password) {
+                        this.errors.passwordConfirm = 'Your passwords do not match';
+                    }
                 }
             },
             clearAllErrors() {
