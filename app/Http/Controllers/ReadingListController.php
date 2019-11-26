@@ -48,9 +48,12 @@ class ReadingListController extends Controller
      *
      * @return JsonResponse
      * @throws \ReflectionException
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function edit(ReadingList $readingList, Request $request) : JsonResponse
     {
+        $this->authorize('edit', $readingList);
+
         $user = Auth::user();
 
         $data = [

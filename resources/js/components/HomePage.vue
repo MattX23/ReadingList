@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="container-fluid reading-list-container" @click="closeMenus">
+        <div v-if="loaded" class="container-fluid reading-list-container" @click="closeMenus">
             <div v-if="readingLists.length < 1" class="card">
                 <div class="card-body text-center">
                     You have no ReadingLists saved yet. <br><br>
@@ -36,6 +36,7 @@
             return {
                 readingLists: [],
                 windowWidth: window.innerWidth,
+                loaded: false,
             }
         },
         mounted() {
@@ -65,6 +66,7 @@
                 axios.get('/api/lists/get')
                 .then((response) => {
                     this.readingLists = response.data.readingLists;
+                    this.loaded = true;
                 });
             },
             reorderReadingLists(order) {
