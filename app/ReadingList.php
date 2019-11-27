@@ -50,9 +50,10 @@ class ReadingList extends Model
 
     /**
      * @param User $user
+     *
      * @return int
      */
-    public function getNewReadingListPosition(User $user) : int
+    public function getNewReadingListPosition(User $user): int
     {
         return ReadingList::where('user_id', '=', $user->id)->count() + 1;
     }
@@ -60,7 +61,7 @@ class ReadingList extends Model
     /**
      * @param array $ids
      */
-    public function reorderLists(array $ids)
+    public function reorderLists(array $ids): void
     {
         for ($i = 0; $i < sizeof($ids); $i++) {
             ReadingList::where('id', '=', $ids[$i])
@@ -101,7 +102,7 @@ class ReadingList extends Model
      * @param Link $link
      * @param int $id
      */
-    public function updateReadingList(Link $link, int $id)
+    public function updateReadingList(Link $link, int $id): void
     {
         $link->update([
             'reading_list_id' => $id

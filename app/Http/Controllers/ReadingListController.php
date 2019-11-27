@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Link;
 use App\ReadingList;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use ReflectionException;
 
 class ReadingListController extends Controller
 {
@@ -33,13 +35,24 @@ class ReadingListController extends Controller
     }
 
     /**
+     * @param integer $id
+     *
      * @return JsonResponse
+     * @throws AuthorizationException
      */
-    public function get() : JsonResponse
+    public function destroy(int $id): JsonResponse
     {
-        $readingLists = Auth::user()->readingLists;
+        $this->authorize('delete', ReadingList::find($id));
 
-        return response()->json(['readingLists' => $readingLists]);
+        if (!ReadingList::find($id)->links()->exists())
+
+            if (ReadingList::destroy($id)) {
+                $this->reorderListsAfterDelete();
+
+                return response()->json("List deleted");
+            }
+
+        return response()->json('List not empty', 422);
     }
 
     /**
@@ -47,10 +60,10 @@ class ReadingListController extends Controller
      * @param Request $request
      *
      * @return JsonResponse
-     * @throws \ReflectionException
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws ReflectionException
+     * @throws AuthorizationException
      */
-    public function edit(ReadingList $readingList, Request $request) : JsonResponse
+    public function edit(ReadingList $readingList, Request $request): JsonResponse
     {
         $this->authorize('edit', $readingList);
 
@@ -69,44 +82,22 @@ class ReadingListController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @return JsonResponse
      */
-    public function reorderList(Request $request)
+    public function get(): JsonResponse
     {
-        $ids = $request->toArray();
-        (new ReadingList())->reorderLists($ids);
-    }
+        $readingLists = Auth::user()->readingLists;
 
-    /**
-     * @param Request $request
-     */
-    public function reorderMultipleLists(Request $request)
-    {
-        $list_id = $request->id;
-
-        $oldList = ReadingList::find($list_id);
-
-        if ($oldList->name === ReadingList::RESTORED_LIST &&
-            count($oldList->links) < 1) ReadingList::destroy($oldList->id);
-
-        $i = 1;
-
-        foreach ($request->links as $link) {
-            Link::where('id', '=', $link['id'])->update([
-                'position'        => $i,
-                'reading_list_id' => $list_id,
-            ]);
-            $i++;
-        }
+        return response()->json(['readingLists' => $readingLists]);
     }
 
     /**
      * @param Request $request
      *
      * @return JsonResponse
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
-    public function store(Request $request) : JsonResponse
+    public function store(Request $request): JsonResponse
     {
         $user = Auth::user();
 
@@ -126,24 +117,15 @@ class ReadingListController extends Controller
     }
 
     /**
-     * @param integer $id
-     *
-     * @return JsonResponse
+     * @param Request $request
      */
-    public function destroy(int $id) : JsonResponse
+    public function reorderList(Request $request): void
     {
-        if (!ReadingList::find($id)->links()->exists())
-
-        if (ReadingList::destroy($id)) {
-            $this->reorderListsAfterDelete();
-
-            return response()->json("List deleted");
-        }
-
-        return response()->json('List not empty', 422);
+        $ids = $request->toArray();
+        (new ReadingList())->reorderLists($ids);
     }
 
-    protected function reorderListsAfterDelete()
+    protected function reorderListsAfterDelete(): void
     {
         $lists = ReadingList::all()->sortBy('position');
 
@@ -152,6 +134,29 @@ class ReadingListController extends Controller
         foreach ($lists as $list) {
             $list->update([
                'position' => $i
+            ]);
+            $i++;
+        }
+    }
+
+    /**
+     * @param Request $request
+     */
+    public function reorderMultipleLists(Request $request): void
+    {
+        $list_id = $request->id;
+
+        $oldList = ReadingList::find($list_id);
+
+        if ($oldList->name === ReadingList::RESTORED_LIST &&
+            count($oldList->links) < 1) ReadingList::destroy($oldList->id);
+
+        $i = 1;
+
+        foreach ($request->links as $link) {
+            Link::where('id', '=', $link['id'])->update([
+                'position'        => $i,
+                'reading_list_id' => $list_id,
             ]);
             $i++;
         }
