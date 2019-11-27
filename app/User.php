@@ -43,12 +43,12 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function readingLists() : HasMany
+    public function readingLists(): HasMany
     {
         return $this->hasMany(ReadingList::class)->orderBy('position');
     }
 
-    public static function checkIfEmailExists(string $email) : ?bool
+    public static function checkIfEmailExists(string $email): ?bool
     {
         if (User::where('email', $email)->first()) {
             return true;

@@ -15,6 +15,26 @@ class ReadingListController extends Controller
     /**
      * @var string
      */
+    const DELETED_SUCCESS_MESSAGE = "List deleted";
+
+    /**
+     * @var string
+     */
+    const DELETED_FAILED_MESSAGE = "List not empty";
+
+    /**
+     * @var string
+     */
+    const UPDATED_SUCCESS_MESSAGE = "List name updated";
+
+    /**
+     * @var string
+     */
+    const CREATED_SUCCESS_MESSAGE = "New list created";
+
+    /**
+     * @var string
+     */
     protected $name;
 
     /**
@@ -40,7 +60,7 @@ class ReadingListController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function destroy(int $id): JsonResponse
+    public function delete(int $id): JsonResponse
     {
         $this->authorize('delete', ReadingList::find($id));
 
@@ -49,10 +69,10 @@ class ReadingListController extends Controller
             if (ReadingList::destroy($id)) {
                 $this->reorderListsAfterDelete();
 
-                return response()->json("List deleted");
+                return response()->json(self::DELETED_SUCCESS_MESSAGE);
             }
 
-        return response()->json('List not empty', 422);
+        return response()->json(self::DELETED_FAILED_MESSAGE, 422);
     }
 
     /**
@@ -78,7 +98,7 @@ class ReadingListController extends Controller
 
         $readingList->update($data);
 
-        return response()->json("List name updated");
+        return response()->json(self::UPDATED_SUCCESS_MESSAGE);
     }
 
     /**
@@ -113,7 +133,7 @@ class ReadingListController extends Controller
 
         $list->save();
 
-        return response()->json("New list created");
+        return response()->json(self::CREATED_SUCCESS_MESSAGE);
     }
 
     /**

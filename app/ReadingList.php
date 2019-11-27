@@ -31,6 +31,10 @@ class ReadingList extends Model
         'user_id'   => 'required|integer',
     ];
 
+    protected $casts = [
+        'user_id' => 'integer'
+    ];
+
     /**
      * The relationships that should always be loaded.
      *
