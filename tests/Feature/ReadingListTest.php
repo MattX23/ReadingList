@@ -17,13 +17,7 @@ class ReadingListTest extends TestCase
     {
         $user = factory(User::class)->create();
 
-        $anotherUser = factory(User::class)->create();
-
-        $anotherUser->each(function ($anotherUser) {
-            factory(ReadingList::class, 2)->create([
-                'user_id' => $anotherUser->id,
-            ]);
-        });
+        $anotherUser = $this->createUserAndReadingLists(2);
 
         $readingList = $anotherUser->readingLists->first();
 
@@ -36,13 +30,7 @@ class ReadingListTest extends TestCase
 
     public function testUserCanEditOwnReadingList()
     {
-        $user = factory(User::class)->create();
-
-        $user->each(function ($user) {
-            factory(ReadingList::class, 2)->create([
-                'user_id' => $user->id,
-            ]);
-        });
+        $user = $this->createUserAndReadingLists(2);
 
         $readingList = $user->readingLists->first();
 
@@ -57,13 +45,7 @@ class ReadingListTest extends TestCase
     {
         $user = factory(User::class)->create();
 
-        $anotherUser = factory(User::class)->create();
-
-        $anotherUser->each(function ($anotherUser) {
-            factory(ReadingList::class, 2)->create([
-                'user_id' => $anotherUser->id,
-            ]);
-        });
+        $anotherUser = $this->createUserAndReadingLists(2);
 
         $readingList = $anotherUser->readingLists->first();
 
@@ -74,13 +56,7 @@ class ReadingListTest extends TestCase
 
     public function testUserCanDeleteOwnReadingList()
     {
-        $user = factory(User::class)->create();
-
-        $user->each(function ($user) {
-            factory(ReadingList::class, 2)->create([
-                'user_id' => $user->id,
-            ]);
-        });
+        $user = $this->createUserAndReadingLists(2);
 
         $readingList = $user->readingLists->first();
 
@@ -89,15 +65,9 @@ class ReadingListTest extends TestCase
             ->assertStatus(200);
     }
 
-    public function testDeleteReadingList()
+    public function testUserCanDeleteReadingList()
     {
-        $user = factory(User::class)->create();
-
-        $user->each(function ($user) {
-            factory(ReadingList::class, 2)->create([
-                'user_id' => $user->id,
-            ]);
-        });
+        $user = $this->createUserAndReadingLists(2);
 
         $numLists = count(ReadingList::where('user_id', $user->id)->get());
 
@@ -114,15 +84,9 @@ class ReadingListTest extends TestCase
         $this->assertEquals($response->getData(), ReadingListController::DELETED_SUCCESS_MESSAGE);
     }
 
-    public function testEditReadingList()
+    public function testUserCanEditReadingList()
     {
-        $user = factory(User::class)->create();
-
-        $user->each(function ($user) {
-            factory(ReadingList::class, 2)->create([
-                'user_id' => $user->id,
-            ]);
-        });
+        $user = $this->createUserAndReadingLists(2);
 
         $readingList = $user->readingLists->first();
 
@@ -141,7 +105,7 @@ class ReadingListTest extends TestCase
         $this->assertEquals($response->getData(), ReadingListController::UPDATED_SUCCESS_MESSAGE);
     }
 
-    public function testStoreReadingList()
+    public function testUserCanStoreReadingList()
     {
         $user = factory(User::class)->create();
 
@@ -157,5 +121,73 @@ class ReadingListTest extends TestCase
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals($response->getData(), ReadingListController::CREATED_SUCCESS_MESSAGE);
+    }
+
+    public function testReorderingOfList()
+    {
+        $user = $this->createUserAndReadingLists(5);
+
+        $lists = $user->readingLists;
+
+        $i = 1;
+
+        foreach ($lists as $list) {
+            $list->update([
+                'position' => $i
+            ]);
+            $i++;
+        }
+
+        $positions = $user->readingLists->pluck('position')->toArray();
+
+        $this->assertEquals([1,2,3,4,5], $positions);
+
+        $model = new ReadingList();
+
+        $this->actingAs($user);
+
+        $ids = (new ReadingList())->getReadingListIds();
+
+        $model->reorderLists(array_reverse($ids));
+
+        $user->readingLists->each(function($readingList){
+            $readingList->refresh();
+        });
+
+        $positions = $user->readingLists->pluck('position')->toArray();
+
+        $this->assertEquals([5,4,3,2,1], $positions);
+    }
+
+    public function testNewReadingListPositionedCorrectly()
+    {
+        $user = $this->createUserAndReadingLists(3);
+
+        $model = new ReadingList();
+
+        $newReadingList = factory(ReadingList::class)->create([
+            'user_id'  => $user->id,
+            'position' => $model->getNewReadingListPosition($user),
+        ]);
+
+        $this->assertEquals(count($user->readingLists), $newReadingList->position);
+    }
+
+    /**
+     * @param int $numLists
+     *
+     * @return User
+     */
+    protected function createUserAndReadingLists(int $numLists): User
+    {
+        $user = factory(User::class)->create();
+
+        $user->each(function ($user) use ($numLists) {
+            factory(ReadingList::class, $numLists)->create([
+                'user_id' => $user->id,
+            ]);
+        });
+
+        return $user;
     }
 }
