@@ -33,8 +33,7 @@ class LoginAndRegisterTest extends TestCase
 
         $this->actingAs($user)
             ->post(route('logout'))
-            ->assertStatus(302)
-            ->assertRedirect(route('login'));
+            ->assertStatus(302);
     }
 
     public function testLoginRouteRedirectsToHomePageWhenLoggedIn()

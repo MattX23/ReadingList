@@ -96,7 +96,7 @@
                     EventBus.$emit('flash', response.data, 'success');
                 })
                 .catch((error) => {
-                    this.error = error.response.data;
+                    this.error = error.response.status === 403 ? error.response.data.message : error.response.data;
                 })
             },
         }

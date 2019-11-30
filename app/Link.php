@@ -128,4 +128,15 @@ class Link extends Model
             'position' => $newPosition,
         ]);
     }
+
+    /**
+     * @param Link $link
+     * @param int $id
+     */
+    public function updateReadingList(Link $link, int $id): void
+    {
+        $link->update([
+            'reading_list_id' => $id
+        ]);
+    }
 }
