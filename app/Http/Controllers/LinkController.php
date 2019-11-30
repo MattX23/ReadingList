@@ -118,12 +118,12 @@ class LinkController extends Controller
         if (!in_array($link->reading_list_id, $readingListIds)) {
             $restoredList = $this->getRestoredList();
 
-            if ($restoredList) (new ReadingList())->updateReadingList($link, $restoredList->id);
+            if ($restoredList) (new Link())->updateReadingList($link, $restoredList->id);
 
             if (!$restoredList) {
                 $readingList = (new ReadingList())->createRestoredLinksList();
 
-                (new ReadingList())->updateReadingList($link, $readingList->id);
+                (new Link())->updateReadingList($link, $readingList->id);
             }
         }
 

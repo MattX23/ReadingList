@@ -115,15 +115,13 @@ class ReadingListTest extends TestCase
 
         $this->actingAs($user);
 
-        $controller = new ReadingListController();
-
-        $response = $controller->store($request);
+        $response = (new ReadingListController())->store($request);
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals($response->getData(), ReadingListController::CREATED_SUCCESS_MESSAGE);
     }
 
-    public function testReorderingOfList()
+    public function testReorderingOfLists()
     {
         $user = $this->createUserAndReadingLists(5);
 
@@ -171,6 +169,21 @@ class ReadingListTest extends TestCase
         ]);
 
         $this->assertEquals(count($user->readingLists), $newReadingList->position);
+    }
+
+    public function testCreateRestoredLinksList()
+    {
+        $user = $this->createUserAndReadingLists(3);
+
+        $this->actingAs($user);
+
+        $readingList = (new ReadingList())->createRestoredLinksList();
+
+        $user->refresh();
+
+        $this->assertEquals($user->id, $readingList->user_id);
+        $this->assertEquals(ReadingList::RESTORED_LIST, $readingList->name);
+        $this->assertEquals(count($user->readingLists), $readingList->position);
     }
 
     /**
