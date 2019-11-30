@@ -1,2 +1,10 @@
-- name: Laravel PHPUnit
-  uses: nathanheffley/laravel-phpunit-action@v0.1.0
+name: Tests
+on: [push]
+
+jobs:
+  phpunit:
+    name: PHPUnit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: nathanheffley/laravel-phpunit-action@master
