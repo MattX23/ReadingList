@@ -1,6 +1,6 @@
 <template>
     <div class="reading-list-bar">
-        <div class="card">
+        <div :class="[card, !noListItems ? emptyClass : '']">
             <div @mouseover="showEditMenu"
                  @mouseout="hideEditMenu"
                  class="card-header text-center">
@@ -26,8 +26,7 @@
                 <draggable v-model="readingList.links"
                            group="readingList.links"
                            @start="drag=true"
-                           @end="endDrag"
-                >
+                           @end="endDrag">
                     <div v-for="link in readingList.links" :key="link.id">
                         <reading-link
                             :link="link"
@@ -39,12 +38,6 @@
                     </div>
                 </draggable>
             </div>
-
-            <div v-if="readingList.links.length < 1"
-                 class="card-body">
-                You haven't saved anything in this list yet. To add something, click the plus symbol.
-            </div>
-
             <input type="hidden" v-model="checkForListChanges">
         </div>
     </div>
@@ -69,6 +62,8 @@
                 showOptions: false,
                 showMenu: false,
                 noItems: this.readingList.links.length,
+                card: "card",
+                emptyClass: "empty-bar",
             }
         },
         computed: {
@@ -81,7 +76,7 @@
                     this.reorderMultipleLists();
                     return true;
                 }
-            },
+            }
         },
         methods: {
             addURL() {
@@ -154,7 +149,7 @@
     }
     .card {
         border: none;
-        max-height: 630px;
+        max-height: 85vh;
         background: rgba(255,255,255,0.3);
     }
     .card-body {
@@ -177,6 +172,10 @@
         margin-top: 5px;
         margin-right: -30px;
     }
+    .empty-bar {
+        background: rgba(255,255,255,.5);
+        height: 100%;
+    }
     .delete-list-icon {
         width: 35px;
         margin-left: 25px;
@@ -189,6 +188,6 @@
     .reading-list-bar {
         margin-bottom: 15px;
         overflow-x: scroll;
-        min-height: 500px;
+        min-height: 85vh;
     }
 </style>
