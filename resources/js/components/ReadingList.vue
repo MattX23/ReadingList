@@ -1,6 +1,9 @@
 <template>
     <div class="reading-list-bar">
-        <div :class="[card, !noListItems ? emptyClass : '']">
+        <draggable v-model="readingList.links"
+                   group="readingList.links"
+                   :class="[card, !noListItems ? emptyClass : '']"
+                   draggable="false">
             <div @mouseover="showEditMenu"
                  @mouseout="hideEditMenu"
                  class="card-header text-center">
@@ -39,7 +42,7 @@
                 </draggable>
             </div>
             <input type="hidden" v-model="checkForListChanges">
-        </div>
+        </draggable>
     </div>
 </template>
 

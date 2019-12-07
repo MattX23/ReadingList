@@ -16,9 +16,6 @@
                      @click="editTitle">
                     Change title
                 </div>
-                <div v-if="!wideScreen && !archived" class="option-item">
-                    Share
-                </div>
                 <div @click="archiveLink"
                      v-if="!archived" class="option-item">
                     Archive
@@ -198,7 +195,7 @@
     .options {
         position: absolute;
         border: 1px solid gray;
-        bottom: -200px;
+        top: 7em;
         right: 45px;
         background: rgba(244,244,244, 0.9);
         cursor: pointer;
@@ -209,7 +206,7 @@
         min-width:200px;
     }
     .options-last {
-        bottom: -19px;
+        top: -2em;
         right: 40px;
         border-radius: 15px 15px 0px 15px;
     }
