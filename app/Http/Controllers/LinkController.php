@@ -19,6 +19,8 @@ class LinkController extends Controller
      */
     public function archive(Link $link): JsonResponse
     {
+        $this->authorize('archive', $link);
+
         $link->delete();
 
         return response()->json("Link archived");
@@ -28,10 +30,13 @@ class LinkController extends Controller
      * @param int $id
      *
      * @return JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function delete(int $id): JsonResponse
     {
         $link = Link::withTrashed()->find($id);
+
+        $this->authorize('forceDelete', $link);
 
         $link->forceDelete();
 
@@ -45,6 +50,8 @@ class LinkController extends Controller
     protected function getArchives(): JsonResponse
     {
         $links = Link::onlyTrashed()->orderByDesc('deleted_at')->get();
+
+        if (count($links) > 0) $this->authorize('viewArchives', $links->first());
 
         return response()->json($links);
     }
@@ -68,6 +75,8 @@ class LinkController extends Controller
     {
         $oldList = $link->readingList->id;
 
+        $this->authorize('move', $link);
+
         $link->update([
             'reading_list_id' => $request->newListId,
         ]);
@@ -81,9 +90,12 @@ class LinkController extends Controller
      *
      * @return JsonResponse
      * @throws \ReflectionException
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     protected function rename(Link $link, Request $request): JsonResponse
     {
+        $this->authorize('rename', $link);
+
         $link->title = $request->name;
         $data = $link->toArray();
 
@@ -106,12 +118,16 @@ class LinkController extends Controller
     }
 
     /**
-     * @param  int           $id
+     * @param int $id
+     *
      * @return JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     protected function restore(int $id): JsonResponse
     {
         $link = Link::withTrashed()->find($id);
+
+        $this->authorize('restore', $link);
 
         $readingListIds = (new ReadingList())->getReadingListIds();
 
@@ -138,9 +154,12 @@ class LinkController extends Controller
      * @return JsonResponse
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \ReflectionException
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     protected function store(Request $request): JsonResponse
     {
+        $this->authorize('store', Link::class);
+
         $data = [
             'url'             => $request->name,
             'reading_list_id' => $request->id,
