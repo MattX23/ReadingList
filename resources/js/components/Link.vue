@@ -11,17 +11,13 @@
                 </div>
             </div>
             <div v-show="showOptions" :class="optionsClass">
-                <div v-if="!archived"
-                     class="option-item"
+                <div class="option-item"
                      @click="editTitle">
                     Change title
                 </div>
                 <div @click="archiveLink"
-                     v-if="!archived" class="option-item">
+                     class="option-item">
                     Archive
-                </div>
-                <div v-if="archived" class="option-item">
-                    Add back to list
                 </div>
                 <div @click="deleteLink"
                      class="option-item">
