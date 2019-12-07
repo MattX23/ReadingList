@@ -14,13 +14,13 @@
                       @click.stop="deleteList">
                     <img src="/images/icons/trash-icon.jpg" alt="" class="list-icon delete-list-icon">
                 </span>
-                <h3>{{ name }}
+                <h5>{{ name }}
                     <span class="add-link"
                           title="Add a link"
                           @click.stop="addURL">
                         +
                     </span>
-                </h3>
+                </h5>
             </div>
             <div>
                 <draggable v-model="readingList.links"
@@ -139,7 +139,7 @@
 </script>
 
 <style type="scss" scoped>
-    h3 {
+    h5 {
         margin: 0;
     }
     .add-link {
@@ -160,8 +160,9 @@
         position: -webkit-sticky;
         position: sticky;
         top: 0;
-        background: white;
+        background: rgba(0,0,0,0.25);
         z-index: 999;
+        color: white;
     }
     .list-icon {
         float: left;
