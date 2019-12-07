@@ -14,9 +14,9 @@ class ReadingListPolicy
      * @param User        $user
      * @param ReadingList $readingList
      *
-     * @return bool|null
+     * @return bool
      */
-    public function edit(User $user, ReadingList $readingList): ?bool
+    public function edit(User $user, ReadingList $readingList): bool
     {
         return $user->id === $readingList->user_id;
     }
@@ -25,9 +25,9 @@ class ReadingListPolicy
      * @param User        $user
      * @param ReadingList $readingList
      *
-     * @return bool|null
+     * @return bool
      */
-    public function delete(User $user, ReadingList $readingList): ?bool
+    public function delete(User $user, ReadingList $readingList): bool
     {
         return $user->id === $readingList->user_id;
     }
