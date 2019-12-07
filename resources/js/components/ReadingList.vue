@@ -160,13 +160,13 @@
         margin-left: 1rem;
     }
     i {
-        border: solid white;
+        border: solid black;
         border-width: 0 3px 3px 0;
         display: inline-block;
         padding: 3px;
         float: right;
         position: relative;
-        bottom: 1.4rem;
+        bottom: 1.5rem;
         right: 10px;
         cursor: pointer;
     }
@@ -188,10 +188,10 @@
         position: -webkit-sticky;
         position: sticky;
         top: 0;
-        background: rgba(0,0,0,0.25);
+        background: rgba(255,255,255,0.65);
         z-index: 999;
-        color: white;
-        padding: 10px 0px;
+        color: black;
+        padding: 15px 0px 10px 0px
     }
     .down {
         transform: rotate(45deg);
