@@ -178,7 +178,7 @@
         max-width: 100px;
         float: left;
         padding-right: 5px;
-        border-radius: 20px;
+        border-radius: 10px;
         padding-left: 3px;
         margin-right: 5px;
     }
@@ -214,7 +214,7 @@
         border-bottom: none;
     }
     .option-item:hover {
-        background: gray;
+        background: cornflowerblue;
         color: white;
     }
     .option-item:hover:first-child {

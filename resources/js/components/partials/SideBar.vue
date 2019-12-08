@@ -67,22 +67,18 @@
         cursor: pointer;
     }
     .menu-item:hover {
-        background: silver;
+        background: cornflowerblue;
         color: white;
-    }
-    .menu-item:hover:last-child {
-        border-radius: 0px 0px 15px 15px;
     }
     .side-bar {
         width: 400px;
         position: fixed;
-        right: 5px;
+        right: -2px;
         top: 55px;
         z-index: 999;
-        background: gainsboro;
+        background: rgba(250, 250, 250, 0.9);
         border: 2px solid gray;
         border-top: 0px;
-        border-radius: 0px 0px 15px 15px;
     }
     .side-bar-container {
         position: fixed;

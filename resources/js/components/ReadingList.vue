@@ -136,7 +136,12 @@
                 this.showMenu = false;
             },
             openListMenu() {
-                this.showListOptions = true;
+                if (this.showListOptions) {
+                    EventBus.$emit('close-options');
+                } else {
+                    EventBus.$emit('close-options');
+                    this.showListOptions = !this.showListOptions;
+                }
             },
             reorderLinks(order) {
                 axios.put('/api/link/reorder', order);
@@ -238,7 +243,7 @@
         color: black;
     }
     .option-item:hover {
-        background: gray;
+        background: cornflowerblue;
         color: white;
     }
     .option-item:last-child {
