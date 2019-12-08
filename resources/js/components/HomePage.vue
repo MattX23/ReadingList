@@ -4,7 +4,7 @@
             <div v-if="readingLists.length < 1" class="card">
                 <div class="card-body text-center">
                     You have no ReadingLists saved yet. <br><br>
-                    To add one, click the arrow in the navbar abd then select "New List".
+                    To add one, click the arrow in the navbar and then select "New List".
                 </div>
             </div>
             <draggable class="row" v-model="readingLists"
