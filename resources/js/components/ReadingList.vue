@@ -7,23 +7,23 @@
             <div @mouseover="showEditMenu"
                  @mouseout="hideEditMenu"
                  class="card-header text-center">
-                <span title="Edit list name"
-                      v-show="showMenu"
-                      @click.stop="editListName">
-                    <img src="/images/icons/pencil-icon.png" alt="" class="list-icon edit-list-icon">
-                </span>
-                <span title="Delete list"
-                      v-show="showMenu"
-                      @click.stop="deleteList">
-                    <img src="/images/icons/trash-icon.jpg" alt="" class="list-icon delete-list-icon">
-                </span>
-                <h3>{{ name }}
+                <h5>{{ name }}
                     <span class="add-link"
                           title="Add a link"
                           @click.stop="addURL">
-                        +
                     </span>
-                </h3>
+                </h5>
+                <span @click.stop="openListMenu"><i class="arrow down"></i></span>
+                <div v-show="showListOptions" class="options">
+                    <div class="option-item"
+                         @click.stop="editListName">
+                        Change title
+                    </div>
+                    <div class="option-item"
+                         @click.stop="deleteList">
+                        Delete List
+                    </div>
+                </div>
             </div>
             <div>
                 <draggable v-model="readingList.links"
@@ -35,8 +35,7 @@
                             :link="link"
                             :windowWidth="windowWidth"
                             :id="id"
-                            :numLinks="readingList.links.length"
-                        >
+                            :numLinks="readingList.links.length">
                         </reading-link>
                     </div>
                 </draggable>
@@ -67,6 +66,7 @@
                 noItems: this.readingList.links.length,
                 card: "card",
                 emptyClass: "empty-bar",
+                showListOptions: false,
             }
         },
         computed: {
@@ -81,6 +81,11 @@
                 }
             }
         },
+        created() {
+            EventBus.$on('close-options', () => {
+                this.closeOptions();
+            });
+        },
         methods: {
             addURL() {
                 let data = {
@@ -93,7 +98,11 @@
                 };
                 EventBus.$emit('toggle-modal', data);
             },
+            closeOptions() {
+                this.showListOptions = false;
+            },
             editListName() {
+                this.closeOptions();
                 let data = {
                     route: `lists/edit/${this.id}`,
                     title: `Change list name - ${this.name}`,
@@ -105,6 +114,7 @@
                 EventBus.$emit('toggle-modal', data);
             },
             deleteList() {
+                this.closeOptions();
                 let data = {
                     route: `lists/delete/${this.id}`,
                     buttonText: 'Delete',
@@ -125,6 +135,9 @@
             hideEditMenu() {
                 this.showMenu = false;
             },
+            openListMenu() {
+                this.showListOptions = true;
+            },
             reorderLinks(order) {
                 axios.put('/api/link/reorder', order);
             },
@@ -142,8 +155,20 @@
 </script>
 
 <style type="scss" scoped>
-    h3 {
-        margin: 0;
+    h5 {
+        width: 90%;
+        margin-left: 1rem;
+    }
+    i {
+        border: solid black;
+        border-width: 0 3px 3px 0;
+        display: inline-block;
+        padding: 3px;
+        float: right;
+        position: relative;
+        bottom: 1.5rem;
+        right: 10px;
+        cursor: pointer;
     }
     .add-link {
         float: right;
@@ -163,8 +188,14 @@
         position: -webkit-sticky;
         position: sticky;
         top: 0;
-        background: white;
+        background: rgba(255,255,255,0.65);
         z-index: 999;
+        color: black;
+        padding: 15px 0px 10px 0px
+    }
+    .down {
+        transform: rotate(45deg);
+        -webkit-transform: rotate(45deg);
     }
     .list-icon {
         float: left;
@@ -187,6 +218,38 @@
     }
     .hidden {
         visibility: hidden;
+    }
+    .options {
+        position: absolute;
+        border: 1px solid gray;
+        top: 1.25em;
+        right: 15px;
+        background: rgba(244,244,244, 0.9);
+        cursor: pointer;
+        border-radius: 15px 0px 15px 15px;
+        text-align: center;
+        margin-top: 10px;
+        z-index: 9999;
+        min-width:200px;
+    }
+    .option-item {
+        padding: 10px;
+        border-bottom: 1px solid gray;
+        color: black;
+    }
+    .option-item:hover {
+        background: gray;
+        color: white;
+    }
+    .option-item:last-child {
+        border-bottom: none;
+    }
+    .option-item:hover:first-child {
+        border-radius: 13px 0px 0px 0px;
+    }
+    .option-item:hover:last-child {
+        background: darkred;
+        border-radius: 0px 0px 13px 13px;
     }
     .reading-list-bar {
         margin-bottom: 15px;
