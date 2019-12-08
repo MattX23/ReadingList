@@ -240,6 +240,8 @@
                         location.href = '/home';
                     })
                     .catch((error) => {
+                        if (error.response.status === 403) location.href = '/email/verify';
+
                         const errors = error.response.data.errors;
                         if (errors.email) {
                             this.errors.email = errors.email[0];
