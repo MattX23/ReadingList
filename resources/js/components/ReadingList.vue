@@ -196,7 +196,7 @@
         position: -webkit-sticky;
         position: sticky;
         top: 0;
-        background: $white-medium-transparency;
+        background: $white;
         z-index: 999;
         color: black;
         padding: 15px 0px 10px 0px
