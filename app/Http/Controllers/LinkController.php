@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\Auth;
 
 class LinkController extends Controller
 {
+    const ARCHIVED_SUCCESS_MESSAGE = 'Link archived';
+    const DELETED_SUCCESS_MESSAGE = 'Link permanently deleted';
+
     /**
      * @param Link $link
      *
@@ -23,7 +26,7 @@ class LinkController extends Controller
 
         $link->delete();
 
-        return response()->json("Link archived");
+        return response()->json(self::ARCHIVED_SUCCESS_MESSAGE);
     }
 
     /**
@@ -40,7 +43,7 @@ class LinkController extends Controller
 
         $link->forceDelete();
 
-        return response()->json("Link permanently deleted");
+        return response()->json(self::DELETED_SUCCESS_MESSAGE);
     }
 
     /**
@@ -71,7 +74,7 @@ class LinkController extends Controller
      * @param Request $request
      * @throws Exception
      */
-    protected function move(Link $link, Request $request)
+    public function move(Link $link, Request $request)
     {
         $oldList = $link->readingList->id;
 
