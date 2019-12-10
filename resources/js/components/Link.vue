@@ -142,16 +142,18 @@
     }
 </script>
 
-<style type="scss" scoped>
+<style lang="scss" scoped>
+    @import '../../sass/variables';
+
     .card-body {
-        border-bottom: 1px solid silver;
-        background: white;
+        border-bottom: 1px solid $silver;
+        background: $white;
         position: relative;
         padding: 10px;
     }
     .footer {
-        border: 1px solid silver;
-        background: lightgray;
+        border: 1px solid $silver;
+        background: $lightgray;
         margin-bottom: 10px;
         padding: 5px 10px;
         text-align: center;
@@ -190,10 +192,10 @@
     }
     .options {
         position: absolute;
-        border: 1px solid gray;
+        border: 1px solid $gray;
         top: 7em;
         right: 45px;
-        background: rgba(244,244,244, 0.9);
+        background: $off-white-high-transparency;
         cursor: pointer;
         border-radius: 15px 0px 15px 15px;
         text-align: center;
@@ -208,14 +210,14 @@
     }
     .option-item {
         padding: 10px;
-        border-bottom: 1px solid gray;
+        border-bottom: 1px solid $gray;
     }
     .option-item:last-child {
         border-bottom: none;
     }
     .option-item:hover {
-        background: cornflowerblue;
-        color: white;
+        background: $blue;
+        color: $white;
     }
     .option-item:hover:first-child {
         border-radius: 13px 0px 0px 0px;
@@ -228,7 +230,7 @@
         border-radius: 13px 13px 0px 0px;
     }
     .options-last .option-item:hover:last-child {
-        background: darkred;
+        background: $darkred;
         border-radius: 0px 0px 0px 13px;
     }
 </style>
