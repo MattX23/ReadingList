@@ -17,12 +17,6 @@
                 state: false,
             }
         },
-        mounted() {
-
-        },
-        computed: {
-
-        },
         methods: {
             toggleSideBar() {
                 EventBus.$emit('toggle-sidebar', this.state);

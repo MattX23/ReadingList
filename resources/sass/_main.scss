@@ -1,5 +1,6 @@
 #app {
-    background: url(/images/forest-background.jpg) no-repeat center center fixed;
+    font-family: $font-family-sans-serif;
+    background: url($background-image) no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     background-size: cover;

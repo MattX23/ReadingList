@@ -64,7 +64,9 @@
     }
 </script>
 
-<style type="scss" scoped>
+<style lang="scss" scoped>
+    @import '../../../sass/variables';
+
     .custom-modal {
         position: fixed;
         z-index: 9998;
@@ -72,7 +74,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, .5);
+        background-color: $black-medium-transparency;
         transition: opacity .3s ease;
     }
     .modal-body {

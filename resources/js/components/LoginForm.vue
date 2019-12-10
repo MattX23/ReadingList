@@ -262,9 +262,11 @@
     }
 </script>
 
-<style type="text/css">
+<style lang="scss" scoped>
+    @import '../../sass/variables';
+
     .card-footer {
-        background: white;
+        background: $white;
     }
     .input-type-selector {
         margin-top: 10px;
@@ -275,7 +277,7 @@
     .login-input {
         height: 50px;
         border: 0px;
-        border-bottom: 1px solid slategray;
+        border-bottom: 1px solid $slategray;
         border-radius: 0px;
     }
 </style>
