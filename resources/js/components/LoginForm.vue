@@ -216,6 +216,7 @@
                 }
             },
             submitForm() {
+                this.clearAllErrors();
                 this.checkEmptyEmail();
                 this.checkEmptyPassword();
                 this.checkEmptyUsername();
