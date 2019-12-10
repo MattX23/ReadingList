@@ -2,21 +2,24 @@
 $body-bg: #f8fafc;
 
 // Typography
-$font-family-sans-serif: 'Nunito', sans-serif;
+$font-family-sans-serif: 'Work Sans', sans-serif;
 $font-size-base: 0.9rem;
 $line-height-base: 1.6;
 
 // Colors
-$blue: #3490dc;
-$indigo: #6574cd;
-$purple: #9561e2;
-$pink: #f66d9b;
-$red: #e3342f;
-$orange: #f6993f;
-$yellow: #ffed4a;
-$green: #38c172;
-$teal: #4dc0b5;
-$cyan: #6cb2eb;
+$black: #000;
+$black-medium-transparency: rgba(0, 0, 0, .5);
+$blue: #3490DC;
+$darkred: #8B0000;
+$gray: #D1D1D1;
+$lightgray: #D3D3D3;
+$off-white-high-transparency: rgba(244,244,244, 0.9);
+$off-white-medium-transparency: rgba(244,244,244, 0.6);
+$slategray: #708090;
+$silver: #C0C0C0;
+$white: #FFF;
+$white-low-transparency: rgba(255,255,255,0.3);
+$white-medium-transparency: rgba(255,255,255,0.65);
 
 // Images
 $background-image: '/images/forest-background.jpg';

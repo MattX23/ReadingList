@@ -57,18 +57,20 @@
     }
 </script>
 
-<style type="scss" scoped>
+<style lang="scss" scoped>
+    @import '../../../sass/variables';
+
     .menu-item {
         font-size: 1.15rem;
         text-align: center;
-        border-top: 1px solid silver;
+        border-top: 1px solid $silver;
         padding-top: 0.25rem;
         line-height: 3.5rem;
         cursor: pointer;
     }
     .menu-item:hover {
-        background: cornflowerblue;
-        color: white;
+        background: $blue;
+        color: $white;
     }
     .side-bar {
         width: 400px;
@@ -76,8 +78,8 @@
         right: -2px;
         top: 55px;
         z-index: 999;
-        background: rgba(250, 250, 250, 0.9);
-        border: 2px solid gray;
+        background: $off-white-high-transparency;
+        border: 2px solid $gray;
         border-top: 0px;
     }
     .side-bar-container {
@@ -87,7 +89,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, .5);
+        background-color: $black-medium-transparency;
         -webkit-transition: opacity .3s ease;
         transition: opacity .3s ease;
     }

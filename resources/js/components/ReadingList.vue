@@ -159,13 +159,16 @@
     }
 </script>
 
-<style type="scss" scoped>
+<style lang="scss" scoped>
+    @import '../../sass/variables';
+
     h5 {
+        color: $blue;
         width: 90%;
         margin-left: 1rem;
     }
     i {
-        border: solid black;
+        border: solid $black;
         border-width: 0 3px 3px 0;
         display: inline-block;
         padding: 3px;
@@ -183,17 +186,17 @@
     .card {
         border: none;
         max-height: 85vh;
-        background: rgba(255,255,255,0.3);
+        background: $white-low-transparency;
     }
     .card-body {
-        background: white;
+        background: $white;
     }
     .card-header {
         height: 50px;
         position: -webkit-sticky;
         position: sticky;
         top: 0;
-        background: rgba(255,255,255,0.65);
+        background: $white-medium-transparency;
         z-index: 999;
         color: black;
         padding: 15px 0px 10px 0px
@@ -212,7 +215,7 @@
         margin-right: -30px;
     }
     .empty-bar {
-        background: rgba(255,255,255,.5);
+        background: $white-medium-transparency;
         height: 100%;
     }
     .delete-list-icon {
@@ -226,10 +229,10 @@
     }
     .options {
         position: absolute;
-        border: 1px solid gray;
+        border: 1px solid $gray;
         top: 1.25em;
         right: 15px;
-        background: rgba(244,244,244, 0.9);
+        background: $off-white-high-transparency;
         cursor: pointer;
         border-radius: 15px 0px 15px 15px;
         text-align: center;
@@ -239,12 +242,12 @@
     }
     .option-item {
         padding: 10px;
-        border-bottom: 1px solid gray;
-        color: black;
+        border-bottom: 1px solid $gray;
+        color: $black;
     }
     .option-item:hover {
-        background: cornflowerblue;
-        color: white;
+        background: $blue;
+        color: $white;
     }
     .option-item:last-child {
         border-bottom: none;
