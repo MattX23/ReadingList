@@ -12,6 +12,6 @@ $factory->define(Link::class, function (Faker $faker) {
         'url'             => $faker->url,
         'image'           => $faker->imageUrl(400, 240),
         'description'     => $faker->paragraph,
-        'title'           => $faker->sentence
+        'title'           => 'Link Title'
     ];
 });
