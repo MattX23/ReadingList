@@ -38,7 +38,8 @@ class LinkTest extends TestCase
             ->put(route('link.edit', $link), [
                 'name'  => 'New Name',
             ])
-            ->assertStatus(200);
+            ->assertStatus(200)
+            ->assertSee(LinkController::EDITED_SUCCESS_MESSAGE);
     }
 
     public function testUserCannotArchiveAnotherUsersLink()
@@ -128,6 +129,60 @@ class LinkTest extends TestCase
         $controller->move($link, $request);
 
         $this->assertEquals( 2, $secondList->id);
+    }
+
+    public function testLinkIsRestored()
+    {
+        $user = $this->createUserWithListsAndLinks(1, 5);
+
+        $this->actingAs($user);
+
+        $link = $user->readingLists()->first()->links->first();
+
+        $this->post(route('link.archive', $link));
+
+        $this->put(route('link.restore', $link->id))
+            ->assertStatus(200)
+            ->assertSee(LinkController::RESTORED_SUCCESS_MESSAGE);
+    }
+
+    public function testUserCanStoreLink()
+    {
+        $user = (new ReadingListTest())->createUserAndReadingLists(1);
+
+        $this->actingAs($user);
+
+        $request = Request::create(route('link.create'), 'POST',[
+            'name'              => 'http://www.example.com/',
+            'id'                => $user->readingLists()->first()->id,
+            'title'             => 'http://www.example.com/',
+        ]);
+
+        $controller = new LinkController();
+
+        $response = $controller->store($request);
+
+        $this->assertEquals( 1, count($user->readingLists()->first()->links));
+        $this->assertEquals( 200, $response->getStatusCode());
+    }
+
+    public function testUserCannotStoreMalformedLink()
+    {
+        $user = (new ReadingListTest())->createUserAndReadingLists(1);
+
+        $this->actingAs($user);
+
+        $request = Request::create(route('link.create'), 'POST',[
+            'name'              => 'ww.example.dfom/',
+            'id'                => $user->readingLists()->first()->id,
+            'title'             => 'http://www.example.com/',
+        ]);
+
+        $controller = new LinkController();
+
+        $response = $controller->store($request);
+
+        $this->assertEquals(422, $response->getStatusCode());
     }
 
     /**

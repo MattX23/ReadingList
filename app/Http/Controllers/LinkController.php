@@ -13,6 +13,9 @@ class LinkController extends Controller
 {
     const ARCHIVED_SUCCESS_MESSAGE = 'Link archived';
     const DELETED_SUCCESS_MESSAGE = 'Link permanently deleted';
+    const EDITED_SUCCESS_MESSAGE = 'Link title updated';
+    const RESTORED_SUCCESS_MESSAGE = 'Link restored';
+    const SAVED_SUCCESS_MESSAGE = 'Link added';
 
     /**
      * @param Link $link
@@ -108,7 +111,7 @@ class LinkController extends Controller
             'title' => $data['title'],
         ]);
 
-        return response()->json("Link title updated");
+        return response()->json(self::EDITED_SUCCESS_MESSAGE);
     }
 
     /**
@@ -148,7 +151,7 @@ class LinkController extends Controller
 
         $link->restore();
 
-        return response()->json("Link restored");
+        return response()->json(self::RESTORED_SUCCESS_MESSAGE);
     }
 
     /**
@@ -159,10 +162,8 @@ class LinkController extends Controller
      * @throws \ReflectionException
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    protected function store(Request $request): JsonResponse
+    public function store(Request $request): JsonResponse
     {
-        $this->authorize('store', Link::class);
-
         $data = [
             'url'             => $request->name,
             'reading_list_id' => $request->id,
@@ -178,6 +179,6 @@ class LinkController extends Controller
 
         $link->save();
 
-        return response()->json("Link added");
+        return response()->json(self::SAVED_SUCCESS_MESSAGE);
     }
 }
