@@ -150,39 +150,28 @@ class LinkTest extends TestCase
     {
         $user = (new ReadingListTest())->createUserAndReadingLists(1);
 
-        $this->actingAs($user);
-
-        $request = Request::create(route('link.create'), 'POST',[
-            'name'              => 'http://www.example.com/',
-            'id'                => $user->readingLists()->first()->id,
-            'title'             => 'http://www.example.com/',
-        ]);
-
-        $controller = new LinkController();
-
-        $response = $controller->store($request);
-
-        $this->assertEquals( 1, count($user->readingLists()->first()->links));
-        $this->assertEquals( 200, $response->getStatusCode());
+        $this->actingAs($user)
+            ->post(route('link.create', [
+                'name'              => 'http://www.example.com/',
+                'id'                => $user->readingLists()->first()->id,
+                'title'             => 'http://www.example.com/',
+            ]))
+            ->assertStatus(200)
+            ->assertSee(LinkController::SAVED_SUCCESS_MESSAGE);
     }
 
     public function testUserCannotStoreMalformedLink()
     {
         $user = (new ReadingListTest())->createUserAndReadingLists(1);
 
-        $this->actingAs($user);
-
-        $request = Request::create(route('link.create'), 'POST',[
-            'name'              => 'ww.example.dfom/',
-            'id'                => $user->readingLists()->first()->id,
-            'title'             => 'http://www.example.com/',
-        ]);
-
-        $controller = new LinkController();
-
-        $response = $controller->store($request);
-
-        $this->assertEquals(422, $response->getStatusCode());
+        $this->actingAs($user)
+            ->post(route('link.create', [
+                'name'              => 'wwwexample.com/',
+                'id'                => $user->readingLists()->first()->id,
+                'title'             => 'http://www.example.com/',
+            ]))
+            ->assertStatus(422)
+            ->assertDontSee(LinkController::SAVED_SUCCESS_MESSAGE);
     }
 
     /**
@@ -191,7 +180,7 @@ class LinkTest extends TestCase
      *
      * @return User
      */
-    public function createUserWithListsAndLinks(int $numLists, int $numLinks): User
+    protected function createUserWithListsAndLinks(int $numLists, int $numLinks): User
     {
         $user = (new ReadingListTest)->createUserAndReadingLists($numLists);
 
@@ -211,7 +200,7 @@ class LinkTest extends TestCase
      *
      * @return User
      */
-    public function incrementPositions(User $user): User
+    protected function incrementPositions(User $user): User
     {
         $i = 1;
         $user->readingLists->each(function($readingList) use(&$i) {

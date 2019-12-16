@@ -70,7 +70,7 @@ class Link extends Model
      *
      * @return Link
      */
-    public function generateDefaultMetaData(Link $link, string $url): Link
+    protected function generateDefaultMetaData(Link $link, string $url): Link
     {
         $link->title = $url;
         $link->description = 'No description found for this link...';

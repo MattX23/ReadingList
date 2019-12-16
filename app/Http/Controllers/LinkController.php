@@ -162,7 +162,7 @@ class LinkController extends Controller
      * @throws \ReflectionException
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function store(Request $request): JsonResponse
+    protected function store(Request $request): JsonResponse
     {
         $data = [
             'url'             => $request->name,
