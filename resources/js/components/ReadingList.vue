@@ -225,38 +225,6 @@
     .hidden {
         visibility: hidden;
     }
-    .options {
-        position: absolute;
-        border: 1px solid $gray;
-        top: 1.25em;
-        right: 15px;
-        background: $off-white-high-transparency;
-        cursor: pointer;
-        border-radius: 15px 0px 15px 15px;
-        text-align: center;
-        margin-top: 10px;
-        z-index: 9999;
-        min-width:200px;
-    }
-    .option-item {
-        padding: 10px;
-        border-bottom: 1px solid $gray;
-        color: $black;
-    }
-    .option-item:hover {
-        background: $blue;
-        color: $white;
-    }
-    .option-item:last-child {
-        border-bottom: none;
-    }
-    .option-item:hover:first-child {
-        border-radius: 13px 0px 0px 0px;
-    }
-    .option-item:hover:last-child {
-        background: darkred;
-        border-radius: 0px 0px 13px 13px;
-    }
     .reading-list-bar {
         margin-bottom: 15px;
         overflow-x: scroll;
