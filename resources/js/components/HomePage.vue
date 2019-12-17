@@ -57,9 +57,7 @@
             endDrag() {
                 this.drag = false;
                 let order = [];
-                this.readingLists.forEach(function(list) {
-                   order.push(list.id);
-                });
+                this.readingLists.forEach(list => order.push(list.id));
                 this.reorderReadingLists(order);
             },
             fetchData() {

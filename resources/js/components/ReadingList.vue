@@ -127,9 +127,7 @@
             endDrag() {
                 this.drag = false;
                 let order = [];
-                this.readingList.links.forEach(function(link) {
-                    order.push(link.id);
-                });
+                this.readingList.links.forEach(link => order.push(link.id));
                 this.reorderLinks(order);
             },
             hideEditMenu() {
