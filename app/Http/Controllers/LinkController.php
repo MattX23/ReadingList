@@ -11,10 +11,29 @@ use Illuminate\Support\Facades\Auth;
 
 class LinkController extends Controller
 {
+    /**
+     * @var string
+     */
     const ARCHIVED_SUCCESS_MESSAGE = 'Link archived';
+
+    /**
+     * @var string
+     */
     const DELETED_SUCCESS_MESSAGE = 'Link permanently deleted';
+
+    /**
+     * @var string
+     */
     const EDITED_SUCCESS_MESSAGE = 'Link title updated';
+
+    /**
+     * @var string
+     */
     const RESTORED_SUCCESS_MESSAGE = 'Link restored';
+
+    /**
+     * @var string
+     */
     const SAVED_SUCCESS_MESSAGE = 'Link added';
 
     /**
