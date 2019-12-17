@@ -3,8 +3,10 @@
 namespace App\Policies;
 
 use App\Link;
+use App\ReadingList;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Support\Facades\Auth;
 
 class LinkPolicy
 {
@@ -63,16 +65,6 @@ class LinkPolicy
     public function restore(User $user, Link $link): bool
     {
         return $user->id === $link->readingList->user_id;
-    }
-
-    /**
-     * @param User $user
-     *
-     * @return bool
-     */
-    public function store(User $user): bool
-    {
-        return $user->exists;
     }
 
     /**

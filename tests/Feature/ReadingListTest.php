@@ -62,7 +62,8 @@ class ReadingListTest extends TestCase
 
         $this->actingAs($user)
             ->delete(route('lists.delete', $readingList))
-            ->assertStatus(200);
+            ->assertStatus(200)
+            ->assertSee(ReadingListController::DELETED_SUCCESS_MESSAGE);
     }
 
     public function testUserCanDeleteReadingList()
@@ -191,7 +192,7 @@ class ReadingListTest extends TestCase
      *
      * @return User
      */
-    protected function createUserAndReadingLists(int $numLists): User
+    public function createUserAndReadingLists(int $numLists): User
     {
         $user = factory(User::class)->create();
 

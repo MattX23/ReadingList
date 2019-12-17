@@ -7,14 +7,13 @@
             <div @mouseover="showEditMenu"
                  @mouseout="hideEditMenu"
                  class="card-header text-center">
-                <h5>{{ name }}
-                    <span class="add-link"
-                          title="Add a link"
-                          @click.stop="addURL">
-                    </span>
-                </h5>
+                <h5>{{ name }}</h5>
                 <span @click.stop="openListMenu"><i class="arrow down"></i></span>
                 <div v-show="showListOptions" class="options">
+                    <div class="option-item"
+                         @click.stop="addURL">
+                        Add a link
+                    </div>
                     <div class="option-item"
                          @click.stop="editListName">
                         Change title
@@ -88,6 +87,7 @@
         },
         methods: {
             addURL() {
+                this.closeOptions();
                 let data = {
                     route: 'link/create',
                     title: `Add to ${this.name}`,

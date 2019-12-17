@@ -48,6 +48,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(ReadingList::class)->orderBy('position');
     }
 
+    /**
+     * @param string $email
+     *
+     * @return bool|null
+     */
     public static function checkIfEmailExists(string $email): ?bool
     {
         if (User::where('email', $email)->first()) {

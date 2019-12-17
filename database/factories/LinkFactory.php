@@ -9,9 +9,9 @@ $factory->define(Link::class, function (Faker $faker) {
     return [
         'reading_list_id' => 1,
         'position'        => 1,
-        'url'             => $faker->url,
+        'url'             => 'http://www.example.com/',
         'image'           => $faker->imageUrl(400, 240),
-        'description'     => $faker->paragraph,
-        'title'           => $faker->sentence
+        'description'     => 'Blah blah blah blah blah',
+        'title'           => ucfirst($faker->word),
     ];
 });
