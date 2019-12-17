@@ -13,6 +13,9 @@ class Link extends Model
 {
     use ValidationTrait, SoftDeletes;
 
+    /**
+     * @var string
+     */
     const DEFAULT_IMAGE = '/images/icons/link-icon.png';
 
     /**
@@ -26,6 +29,9 @@ class Link extends Model
         'position',
     ];
 
+    /**
+     * @var array
+     */
     public $rules = [
         'url'               => 'required|url',
         'reading_list_id'   => 'required|integer',

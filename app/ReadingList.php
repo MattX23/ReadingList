@@ -26,6 +26,9 @@ class ReadingList extends Model
         'position',
     ];
 
+    /**
+     * @var array
+     */
     public $rules = [
         'name'      => 'required|string',
         'user_id'   => 'required|integer',
