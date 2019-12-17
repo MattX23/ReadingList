@@ -10,6 +10,7 @@ Vue.component('login-form', require('./components/LoginForm.vue').default);
 Vue.component('reading-link', require('./components/Link.vue').default);
 Vue.component('reading-list', require('./components/ReadingList.vue').default);
 Vue.component('side-bar', require('./components/partials/SideBar.vue').default);
+Vue.component('options', require('./components/partials/Options.vue').default);
 Vue.component('single-input-modal', require('./components/modals/SingleInputModal.vue').default);
 Vue.component('toggler', require('./components/partials/NavBarToggler.vue').default);
 
