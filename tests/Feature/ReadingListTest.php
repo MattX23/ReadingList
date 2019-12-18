@@ -172,21 +172,6 @@ class ReadingListTest extends TestCase
         $this->assertEquals(count($user->readingLists), $newReadingList->position);
     }
 
-    public function testCreateRestoredLinksList()
-    {
-        $user = $this->createUserAndReadingLists(3);
-
-        $this->actingAs($user);
-
-        $readingList = (new ReadingList())->createRestoredLinksList();
-
-        $user->refresh();
-
-        $this->assertEquals($user->id, $readingList->user_id);
-        $this->assertEquals(ReadingList::RESTORED_LIST, $readingList->name);
-        $this->assertEquals(count($user->readingLists), $readingList->position);
-    }
-
     /**
      * @param int $numLists
      *
