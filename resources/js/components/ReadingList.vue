@@ -9,20 +9,10 @@
                  class="card-header text-center">
                 <h5>{{ name }}</h5>
                 <span @click.stop="openListMenu"><i class="arrow down"></i></span>
-                <div v-show="showListOptions" class="options">
-                    <div class="option-item"
-                         @click.stop="addURL">
-                        Add a link
-                    </div>
-                    <div class="option-item"
-                         @click.stop="editListName">
-                        Change title
-                    </div>
-                    <div class="option-item"
-                         @click.stop="deleteList">
-                        Delete List
-                    </div>
-                </div>
+                <options
+                    :showListOptions="showListOptions"
+                    :readingList="readingList">
+                </options>
             </div>
             <div>
                 <draggable v-model="readingList.links"
@@ -86,43 +76,8 @@
             });
         },
         methods: {
-            addURL() {
-                this.closeOptions();
-                let data = {
-                    route: 'link/create',
-                    title: `Add to ${this.name}`,
-                    buttonText: 'Add',
-                    placeholder: 'Paste the URL here',
-                    method: 'POST',
-                    readingListId: this.id,
-                };
-                EventBus.$emit('toggle-modal', data);
-            },
             closeOptions() {
                 this.showListOptions = false;
-            },
-            editListName() {
-                this.closeOptions();
-                let data = {
-                    route: `lists/edit/${this.id}`,
-                    title: `Change list name - ${this.name}`,
-                    buttonText: 'Edit',
-                    placeholder: 'Enter new list name',
-                    textInput: this.name,
-                    method: 'PUT',
-                };
-                EventBus.$emit('toggle-modal', data);
-            },
-            deleteList() {
-                this.closeOptions();
-                let data = {
-                    route: `lists/delete/${this.id}`,
-                    buttonText: 'Delete',
-                    btnClass: 'delete',
-                    body: `Are you sure you want to delete ${this.name} ?`,
-                    method: 'DELETE',
-                };
-                EventBus.$emit('toggle-confirmation-modal', data);
             },
             endDrag() {
                 this.drag = false;
@@ -207,20 +162,9 @@
         float: left;
         cursor: pointer;
     }
-    .edit-list-icon {
-        width: 20px;
-        margin-top: 5px;
-        margin-right: -30px;
-    }
     .empty-bar {
         background: $white-medium-transparency;
         height: 100%;
-    }
-    .delete-list-icon {
-        width: 35px;
-        margin-left: 25px;
-        margin-right: -60px;
-        margin-top: 4px;
     }
     .hidden {
         visibility: hidden;

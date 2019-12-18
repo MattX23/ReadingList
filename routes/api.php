@@ -35,7 +35,7 @@ Route::group([
     'prefix'=>'link',
     'as'=>'link.'
 ], function(){
-    Route::get('/archives', 'LinkController@getArchives')->name('archives');
+    Route::get('/archives/{user}', 'LinkController@getArchives')->name('archives');
     Route::post('/create', 'LinkController@store')->name('create');
     Route::post('/archive/{link}', 'LinkController@archive')->name('archive');
     Route::post('/delete/{id}', 'LinkController@delete')->name('delete');

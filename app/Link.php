@@ -38,7 +38,7 @@ class Link extends Model
         'title'             => 'required|string',
     ];
 
-    public function readingList() : BelongsTo
+    public function readingList(): BelongsTo
     {
         return $this->belongsTo(ReadingList::class);
     }
@@ -132,17 +132,6 @@ class Link extends Model
 
         $link->update([
             'position' => $newPosition,
-        ]);
-    }
-
-    /**
-     * @param Link $link
-     * @param int $id
-     */
-    public function updateReadingList(Link $link, int $id): void
-    {
-        $link->update([
-            'reading_list_id' => $id
         ]);
     }
 }

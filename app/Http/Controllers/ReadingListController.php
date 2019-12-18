@@ -62,11 +62,13 @@ class ReadingListController extends Controller
      */
     public function delete(int $id): JsonResponse
     {
-        $this->authorize('delete', ReadingList::find($id));
+        $readingList = ReadingList::find($id);
 
-        if (!ReadingList::find($id)->links()->exists())
+        $this->authorize('delete', $readingList);
 
-            if (ReadingList::destroy($id)) {
+        if (!$readingList->links()->exists())
+
+            if ($readingList->hasTrash() ? $readingList->delete() : $readingList->forceDelete()) {
                 $this->reorderListsAfterDelete();
 
                 return response()->json(self::DELETED_SUCCESS_MESSAGE);
@@ -166,19 +168,11 @@ class ReadingListController extends Controller
     {
         $list_id = $request->id;
 
-        $oldList = ReadingList::find($list_id);
-
-        if ($oldList->name === ReadingList::RESTORED_LIST &&
-            count($oldList->links) < 1) ReadingList::destroy($oldList->id);
-
-        $i = 1;
-
-        foreach ($request->links as $link) {
+        foreach ($request->links as $index => $link) {
             Link::where('id', '=', $link['id'])->update([
-                'position'        => $i,
+                'position'        => $index,
                 'reading_list_id' => $list_id,
             ]);
-            $i++;
         }
     }
 }

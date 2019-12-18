@@ -23,7 +23,10 @@
         <main class="py-4 main-content">
             @yield('content')
             <alert></alert>
-            <archive-modal></archive-modal>
+            @if(Auth::check())
+            <archive-modal
+            :user-id="{{ Auth::user()->id }}"></archive-modal>
+            @endif
             <confirmation-modal></confirmation-modal>
             <side-bar></side-bar>
             <single-input-modal></single-input-modal>
