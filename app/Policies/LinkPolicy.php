@@ -31,7 +31,7 @@ class LinkPolicy
      */
     public function viewArchives(User $user, Link $link): bool
     {
-        return $user->id === $link->readingList->user_id;
+        return $user->id === $link->readingList()->withTrashed()->first()->user_id;
     }
 
     /**
@@ -64,7 +64,7 @@ class LinkPolicy
      */
     public function restore(User $user, Link $link): bool
     {
-        return $user->id === $link->readingList->user_id;
+        return $user->id === $link->readingList()->withTrashed()->first()->user_id;
     }
 
     /**
@@ -75,6 +75,6 @@ class LinkPolicy
      */
     public function forceDelete(User $user, Link $link): bool
     {
-        return $user->id === $link->readingList->user_id;
+        return $user->id === $link->readingList()->withTrashed()->first()->user_id;
     }
 }

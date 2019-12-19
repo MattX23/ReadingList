@@ -1,16 +1,32 @@
 <template>
-    <div v-show="showOptions" :class="optionsClass">
-        <div class="option-item"
-             @click="editTitle">
-            Change title
+    <div>
+        <div v-if="showListOptions" class="options reading-list-options">
+            <div class="option-item"
+                 @click.stop="addURL">
+                Add a link
+            </div>
+            <div class="option-item"
+                 @click.stop="editListName">
+                Change title
+            </div>
+            <div class="option-item"
+                 @click.stop="deleteList">
+                Delete List
+            </div>
         </div>
-        <div @click="archiveLink"
-             class="option-item">
-            Archive
-        </div>
-        <div @click="deleteLink"
-             class="option-item">
-            Delete
+        <div v-if="showOptions" :class="optionsClass">
+            <div class="option-item"
+                 @click="editTitle">
+                Change title
+            </div>
+            <div @click="archiveLink"
+                 class="option-item">
+                Archive
+            </div>
+            <div @click="deleteLink"
+                 class="option-item">
+                Delete
+            </div>
         </div>
     </div>
 </template>
@@ -20,12 +36,49 @@
 
     export default {
         props: {
+            showListOptions: Boolean,
+            readingList: Object,
             showOptions: Boolean,
             optionsClass: String,
             link: Object,
             deleteFunction: Function
         },
         methods: {
+            addURL() {
+                EventBus.$emit('close-options');
+                let data = {
+                    route: 'link/create',
+                    title: `Add to ${this.readingList.name}`,
+                    buttonText: 'Add',
+                    placeholder: 'Paste the URL here',
+                    method: 'POST',
+                    readingListId: this.readingList.id,
+                };
+                EventBus.$emit('toggle-modal', data);
+            },
+            editListName() {
+                EventBus.$emit('close-options');
+                let data = {
+                    route: `lists/edit/${this.readingList.id}`,
+                    title: `Change list name - ${this.readingList.name}`,
+                    buttonText: 'Edit',
+                    placeholder: 'Enter new list name',
+                    textInput: this.readingList.name,
+                    method: 'PUT',
+                };
+                EventBus.$emit('toggle-modal', data);
+            },
+            deleteList() {
+                EventBus.$emit('close-options');
+                let data = {
+                    route: `lists/delete/${this.readingList.id}`,
+                    buttonText: 'Delete',
+                    btnClass: 'delete',
+                    body: `Are you sure you want to delete ${this.readingList.name} ?`,
+                    method: 'DELETE',
+                };
+                EventBus.$emit('toggle-confirmation-modal', data);
+            },
             archiveLink() {
                 let data = {
                     route: `link/archive/${this.link.id}`,
@@ -69,6 +122,10 @@
         margin-top: 10px;
         z-index: 9999;
         min-width:200px;
+    }
+    .reading-list-options {
+        top: 1.5em;
+        right: 15px;
     }
     .options-last {
         top: -2em;

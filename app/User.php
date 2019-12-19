@@ -51,14 +51,11 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * @param string $email
      *
-     * @return bool|null
+     * @return bool
      */
-    public static function checkIfEmailExists(string $email): ?bool
+    public static function checkIfEmailExists(string $email): bool
     {
-        if (User::where('email', $email)->first()) {
-            return true;
-        }
+        return (bool) User::where('email', $email)->first();
 
-        return null;
     }
 }

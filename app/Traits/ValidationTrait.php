@@ -21,17 +21,17 @@ trait ValidationTrait {
         $Reflection = new \ReflectionClass(__CLASS__);
         $ReflectionClass = $Reflection->newInstance();
 
-        if (empty($ReflectionClass->rules)) return TRUE;
+        if (empty($ReflectionClass->rules)) return true;
 
         $v = Validator::make($data, $ReflectionClass->rules);
 
         if ($v->fails()) {
             $this->errors = $v->errors()->first();
 
-            return FALSE;
+            return false;
         }
 
-        return TRUE;
+        return true;
     }
 
     public function validationErrors() {

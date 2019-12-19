@@ -4,17 +4,37 @@ namespace App\Http\Controllers;
 
 use App\Link;
 use App\ReadingList;
+use App\User;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Collection;
 
 class LinkController extends Controller
 {
+    /**
+     * @var string
+     */
     const ARCHIVED_SUCCESS_MESSAGE = 'Link archived';
+
+    /**
+     * @var string
+     */
     const DELETED_SUCCESS_MESSAGE = 'Link permanently deleted';
+
+    /**
+     * @var string
+     */
     const EDITED_SUCCESS_MESSAGE = 'Link title updated';
+
+    /**
+     * @var string
+     */
     const RESTORED_SUCCESS_MESSAGE = 'Link restored';
+
+    /**
+     * @var string
+     */
     const SAVED_SUCCESS_MESSAGE = 'Link added';
 
     /**
@@ -44,32 +64,32 @@ class LinkController extends Controller
 
         $this->authorize('forceDelete', $link);
 
+        (new ReadingList())->deleteInactiveList($link);
+
         $link->forceDelete();
 
         return response()->json(self::DELETED_SUCCESS_MESSAGE);
     }
 
     /**
+     * @param \App\User $user
+     *
      * @return JsonResponse
-     * @throws Exception
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    protected function getArchives(): JsonResponse
+    protected function getArchives(User $user): JsonResponse
     {
-        $links = Link::onlyTrashed()->orderByDesc('deleted_at')->get();
+        $links = Collection::make();
 
-        if (count($links) > 0) $this->authorize('viewArchives', $links->first());
+        $user->readingLists()->withTrashed()->each(function(ReadingList $readingList) use ($links) {
+            $readingList->links()->onlyTrashed()->each(function(Link $link) use ($links) {
+                $links->push($link);
+            });
+        });
+
+        if ($links->count() > 0) $this->authorize('viewArchives', $links->first());
 
         return response()->json($links);
-    }
-
-    /**
-     * @return ReadingList|null
-     */
-    protected function getRestoredList(): ?ReadingList
-    {
-        return ReadingList::where('user_id', '=', Auth::user()->id)
-            ->where('name', '=', ReadingList::RESTORED_LIST)
-            ->first();
     }
 
     /**
@@ -137,17 +157,7 @@ class LinkController extends Controller
 
         $readingListIds = (new ReadingList())->getReadingListIds();
 
-        if (!in_array($link->reading_list_id, $readingListIds)) {
-            $restoredList = $this->getRestoredList();
-
-            if ($restoredList) (new Link())->updateReadingList($link, $restoredList->id);
-
-            if (!$restoredList) {
-                $readingList = (new ReadingList())->createRestoredLinksList();
-
-                (new Link())->updateReadingList($link, $readingList->id);
-            }
-        }
+        if (!in_array($link->reading_list_id, $readingListIds)) (new ReadingList())->restoreList($link);
 
         $link->restore();
 

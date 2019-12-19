@@ -104,7 +104,7 @@ class LinkTest extends TestCase
             $this->post(route('link.delete', $link->id));
         }
 
-        $this->get(route('link.archives'))
+        $this->get(route('link.archives', $user->id))
             ->assertStatus(200)
             ->assertSee($user->readingLists()->first()->links);
     }
@@ -180,7 +180,7 @@ class LinkTest extends TestCase
      *
      * @return User
      */
-    protected function createUserWithListsAndLinks(int $numLists, int $numLinks): User
+    public function createUserWithListsAndLinks(int $numLists, int $numLinks): User
     {
         $user = (new ReadingListTest)->createUserAndReadingLists($numLists);
 

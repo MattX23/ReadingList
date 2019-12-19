@@ -13,6 +13,9 @@ class Link extends Model
 {
     use ValidationTrait, SoftDeletes;
 
+    /**
+     * @var string
+     */
     const DEFAULT_IMAGE = '/images/icons/link-icon.png';
 
     /**
@@ -26,13 +29,16 @@ class Link extends Model
         'position',
     ];
 
+    /**
+     * @var array
+     */
     public $rules = [
         'url'               => 'required|url',
         'reading_list_id'   => 'required|integer',
         'title'             => 'required|string',
     ];
 
-    public function readingList() : BelongsTo
+    public function readingList(): BelongsTo
     {
         return $this->belongsTo(ReadingList::class);
     }
@@ -126,17 +132,6 @@ class Link extends Model
 
         $link->update([
             'position' => $newPosition,
-        ]);
-    }
-
-    /**
-     * @param Link $link
-     * @param int $id
-     */
-    public function updateReadingList(Link $link, int $id): void
-    {
-        $link->update([
-            'reading_list_id' => $id
         ]);
     }
 }

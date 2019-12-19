@@ -35,6 +35,9 @@
     import { EventBus } from '../../eventbus/event-bus.js';
 
     export default {
+        props: {
+            userId: Number,
+        },
         data() {
             return {
                 showModal: false,
@@ -43,7 +46,7 @@
         },
         created() {
             EventBus.$on('toggle-archive-modal', () => {
-                axios.get('/api/link/archives')
+                axios.get('/api/link/archives/' + this.userId)
                 .then((response) => {
                     this.links = response.data;
                     this.showModal = true;
