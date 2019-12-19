@@ -11,7 +11,7 @@ $factory->define(Link::class, function (Faker $faker) {
         'position'        => 1,
         'url'             => 'http://www.example.com/',
         'image'           => $faker->imageUrl(400, 240),
-        'description'     => 'Blah blah blah blah blah',
+        'description'     => $faker->sentence(rand(6, 20)),
         'title'           => ucfirst($faker->word),
     ];
 });
