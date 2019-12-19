@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\LinkController;
 use App\Http\Controllers\ReadingListController;
 use App\ReadingList;
 use App\User;
@@ -64,6 +65,67 @@ class ReadingListTest extends TestCase
             ->delete(route('lists.delete', $readingList))
             ->assertStatus(200)
             ->assertSee(ReadingListController::DELETED_SUCCESS_MESSAGE);
+    }
+
+    public function testListIsOnlySoftDeletedWhenListHasArchivedLink()
+    {
+        $user = (new LinkTest())->createUserWithListsAndLinks(1, 1);
+
+        $this->actingAs($user);
+
+        $user->readingLists()->first()->links->first()->delete();
+
+        $readingList = $user->readingLists()->first();
+
+        $this->delete(route('lists.delete', $readingList))
+            ->assertStatus(200)
+            ->assertSee(ReadingListController::DELETED_SUCCESS_MESSAGE);
+
+        $this->assertTrue(ReadingList::where('user_id', '=', $user->id)->get()->count() < 1);
+        $this->assertTrue(ReadingList::withTrashed()->where('user_id', $user->id)->get()->count() === 1);
+    }
+
+    public function testListIsFullyDeletedWhenListHasNoRelatedLinks()
+    {
+        $user = (new LinkTest())->createUserWithListsAndLinks(1, 1);
+
+        $this->actingAs($user);
+
+        $user->readingLists()->first()->links->first()->forceDelete();
+
+        $readingList = $user->readingLists()->first();
+
+        $this->delete(route('lists.delete', $readingList))
+            ->assertStatus(200)
+            ->assertSee(ReadingListController::DELETED_SUCCESS_MESSAGE);
+
+        $this->assertTrue(ReadingList::where('user_id', '=', $user->id)->get()->count() < 1);
+        $this->assertTrue(ReadingList::withTrashed()->where('user_id', $user->id)->get()->count() < 1);
+    }
+
+    public function testRelatedListIsDeletedWhenLastArchivedLinkIsDeleted()
+    {
+        $user = (new LinkTest())->createUserWithListsAndLinks(1, 1);
+
+        $this->actingAs($user);
+
+        $user->readingLists()->first()->links->first()->delete();
+
+        $readingList = $user->readingLists()->first();
+
+        $this->delete(route('lists.delete', $readingList))
+            ->assertStatus(200)
+            ->assertSee(ReadingListController::DELETED_SUCCESS_MESSAGE);
+
+        $link = $user->readingLists()->withTrashed()->first()->links()->withTrashed()->first();
+
+        $this->actingAs($user)
+            ->post(route('link.delete', $link->id))
+            ->assertStatus(200)
+            ->assertSee(LinkController::DELETED_SUCCESS_MESSAGE);
+
+        $this->assertTrue(ReadingList::where('user_id', '=', $user->id)->get()->count() < 1);
+        $this->assertTrue(ReadingList::withTrashed()->where('user_id', $user->id)->get()->count() < 1);
     }
 
     public function testUserCanDeleteReadingList()

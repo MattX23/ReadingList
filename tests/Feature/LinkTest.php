@@ -180,7 +180,7 @@ class LinkTest extends TestCase
      *
      * @return User
      */
-    protected function createUserWithListsAndLinks(int $numLists, int $numLinks): User
+    public function createUserWithListsAndLinks(int $numLists, int $numLinks): User
     {
         $user = (new ReadingListTest)->createUserAndReadingLists($numLists);
 
