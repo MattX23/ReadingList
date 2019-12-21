@@ -107,31 +107,4 @@ class Link extends Model
                 ]);
         }
     }
-
-    /**
-     * @param Link $link
-     *
-     * @param int $oldListId
-     */
-    public function redefinePositions(Link $link, int $oldListId)
-    {
-        $oldLinks = Link::where('reading_list_id', '=', $oldListId)
-                        ->orderBy('position')
-                        ->get();
-
-        $position = 1;
-
-        foreach ($oldLinks as $oldLink) {
-            $oldLink->update([
-                'position' => $position,
-            ]);
-            $position++;
-        }
-
-        $newPosition = count(ReadingList::find($link->reading_list_id)->links);
-
-        $link->update([
-            'position' => $newPosition,
-        ]);
-    }
 }

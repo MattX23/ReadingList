@@ -170,7 +170,7 @@ class ReadingListController extends Controller
 
         foreach ($request->links as $index => $link) {
             Link::where('id', '=', $link['id'])->update([
-                'position'        => $index,
+                'position'        => $index + 1,
                 'reading_list_id' => $list_id,
             ]);
         }
