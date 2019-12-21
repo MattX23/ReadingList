@@ -95,24 +95,6 @@ class LinkController extends Controller
     /**
      * @param Link $link
      * @param Request $request
-     * @throws Exception
-     */
-    public function move(Link $link, Request $request)
-    {
-        $oldList = $link->readingList->id;
-
-        $this->authorize('move', $link);
-
-        $link->update([
-            'reading_list_id' => $request->newListId,
-        ]);
-
-        (new Link())->redefinePositions($link, $oldList);
-    }
-
-    /**
-     * @param Link $link
-     * @param Request $request
      *
      * @return JsonResponse
      * @throws \ReflectionException

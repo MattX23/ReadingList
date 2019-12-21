@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Http\Controllers\LinkController;
+use App\Http\Controllers\ReadingListController;
 use App\Link;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -107,28 +108,6 @@ class LinkTest extends TestCase
         $this->get(route('link.archives', $user->id))
             ->assertStatus(200)
             ->assertSee($user->readingLists()->first()->links);
-    }
-
-    public function testUserCanMoveLinkToAnotherList()
-    {
-        $user = $this->createUserWithListsAndLinks(2, 3);
-
-        $this->actingAs($user);
-
-        $link = $user->readingLists()->first()->links->first();
-
-        $secondList = $user->readingLists[1];
-
-        $request = Request::create(route('link.move', $link), 'PUT',[
-            'link'      => $link,
-            'newListId' => $secondList->id,
-        ]);
-
-        $controller = new LinkController();
-
-        $controller->move($link, $request);
-
-        $this->assertEquals( 2, $secondList->id);
     }
 
     public function testLinkIsRestored()

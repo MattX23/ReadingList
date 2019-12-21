@@ -40,7 +40,6 @@ Route::group([
     Route::post('/archive/{link}', 'LinkController@archive')->name('archive');
     Route::post('/delete/{id}', 'LinkController@delete')->name('delete');
     Route::put('/edit/{link}', 'LinkController@rename')->name('edit');
-    Route::put('/move/{link}', 'LinkController@move')->name('move');
     Route::put('/reorder', 'LinkController@reorderLinks')->name('reorder');
     Route::put('/restore/{id}', 'LinkController@restore')->name('restore');
 });
