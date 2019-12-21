@@ -35,23 +35,45 @@ class SeedWithListAndLinks extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return mixed
      */
     public function handle()
     {
-        $user = User::where('email', '=', 'matt.wood001@gmail.com')->get();
+        $user = User::where('email', '=', 'matt.wood001@gmail.com')->first();
 
         if ($user) {
-            $user->each(function ($user) {
+            $user->each(function (User $user) {
                 factory(ReadingList::class, rand(5,10))->create([
                     'user_id'  => $user->id,
-                ])->each(function ($readingList) {
+                ])->each(function (ReadingList $readingList) {
                     factory(Link::class, rand(1,8))->create([
                         'reading_list_id' => $readingList->id,
                     ]);
                 });
             });
         }
+
+        $this->redefinePositions($user);
+    }
+
+    /**
+     * @param \App\User $user
+     */
+    protected function redefinePositions(User $user)
+    {
+        $i = 1;
+        $user->readingLists()->each(function(ReadingList $readingList) use (&$i) {
+            $readingList->update([
+                'position' => $i,
+            ]);
+            $i++;
+
+            $j = 1;
+            $readingList->links()->each(function (Link $link) use (&$j) {
+               $link->update([
+                   'position' => $j,
+               ]);
+               $j++;
+            });
+        });
     }
 }
