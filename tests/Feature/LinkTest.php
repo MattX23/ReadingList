@@ -146,7 +146,7 @@ class LinkTest extends TestCase
                 'id'                => $user->readingLists()->first()->id,
                 'title'             => 'http://www.example.com/',
             ]))
-            ->assertStatus(422)
+            ->assertStatus(302)
             ->assertDontSee(Link::SAVED_SUCCESS_MESSAGE);
     }
 

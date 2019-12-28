@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Http\Controllers\ReadingListController;
+use App\Http\Requests\ReadingListRequest;
 use App\Link;
 use App\ReadingList;
 use App\User;
@@ -152,7 +153,7 @@ class ReadingListTest extends TestCase
 
         $readingList = $user->readingLists->first();
 
-        $request = Request::create(route('lists.edit', $readingList), 'PUT',[
+        $request = ReadingListRequest::create(route('lists.edit', $readingList), 'PUT',[
             'name'     => 'New name',
             'user_id'  => $user->id,
         ]);
@@ -171,7 +172,7 @@ class ReadingListTest extends TestCase
     {
         $user = factory(User::class)->create();
 
-        $request = Request::create(route('lists.create'), 'POST',[
+        $request = ReadingListRequest::create(route('lists.create'), 'POST',[
             'name' => 'New name',
         ]);
 
