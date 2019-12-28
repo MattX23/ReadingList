@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ReadingListRequest;
 use App\Link;
 use App\ReadingList;
 use App\Traits\AuthorizeSoftDeletesTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use ReflectionException;
 
 class ReadingListController extends Controller
 {
@@ -27,7 +27,7 @@ class ReadingListController extends Controller
     /**
      * ReadingListController constructor.
      *
-     * @param string $name
+     * @param string   $name
      * @param int|null $user_id
      */
     public function __construct(string $name = '', int $user_id = null)
@@ -56,19 +56,15 @@ class ReadingListController extends Controller
 
     /**
      * @param ReadingList $readingList
-     * @param Request $request
+     * @param \App\Http\Requests\ReadingListRequest $request
      *
      * @return JsonResponse
-     * @throws ReflectionException
      */
-    public function edit(ReadingList $readingList, Request $request): JsonResponse
+    public function edit(ReadingList $readingList, ReadingListRequest $request): JsonResponse
     {
         $data = [
-            'name'     => $request->name,
-            'user_id'  => Auth::user()->id,
+            'name' => $request->name,
         ];
-
-        if (!$readingList->validate($data)) return response()->json($readingList->validationErrors(), 422);
 
         $readingList->update($data);
 
@@ -110,24 +106,21 @@ class ReadingListController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param \App\Http\Requests\ReadingListRequest $request
      *
      * @return JsonResponse
-     * @throws ReflectionException
      */
-    public function store(Request $request): JsonResponse
+    public function store(ReadingListRequest $request): JsonResponse
     {
         $user = Auth::user();
 
         $data = [
             'name'     => $request->name,
-            'user_id'  => Auth::user()->id,
+            'user_id'  => $user->id,
             'position' => (new ReadingList())->getNewReadingListPosition($user),
         ];
 
         $list = new ReadingList($data);
-
-        if (!$list->validate($data)) return response()->json($list->validationErrors(), 422);
 
         $list->save();
 

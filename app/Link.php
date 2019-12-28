@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Traits\ValidationTrait;
 use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,7 +10,7 @@ use Illuminate\Support\Facades\Config;
 
 class Link extends Model
 {
-    use ValidationTrait, SoftDeletes;
+    use SoftDeletes;
 
     /**
      * @var string
@@ -52,15 +51,6 @@ class Link extends Model
         'url',
         'reading_list_id',
         'position',
-    ];
-
-    /**
-     * @var array
-     */
-    public $rules = [
-        'url'               => 'required|url',
-        'reading_list_id'   => 'required|integer',
-        'title'             => 'required|string',
     ];
 
     public function readingList(): BelongsTo

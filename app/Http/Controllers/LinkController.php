@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LinkEditRequest;
+use App\Http\Requests\LinkRequest;
 use App\Link;
 use App\ReadingList;
 use App\Traits\AuthorizeSoftDeletesTrait;
@@ -89,18 +91,15 @@ class LinkController extends Controller
     }
 
     /**
-     * @param Link $link
-     * @param Request $request
+     * @param Link                               $link
+     * @param \App\Http\Requests\LinkEditRequest $request
      *
      * @return JsonResponse
-     * @throws \ReflectionException
      */
-    protected function rename(Link $link, Request $request): JsonResponse
+    protected function rename(Link $link, LinkEditRequest $request): JsonResponse
     {
         $link->title = $request->name;
         $data = $link->toArray();
-
-        if (!$link->validate($data)) return response()->json($link->validationErrors(), 422);
 
         $link->update([
             'title' => $data['title'],
@@ -135,13 +134,12 @@ class LinkController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param \App\Http\Requests\LinkRequest $request
      *
      * @return JsonResponse
      * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \ReflectionException
      */
-    protected function store(Request $request): JsonResponse
+    protected function store(LinkRequest $request): JsonResponse
     {
         $data = [
             'url'             => $request->name,
@@ -151,8 +149,6 @@ class LinkController extends Controller
         ];
 
         $link = new Link($data);
-
-        if (!$link->validate($data)) return response()->json($link->validationErrors(), 422);
 
         $link->getPreview($link, $data['url']);
 

@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Traits\ValidationTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class ReadingList extends Model
 {
-    use ValidationTrait, SoftDeletes;
+    use SoftDeletes;
 
     /**
      * @var string
@@ -42,14 +41,6 @@ class ReadingList extends Model
         'name',
         'user_id',
         'position',
-    ];
-
-    /**
-     * @var array
-     */
-    public $rules = [
-        'name'      => 'required|string',
-        'user_id'   => 'required|integer',
     ];
 
     protected $casts = [
