@@ -18,7 +18,7 @@
                                @keydown="clearErrors"
                                @keyup.enter="submitModal">
                         <small v-if="error" class="text-danger">
-                            {{ error }}
+                            <span v-html="error"></span>
                         </small>
                     </div>
                     <div class="modal-footer">
@@ -80,6 +80,18 @@
             doNothing() {
                 return false;
             },
+            getErrors(data) {
+                const errorObj = data.errors;
+                let errors = ``;
+
+                Object.keys(errorObj).forEach(function(key, index) {
+                    if (index) errors += `<br>`;
+
+                    errors += errorObj[key][0];
+                });
+
+                return errors;
+            },
             submitModal() {
                 let data = {
                     name: this.textInput,
@@ -96,7 +108,9 @@
                     EventBus.$emit('flash', response.data, 'success');
                 })
                 .catch((error) => {
-                    this.error = error.response.status === 403 ? error.response.data.message : error.response.data;
+                    this.error = error.response.status === 403 ?
+                        'You are not authorised to perform this action' :
+                        this.getErrors(error.response.data);
                 })
             },
         }
