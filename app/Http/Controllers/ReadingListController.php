@@ -48,8 +48,6 @@ class ReadingListController extends Controller
         if (!$readingList->links()->exists())
 
             if ($readingList->hasTrash() ? $readingList->delete() : $readingList->forceDelete()) {
-                $this->reorderListsAfterDelete();
-
                 return response()->json(ReadingList::DELETED_SUCCESS_MESSAGE);
             }
 
@@ -94,20 +92,6 @@ class ReadingListController extends Controller
     {
         $ids = $request->toArray();
         (new ReadingList())->reorderLists($ids);
-    }
-
-    protected function reorderListsAfterDelete(): void
-    {
-        $lists = ReadingList::all()->sortBy('position');
-
-        $i = 1;
-
-        foreach ($lists as $list) {
-            $list->update([
-                'position' => $i
-            ]);
-            $i++;
-        }
     }
 
     /**

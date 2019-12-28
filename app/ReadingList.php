@@ -64,6 +64,24 @@ class ReadingList extends Model
      */
     protected $with = ['links'];
 
+    public static function boot()
+    {
+        parent::boot();
+
+        self::deleted(function () {
+            $lists = ReadingList::all()->sortBy('position');
+
+            $i = 1;
+
+            foreach ($lists as $list) {
+                $list->update([
+                    'position' => $i
+                ]);
+                $i++;
+            }
+        });
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
