@@ -45,13 +45,11 @@ class ReadingListController extends Controller
     {
         $readingList = $this->authorizeSoftDeletedModel(ReadingList::class, $id, 'delete', true);
 
-        if (!$readingList->links()->exists())
+        $readingList->removeActiveLinks();
 
-            if ($readingList->hasTrash() ? $readingList->delete() : $readingList->forceDelete()) {
-                return response()->json(ReadingList::DELETED_SUCCESS_MESSAGE);
-            }
+        $readingList->hasTrash() ? $readingList->delete() : $readingList->forceDelete();
 
-        return response()->json(ReadingList::DELETED_FAILED_MESSAGE, 422);
+        return response()->json(ReadingList::DELETED_SUCCESS_MESSAGE);
     }
 
     /**

@@ -50,6 +50,7 @@
                 } else if (data.btnClass === 'primary') {
                     this.btnClass = 'btn btn-primary';
                 }
+                if (data.hasLinks) this.body += ' This will also permanently delete all links in this list.';
                 this.$nextTick(() => this.$refs.modal.focus())
             });
             EventBus.$on('close-modal', () => {

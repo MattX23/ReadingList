@@ -52,6 +52,13 @@
                     this.showModal = true;
                 })
             });
+            EventBus.$on('archive-restored', (id) => {
+                const index = this.links.map(x => {
+                    return x.id;
+                }).indexOf(id);
+
+                this.links.splice(index, 1);
+            });
             EventBus.$on('close-modal', () => {
                 this.closeModal();
             });

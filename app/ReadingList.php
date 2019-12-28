@@ -20,11 +20,6 @@ class ReadingList extends Model
     /**
      * @var string
      */
-    const DELETED_FAILED_MESSAGE = "List not empty";
-
-    /**
-     * @var string
-     */
     const UPDATED_SUCCESS_MESSAGE = "List name updated";
 
     /**
@@ -94,6 +89,26 @@ class ReadingList extends Model
     }
 
     /**
+     * @return array
+     */
+    public function getReadingListIds(): array
+    {
+        return ReadingList::where('user_id', '=', Auth::user()->id)
+            ->pluck('id')
+            ->toArray();
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasTrash(): bool
+    {
+        $links = Link::onlyTrashed()->where('reading_list_id', '=', $this->id);
+
+        return (bool) $links->count();
+    }
+
+    /**
      * @param array $ids
      */
     public function reorderLists(array $ids): void
@@ -119,23 +134,10 @@ class ReadingList extends Model
             ->restore();
     }
 
-    /**
-     * @return array
-     */
-    public function getReadingListIds(): array
+    public function removeActiveLinks()
     {
-        return ReadingList::where('user_id', '=', Auth::user()->id)
-            ->pluck('id')
-            ->toArray();
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasTrash(): bool
-    {
-        $links = Link::onlyTrashed()->where('reading_list_id', '=', $this->id);
-
-        return (bool) $links->count();
+        $this->links()->each(function(Link $link) {
+            $link->forceDelete();
+        });
     }
 }
