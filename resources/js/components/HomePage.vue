@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <div v-if="loaded" class="container-fluid reading-list-container" @click="closeMenus">
+    <div @click="closeMenus">
+        <div v-if="loaded" class="container-fluid reading-list-container">
             <div v-if="readingLists.length < 1" class="card">
                 <div class="card-body text-center">
                     You have no ReadingLists saved yet. <br><br>

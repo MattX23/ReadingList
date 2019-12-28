@@ -74,8 +74,9 @@
                     route: `lists/delete/${this.readingList.id}`,
                     buttonText: 'Delete',
                     btnClass: 'delete',
-                    body: `Are you sure you want to delete ${this.readingList.name} ?`,
+                    body: `Are you sure you want to delete ${this.readingList.name}?`,
                     method: 'DELETE',
+                    hasLinks: !!this.readingList.links.length,
                 };
                 EventBus.$emit('toggle-confirmation-modal', data);
             },

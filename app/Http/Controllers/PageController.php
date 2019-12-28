@@ -12,9 +12,6 @@ class PageController extends Controller
      */
     public function home()
     {
-        if (Auth::user()) {
-            return View::make('home');
-        }
-        return View::make('auth.login');
+        return Auth::user() ? View::make('home') : View::make('auth.login');
     }
 }
