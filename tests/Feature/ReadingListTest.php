@@ -8,7 +8,6 @@ use App\Link;
 use App\ReadingList;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\Request;
 use Tests\TestCase;
 
 class ReadingListTest extends TestCase
