@@ -3,10 +3,8 @@
 namespace App\Policies;
 
 use App\Link;
-use App\ReadingList;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Support\Facades\Auth;
 
 class LinkPolicy
 {
@@ -62,7 +60,7 @@ class LinkPolicy
      *
      * @return bool
      */
-    public function forceDelete(User $user, Link $link): bool
+    public function delete(User $user, Link $link): bool
     {
         return $user->id === $link->readingList()->withTrashed()->first()->user_id;
     }

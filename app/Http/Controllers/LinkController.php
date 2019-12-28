@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Link;
 use App\ReadingList;
+use App\Traits\AuthorizeSoftDeletesTrait;
 use App\User;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -12,30 +13,7 @@ use Illuminate\Support\Collection;
 
 class LinkController extends Controller
 {
-    /**
-     * @var string
-     */
-    const ARCHIVED_SUCCESS_MESSAGE = 'Link archived';
-
-    /**
-     * @var string
-     */
-    const DELETED_SUCCESS_MESSAGE = 'Link permanently deleted';
-
-    /**
-     * @var string
-     */
-    const EDITED_SUCCESS_MESSAGE = 'Link title updated';
-
-    /**
-     * @var string
-     */
-    const RESTORED_SUCCESS_MESSAGE = 'Link restored';
-
-    /**
-     * @var string
-     */
-    const SAVED_SUCCESS_MESSAGE = 'Link added';
+    use AuthorizeSoftDeletesTrait;
 
     /**
      * @param Link $link
@@ -45,39 +23,45 @@ class LinkController extends Controller
      */
     public function archive(Link $link): JsonResponse
     {
-        $this->authorize('archive', $link);
-
         $link->delete();
 
-        return response()->json(self::ARCHIVED_SUCCESS_MESSAGE);
+        return response()->json(Link::ARCHIVED_SUCCESS_MESSAGE);
+    }
+
+    /**
+     * @param Link $link
+     *
+     * @return JsonResponse
+     */
+    public function delete(Link $link): JsonResponse
+    {
+        $link->forceDelete();
+
+        return response()->json(Link::DELETED_SUCCESS_MESSAGE);
     }
 
     /**
      * @param int $id
      *
      * @return JsonResponse
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function delete(int $id): JsonResponse
+    public function forceDelete(int $id): JsonResponse
     {
-        $link = Link::withTrashed()->find($id);
+        $link = $this->authorizeSoftDeletedModel(Link::class, $id, 'delete', true);
 
-        $this->authorize('forceDelete', $link);
-
-        (new ReadingList())->deleteInactiveList($link);
+        $link->deleteInactiveList();
 
         $link->forceDelete();
 
-        return response()->json(self::DELETED_SUCCESS_MESSAGE);
+        return response()->json(Link::DELETED_SUCCESS_MESSAGE);
     }
 
     /**
      * @param \App\User $user
      *
-     * @return JsonResponse
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @return \Illuminate\Support\Collection
      */
-    protected function getArchives(User $user): JsonResponse
+    protected function getArchivedLinks(User $user)
     {
         $links = Collection::make();
 
@@ -87,7 +71,19 @@ class LinkController extends Controller
             });
         });
 
-        if ($links->count() > 0) $this->authorize('viewArchives', $links->first());
+        return $links;
+    }
+
+    /**
+     * @param \App\User $user
+     *
+     * @return JsonResponse
+     */
+    protected function getArchives(User $user): JsonResponse
+    {
+        $links = $this->getArchivedLinks($user);
+
+        if ($links->count() > 0) $this->authorizeSoftDeletedModel(Link::class, $links->first()->id, 'viewArchives');
 
         return response()->json($links);
     }
@@ -98,12 +94,9 @@ class LinkController extends Controller
      *
      * @return JsonResponse
      * @throws \ReflectionException
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     protected function rename(Link $link, Request $request): JsonResponse
     {
-        $this->authorize('rename', $link);
-
         $link->title = $request->name;
         $data = $link->toArray();
 
@@ -113,7 +106,7 @@ class LinkController extends Controller
             'title' => $data['title'],
         ]);
 
-        return response()->json(self::EDITED_SUCCESS_MESSAGE);
+        return response()->json(Link::EDITED_SUCCESS_MESSAGE);
     }
 
     /**
@@ -129,21 +122,16 @@ class LinkController extends Controller
      * @param int $id
      *
      * @return JsonResponse
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     protected function restore(int $id): JsonResponse
     {
-        $link = Link::withTrashed()->find($id);
+        $link = $this->authorizeSoftDeletedModel(Link::class, $id, 'restore', true);
 
-        $this->authorize('restore', $link);
-
-        $readingListIds = (new ReadingList())->getReadingListIds();
-
-        if (!in_array($link->reading_list_id, $readingListIds)) (new ReadingList())->restoreList($link);
+        $link->restoreSoftDeletedList();
 
         $link->restore();
 
-        return response()->json(self::RESTORED_SUCCESS_MESSAGE);
+        return response()->json(Link::RESTORED_SUCCESS_MESSAGE);
     }
 
     /**
@@ -152,7 +140,6 @@ class LinkController extends Controller
      * @return JsonResponse
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \ReflectionException
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     protected function store(Request $request): JsonResponse
     {
@@ -167,10 +154,10 @@ class LinkController extends Controller
 
         if (!$link->validate($data)) return response()->json($link->validationErrors(), 422);
 
-        if (!$link->getPreview($link, $data['url'])) $link->generateDefaultMetaData($link, $data['url']);
+        $link->getPreview($link, $data['url']);
 
         $link->save();
 
-        return response()->json(self::SAVED_SUCCESS_MESSAGE);
+        return response()->json(Link::SAVED_SUCCESS_MESSAGE);
     }
 }

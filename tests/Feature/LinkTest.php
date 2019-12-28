@@ -2,12 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Http\Controllers\LinkController;
-use App\Http\Controllers\ReadingListController;
 use App\Link;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\Request;
 use Tests\TestCase;
 
 class LinkTest extends TestCase
@@ -40,7 +37,7 @@ class LinkTest extends TestCase
                 'name'  => 'New Name',
             ])
             ->assertStatus(200)
-            ->assertSee(LinkController::EDITED_SUCCESS_MESSAGE);
+            ->assertSee(Link::EDITED_SUCCESS_MESSAGE);
     }
 
     public function testUserCannotArchiveAnotherUsersLink()
@@ -54,7 +51,7 @@ class LinkTest extends TestCase
         $this->actingAs($user)
             ->post(route('link.archive', $link))
             ->assertStatus(403)
-            ->assertDontSee(LinkController::ARCHIVED_SUCCESS_MESSAGE);
+            ->assertDontSee(Link::ARCHIVED_SUCCESS_MESSAGE);
     }
 
     public function testUserCanArchiveOwnLink()
@@ -66,7 +63,7 @@ class LinkTest extends TestCase
         $this->actingAs($user)
             ->post(route('link.archive', $link))
             ->assertStatus(200)
-            ->assertSee(LinkController::ARCHIVED_SUCCESS_MESSAGE);
+            ->assertSee(Link::ARCHIVED_SUCCESS_MESSAGE);
     }
 
     public function testUserCanDeleteOwnLink()
@@ -78,7 +75,7 @@ class LinkTest extends TestCase
         $this->actingAs($user)
             ->post(route('link.delete', $link->id))
             ->assertStatus(200)
-            ->assertSee(LinkController::DELETED_SUCCESS_MESSAGE);
+            ->assertSee(Link::DELETED_SUCCESS_MESSAGE);
     }
 
     public function testUserCannotDeleteAnotherUsersLink()
@@ -92,7 +89,7 @@ class LinkTest extends TestCase
         $this->actingAs($user)
             ->post(route('link.delete', $link->id))
             ->assertStatus(403)
-            ->assertDontSee(LinkController::DELETED_SUCCESS_MESSAGE);
+            ->assertDontSee(Link::DELETED_SUCCESS_MESSAGE);
     }
 
     public function testUserCanViewArchives()
@@ -122,7 +119,7 @@ class LinkTest extends TestCase
 
         $this->put(route('link.restore', $link->id))
             ->assertStatus(200)
-            ->assertSee(LinkController::RESTORED_SUCCESS_MESSAGE);
+            ->assertSee(Link::RESTORED_SUCCESS_MESSAGE);
     }
 
     public function testUserCanStoreLink()
@@ -136,7 +133,7 @@ class LinkTest extends TestCase
                 'title'             => 'http://www.example.com/',
             ]))
             ->assertStatus(200)
-            ->assertSee(LinkController::SAVED_SUCCESS_MESSAGE);
+            ->assertSee(Link::SAVED_SUCCESS_MESSAGE);
     }
 
     public function testUserCannotStoreMalformedLink()
@@ -150,7 +147,7 @@ class LinkTest extends TestCase
                 'title'             => 'http://www.example.com/',
             ]))
             ->assertStatus(422)
-            ->assertDontSee(LinkController::SAVED_SUCCESS_MESSAGE);
+            ->assertDontSee(Link::SAVED_SUCCESS_MESSAGE);
     }
 
     /**

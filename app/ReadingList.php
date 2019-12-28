@@ -14,6 +14,26 @@ class ReadingList extends Model
     use ValidationTrait, SoftDeletes;
 
     /**
+     * @var string
+     */
+    const DELETED_SUCCESS_MESSAGE = "List deleted";
+
+    /**
+     * @var string
+     */
+    const DELETED_FAILED_MESSAGE = "List not empty";
+
+    /**
+     * @var string
+     */
+    const UPDATED_SUCCESS_MESSAGE = "List name updated";
+
+    /**
+     * @var string
+     */
+    const CREATED_SUCCESS_MESSAGE = "New list created";
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -98,17 +118,6 @@ class ReadingList extends Model
         return ReadingList::where('user_id', '=', Auth::user()->id)
             ->pluck('id')
             ->toArray();
-    }
-
-    /**
-     * @param \App\Link $link
-     */
-    public function deleteInactiveList(Link $link): void
-    {
-        $readingList = $link->readingList()->withTrashed()->first();
-
-        if ($readingList->links()->onlyTrashed()->count() === 1 &&
-            $readingList->deleted_at !== null) $readingList->forceDelete();
     }
 
     /**

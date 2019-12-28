@@ -85,7 +85,7 @@
             },
             deleteLink() {
                 let data = {
-                    route: `link/delete/${this.link.id}`,
+                    route: this.archived ? `link/force-delete/${this.link.id}`: `link/delete/${this.link.id}`,
                     body: `Are you sure you want to delete ${this.link.title}?`,
                     buttonText: 'Delete',
                     btnClass: 'delete',
