@@ -96,8 +96,9 @@
             reAddLink() {
                 axios.put(`/api/link/restore/${this.link.id}`)
                     .then((response) => {
-                        EventBus.$emit('close-modal');
+                        if (!this.archived) EventBus.$emit('close-modal');
                         EventBus.$emit('re-render');
+                        EventBus.$emit('archive-restored', this.link.id);
                         EventBus.$emit('flash', response.data, 'success');
                     })
             },

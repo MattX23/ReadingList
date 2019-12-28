@@ -1,6 +1,6 @@
 <template>
     <transition name="modal-fade">
-        <div v-show="showModal" @click="closeModal" @keydown.enter="submitModal" class="custom-modal" tabindex="-1" role="dialog">
+        <div v-show="showModal" ref="modal" @click="closeModal" @keyup.enter="submitModal" class="custom-modal" tabindex="-1" role="dialog">
             <div @click.stop="doNothing" class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -50,6 +50,8 @@
                 } else if (data.btnClass === 'primary') {
                     this.btnClass = 'btn btn-primary';
                 }
+                if (data.hasLinks) this.body += ' This will also permanently delete all links in this list.';
+                this.$nextTick(() => this.$refs.modal.focus())
             });
             EventBus.$on('close-modal', () => {
                 this.closeModal();
