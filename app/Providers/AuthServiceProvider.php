@@ -2,10 +2,11 @@
 
 namespace App\Providers;
 
+use App\Link;
+use App\Policies\LinkPolicy;
 use App\ReadingList;
 use App\Policies\ReadingListPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -15,7 +16,8 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-         ReadingList::class => ReadingListPolicy::class,
+        ReadingList::class => ReadingListPolicy::class,
+        Link::class        => LinkPolicy::class,
     ];
 
     /**
@@ -26,7 +28,5 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-
-        //
     }
 }

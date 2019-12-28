@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Traits\ValidationTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,7 +10,27 @@ use Illuminate\Support\Facades\Auth;
 
 class ReadingList extends Model
 {
-    use ValidationTrait, SoftDeletes;
+    use SoftDeletes;
+
+    /**
+     * @var string
+     */
+    const DELETED_SUCCESS_MESSAGE = "List deleted";
+
+    /**
+     * @var string
+     */
+    const DELETED_FAILED_MESSAGE = "List not empty";
+
+    /**
+     * @var string
+     */
+    const UPDATED_SUCCESS_MESSAGE = "List name updated";
+
+    /**
+     * @var string
+     */
+    const CREATED_SUCCESS_MESSAGE = "New list created";
 
     /**
      * The attributes that are mass assignable.
@@ -22,14 +41,6 @@ class ReadingList extends Model
         'name',
         'user_id',
         'position',
-    ];
-
-    /**
-     * @var array
-     */
-    public $rules = [
-        'name'      => 'required|string',
-        'user_id'   => 'required|integer',
     ];
 
     protected $casts = [
@@ -43,6 +54,24 @@ class ReadingList extends Model
      * @var array
      */
     protected $with = ['links'];
+
+    public static function boot()
+    {
+        parent::boot();
+
+        self::deleted(function () {
+            $lists = ReadingList::all()->sortBy('position');
+
+            $i = 1;
+
+            foreach ($lists as $list) {
+                $list->update([
+                    'position' => $i
+                ]);
+                $i++;
+            }
+        });
+    }
 
     public function user(): BelongsTo
     {
@@ -98,17 +127,6 @@ class ReadingList extends Model
         return ReadingList::where('user_id', '=', Auth::user()->id)
             ->pluck('id')
             ->toArray();
-    }
-
-    /**
-     * @param \App\Link $link
-     */
-    public function deleteInactiveList(Link $link): void
-    {
-        $readingList = $link->readingList()->withTrashed()->first();
-
-        if ($readingList->links()->onlyTrashed()->count() === 1 &&
-            $readingList->deleted_at !== null) $readingList->forceDelete();
     }
 
     /**

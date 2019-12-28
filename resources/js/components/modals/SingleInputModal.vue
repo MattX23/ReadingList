@@ -78,7 +78,7 @@
                 this.textInput = '';
             },
             doNothing() {
-                return null;
+                return false;
             },
             submitModal() {
                 let data = {

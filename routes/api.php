@@ -1,18 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-
 Route::post('/register', 'Auth\RegisterController@register')->name('register');
 Route::post('/login', 'Auth\LoginController@login')->name('login');
 Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
@@ -24,22 +11,31 @@ Route::group([
     'as'=>'lists.'
 ], function(){
     Route::post('/create', 'ReadingListController@store')->name('create');
-    Route::delete('/delete/{id}', 'ReadingListController@delete')->name('delete');
-    Route::put('/edit/{readingList}', 'ReadingListController@edit')->name('edit');
     Route::get('/get', 'ReadingListController@get')->name('get');
     Route::put('/reorder', 'ReadingListController@reorderList')->name('reorder');
     Route::put('/reorder-multiple', 'ReadingListController@reorderMultipleLists')->name('reorder-multiple');
+
+    Route::put('/edit/{readingList}', 'ReadingListController@edit')->name('edit')->middleware('can:edit,readingList');
+
+    // Handled via AuthorizeSoftDeletesTrait
+
+    Route::delete('/delete/{id}', 'ReadingListController@delete')->name('delete');
 });
 
 Route::group([
     'prefix'=>'link',
     'as'=>'link.'
 ], function(){
-    Route::get('/archives/{user}', 'LinkController@getArchives')->name('archives');
     Route::post('/create', 'LinkController@store')->name('create');
-    Route::post('/archive/{link}', 'LinkController@archive')->name('archive');
-    Route::post('/delete/{id}', 'LinkController@delete')->name('delete');
-    Route::put('/edit/{link}', 'LinkController@rename')->name('edit');
     Route::put('/reorder', 'LinkController@reorderLinks')->name('reorder');
+
+    Route::post('/archive/{link}', 'LinkController@archive')->name('archive')->middleware('can:archive,link');
+    Route::post('/delete/{link}', 'LinkController@delete')->name('delete')->middleware('can:delete,link');
+    Route::put('/edit/{link}', 'LinkController@rename')->name('edit')->middleware('can:rename,link');
+
+    // Handled via AuthorizeSoftDeletesTrait
+
+    Route::get('/archives/{user}', 'LinkController@getArchives')->name('archives');
+    Route::post('/force-delete/{id}', 'LinkController@forceDelete')->name('forceDelete');
     Route::put('/restore/{id}', 'LinkController@restore')->name('restore');
 });

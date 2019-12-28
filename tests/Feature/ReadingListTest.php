@@ -2,8 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Http\Controllers\LinkController;
 use App\Http\Controllers\ReadingListController;
+use App\Http\Requests\ReadingListRequest;
+use App\Link;
 use App\ReadingList;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -64,7 +65,7 @@ class ReadingListTest extends TestCase
         $this->actingAs($user)
             ->delete(route('lists.delete', $readingList))
             ->assertStatus(200)
-            ->assertSee(ReadingListController::DELETED_SUCCESS_MESSAGE);
+            ->assertSee(ReadingList::DELETED_SUCCESS_MESSAGE);
     }
 
     public function testListIsOnlySoftDeletedWhenListHasArchivedLink()
@@ -79,7 +80,7 @@ class ReadingListTest extends TestCase
 
         $this->delete(route('lists.delete', $readingList))
             ->assertStatus(200)
-            ->assertSee(ReadingListController::DELETED_SUCCESS_MESSAGE);
+            ->assertSee(ReadingList::DELETED_SUCCESS_MESSAGE);
 
         $this->assertTrue(ReadingList::where('user_id', '=', $user->id)->get()->count() < 1);
         $this->assertTrue(ReadingList::withTrashed()->where('user_id', $user->id)->get()->count() === 1);
@@ -97,7 +98,7 @@ class ReadingListTest extends TestCase
 
         $this->delete(route('lists.delete', $readingList))
             ->assertStatus(200)
-            ->assertSee(ReadingListController::DELETED_SUCCESS_MESSAGE);
+            ->assertSee(ReadingList::DELETED_SUCCESS_MESSAGE);
 
         $this->assertTrue(ReadingList::where('user_id', '=', $user->id)->get()->count() < 1);
         $this->assertTrue(ReadingList::withTrashed()->where('user_id', $user->id)->get()->count() < 1);
@@ -115,14 +116,13 @@ class ReadingListTest extends TestCase
 
         $this->delete(route('lists.delete', $readingList))
             ->assertStatus(200)
-            ->assertSee(ReadingListController::DELETED_SUCCESS_MESSAGE);
+            ->assertSee(ReadingList::DELETED_SUCCESS_MESSAGE);
 
         $link = $user->readingLists()->withTrashed()->first()->links()->withTrashed()->first();
 
-        $this->actingAs($user)
-            ->post(route('link.delete', $link->id))
+        $this->post(route('link.forceDelete', $link->id))
             ->assertStatus(200)
-            ->assertSee(LinkController::DELETED_SUCCESS_MESSAGE);
+            ->assertSee(Link::DELETED_SUCCESS_MESSAGE);
 
         $this->assertTrue(ReadingList::where('user_id', '=', $user->id)->get()->count() < 1);
         $this->assertTrue(ReadingList::withTrashed()->where('user_id', $user->id)->get()->count() < 1);
@@ -144,7 +144,7 @@ class ReadingListTest extends TestCase
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue(count(ReadingList::where('user_id', $user->id)->get()) < $numLists);
-        $this->assertEquals($response->getData(), ReadingListController::DELETED_SUCCESS_MESSAGE);
+        $this->assertEquals($response->getData(), ReadingList::DELETED_SUCCESS_MESSAGE);
     }
 
     public function testUserCanEditReadingList()
@@ -153,7 +153,7 @@ class ReadingListTest extends TestCase
 
         $readingList = $user->readingLists->first();
 
-        $request = Request::create(route('lists.edit', $readingList), 'PUT',[
+        $request = ReadingListRequest::create(route('lists.edit', $readingList), 'PUT',[
             'name'     => 'New name',
             'user_id'  => $user->id,
         ]);
@@ -165,14 +165,14 @@ class ReadingListTest extends TestCase
         $response = $controller->edit($readingList, $request);
 
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals($response->getData(), ReadingListController::UPDATED_SUCCESS_MESSAGE);
+        $this->assertEquals($response->getData(), ReadingList::UPDATED_SUCCESS_MESSAGE);
     }
 
     public function testUserCanStoreReadingList()
     {
         $user = factory(User::class)->create();
 
-        $request = Request::create(route('lists.create'), 'POST',[
+        $request = ReadingListRequest::create(route('lists.create'), 'POST',[
             'name' => 'New name',
         ]);
 
@@ -181,7 +181,7 @@ class ReadingListTest extends TestCase
         $response = (new ReadingListController())->store($request);
 
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals($response->getData(), ReadingListController::CREATED_SUCCESS_MESSAGE);
+        $this->assertEquals($response->getData(), ReadingList::CREATED_SUCCESS_MESSAGE);
     }
 
     public function testReorderingOfLists()
