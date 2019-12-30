@@ -46,7 +46,7 @@
             link: Object,
             windowWidth: Number,
             id: Number,
-            numLinks: Number,
+            linkCount: Number,
         },
         data() {
             return {
@@ -73,7 +73,7 @@
             },
             optionsClass() {
                 let classList = 'options';
-                if (this.link.position === this.numLinks && this.numLinks > 1) {
+                if (this.link.position === this.linkCount && this.linkCount > 1) {
                     classList += ' options-last';
                 }
                 return classList;
