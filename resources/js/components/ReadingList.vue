@@ -24,7 +24,7 @@
                             :link="link"
                             :windowWidth="windowWidth"
                             :id="id"
-                            :numLinks="readingList.links.length">
+                            :linkCount="readingList.links.length">
                         </reading-link>
                     </div>
                 </draggable>

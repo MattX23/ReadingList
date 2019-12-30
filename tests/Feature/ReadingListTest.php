@@ -9,20 +9,21 @@ use App\ReadingList;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Tests\Traits\SetUpTrait;
 
 class ReadingListTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, SetUpTrait;
 
     public function testUserCannotEditAnotherUsersReadingList()
     {
-        $user = factory(User::class)->create();
+        $anotherUser = factory(User::class)->create();
 
-        $anotherUser = $this->createUserAndReadingLists(2);
+        $this->addListsAndLinks(2);
 
-        $readingList = $anotherUser->readingLists->first();
+        $readingList = $anotherUser->readingLists()->first();
 
-        $this->actingAs($user)
+        $this->actingAs($this->user)
             ->put(route('lists.edit', $readingList), [
                 'name'  => 'New Name',
             ])
@@ -31,37 +32,38 @@ class ReadingListTest extends TestCase
 
     public function testUserCanEditOwnReadingList()
     {
-        $user = $this->createUserAndReadingLists(2);
+        $this->addListsAndLinks(2);
 
-        $readingList = $user->readingLists->first();
+        $readingList = $this->user->readingLists()->first();
 
-        $this->actingAs($user)
+        $this->actingAs($this->user)
             ->put(route('lists.edit', $readingList), [
                 'name'  => 'New Name',
             ])
-            ->assertStatus(200);
+            ->assertStatus(200)
+            ->assertSee(ReadingList::UPDATED_SUCCESS_MESSAGE);
     }
 
     public function testUserCannotDeleteAnotherUsersReadingList()
     {
-        $user = factory(User::class)->create();
+        $anotherUser = factory(User::class)->create();
 
-        $anotherUser = $this->createUserAndReadingLists(2);
+        $this->addListsAndLinks(2);
 
-        $readingList = $anotherUser->readingLists->first();
+        $readingList = $anotherUser->readingLists()->first();
 
-        $this->actingAs($user)
+        $this->actingAs($this->user)
             ->delete(route('lists.delete', $readingList))
             ->assertStatus(403);
     }
 
     public function testUserCanDeleteOwnReadingList()
     {
-        $user = $this->createUserAndReadingLists(2);
+        $this->addListsAndLinks(2);
 
-        $readingList = $user->readingLists->first();
+        $readingList = $this->user->readingLists()->first();
 
-        $this->actingAs($user)
+        $this->actingAs($this->user)
             ->delete(route('lists.delete', $readingList))
             ->assertStatus(200)
             ->assertSee(ReadingList::DELETED_SUCCESS_MESSAGE);
@@ -69,113 +71,71 @@ class ReadingListTest extends TestCase
 
     public function testListIsOnlySoftDeletedWhenListHasArchivedLink()
     {
-        $user = (new LinkTest())->createUserWithListsAndLinks(1, 1);
+        $this->addListsAndLinks(1, 1);
 
-        $this->actingAs($user);
+        $this->actingAs($this->user);
 
-        $user->readingLists()->first()->links->first()->delete();
+        $this->user->readingLists()->first()->links()->first()->delete();
 
-        $readingList = $user->readingLists()->first();
+        $readingList = $this->user->readingLists()->first();
 
         $this->delete(route('lists.delete', $readingList))
             ->assertStatus(200)
             ->assertSee(ReadingList::DELETED_SUCCESS_MESSAGE);
 
-        $this->assertTrue(ReadingList::where('user_id', '=', $user->id)->get()->count() < 1);
-        $this->assertTrue(ReadingList::withTrashed()->where('user_id', $user->id)->get()->count() === 1);
+        $this->assertTrue(ReadingList::where('user_id', '=', $this->user->id)->get()->count() < 1);
+        $this->assertTrue(ReadingList::withTrashed()->where('user_id', $this->user->id)->get()->count() === 1);
     }
 
     public function testListIsFullyDeletedWhenListHasNoRelatedLinks()
     {
-        $user = (new LinkTest())->createUserWithListsAndLinks(1, 1);
+        $this->addListsAndLinks(1, 1);
 
-        $this->actingAs($user);
+        $this->actingAs($this->user);
 
-        $user->readingLists()->first()->links->first()->forceDelete();
+        $this->user->readingLists()->first()->links()->first()->forceDelete();
 
-        $readingList = $user->readingLists()->first();
+        $readingList = $this->user->readingLists()->first();
 
         $this->delete(route('lists.delete', $readingList))
             ->assertStatus(200)
             ->assertSee(ReadingList::DELETED_SUCCESS_MESSAGE);
 
-        $this->assertTrue(ReadingList::where('user_id', '=', $user->id)->get()->count() < 1);
-        $this->assertTrue(ReadingList::withTrashed()->where('user_id', $user->id)->get()->count() < 1);
+        $this->assertTrue(ReadingList::where('user_id', '=', $this->user->id)->get()->count() < 1);
+        $this->assertTrue(ReadingList::withTrashed()->where('user_id', $this->user->id)->get()->count() < 1);
     }
 
     public function testRelatedListIsDeletedWhenLastArchivedLinkIsDeleted()
     {
-        $user = (new LinkTest())->createUserWithListsAndLinks(1, 1);
+        $this->addListsAndLinks(1, 1);
 
-        $this->actingAs($user);
+        $this->actingAs($this->user);
 
-        $user->readingLists()->first()->links->first()->delete();
+        $this->user->readingLists()->first()->links()->first()->delete();
 
-        $readingList = $user->readingLists()->first();
+        $readingList = $this->user->readingLists()->first();
 
         $this->delete(route('lists.delete', $readingList))
             ->assertStatus(200)
             ->assertSee(ReadingList::DELETED_SUCCESS_MESSAGE);
 
-        $link = $user->readingLists()->withTrashed()->first()->links()->withTrashed()->first();
+        $link = $this->user->readingLists()->withTrashed()->first()->links()->withTrashed()->first();
 
         $this->post(route('link.forceDelete', $link->id))
             ->assertStatus(200)
             ->assertSee(Link::DELETED_SUCCESS_MESSAGE);
 
-        $this->assertTrue(ReadingList::where('user_id', '=', $user->id)->get()->count() < 1);
-        $this->assertTrue(ReadingList::withTrashed()->where('user_id', $user->id)->get()->count() < 1);
-    }
-
-    public function testUserCanDeleteReadingList()
-    {
-        $user = $this->createUserAndReadingLists(2);
-
-        $numLists = count(ReadingList::where('user_id', $user->id)->get());
-
-        $readingList = $user->readingLists->first();
-
-        $this->actingAs($user);
-
-        $controller = new ReadingListController();
-
-        $response = $controller->delete($readingList->id);
-
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertTrue(count(ReadingList::where('user_id', $user->id)->get()) < $numLists);
-        $this->assertEquals($response->getData(), ReadingList::DELETED_SUCCESS_MESSAGE);
-    }
-
-    public function testUserCanEditReadingList()
-    {
-        $user = $this->createUserAndReadingLists(2);
-
-        $readingList = $user->readingLists->first();
-
-        $request = ReadingListRequest::create(route('lists.edit', $readingList), 'PUT',[
-            'name'     => 'New name',
-            'user_id'  => $user->id,
-        ]);
-
-        $this->actingAs($user);
-
-        $controller = new ReadingListController();
-
-        $response = $controller->edit($readingList, $request);
-
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals($response->getData(), ReadingList::UPDATED_SUCCESS_MESSAGE);
+        $this->assertTrue(ReadingList::where('user_id', '=', $this->user->id)->get()->count() < 1);
+        $this->assertTrue(ReadingList::withTrashed()->where('user_id', $this->user->id)->get()->count() < 1);
     }
 
     public function testUserCanStoreReadingList()
     {
-        $user = factory(User::class)->create();
-
         $request = ReadingListRequest::create(route('lists.create'), 'POST',[
             'name' => 'New name',
         ]);
 
-        $this->actingAs($user);
+        $this->actingAs($this->user);
 
         $response = (new ReadingListController())->store($request);
 
@@ -185,9 +145,9 @@ class ReadingListTest extends TestCase
 
     public function testReorderingOfLists()
     {
-        $user = $this->createUserAndReadingLists(5);
+        $this->addListsAndLinks(5);
 
-        $lists = $user->readingLists;
+        $lists = $this->user->readingLists;
 
         $i = 1;
 
@@ -198,56 +158,35 @@ class ReadingListTest extends TestCase
             $i++;
         }
 
-        $positions = $user->readingLists->pluck('position')->toArray();
+        $positions = $this->user->readingLists->pluck('position')->toArray();
 
         $this->assertEquals([1,2,3,4,5], $positions);
 
         $model = new ReadingList();
-
-        $this->actingAs($user);
+        $this->actingAs($this->user);
 
         $ids = (new ReadingList())->getReadingListIds();
 
         $model->reorderLists(array_reverse($ids));
 
-        $user->readingLists->each(function($readingList){
+        $this->user->readingLists->each(function($readingList){
             $readingList->refresh();
         });
 
-        $positions = $user->readingLists->pluck('position')->toArray();
+        $positions = $this->user->readingLists->pluck('position')->toArray();
 
         $this->assertEquals([5,4,3,2,1], $positions);
     }
 
     public function testNewReadingListPositionedCorrectly()
     {
-        $user = $this->createUserAndReadingLists(3);
-
-        $model = new ReadingList();
+        $this->addListsAndLinks(3);
 
         $newReadingList = factory(ReadingList::class)->create([
-            'user_id'  => $user->id,
-            'position' => $model->getNewReadingListPosition($user),
+            'user_id'  => $this->user->id,
+            'position' => (new ReadingList())->getNewReadingListPosition($this->user),
         ]);
 
-        $this->assertEquals(count($user->readingLists), $newReadingList->position);
-    }
-
-    /**
-     * @param int $numLists
-     *
-     * @return User
-     */
-    public function createUserAndReadingLists(int $numLists): User
-    {
-        $user = factory(User::class)->create();
-
-        $user->each(function ($user) use ($numLists) {
-            factory(ReadingList::class, $numLists)->create([
-                'user_id' => $user->id,
-            ]);
-        });
-
-        return $user;
+        $this->assertEquals($this->user->readingLists()->count(), $newReadingList->position);
     }
 }
