@@ -56,6 +56,24 @@ class User extends Authenticatable implements MustVerifyEmail
     public static function checkIfEmailExists(string $email): bool
     {
         return (bool) User::where('email', $email)->first();
-
     }
+
+    /**
+     * @return int
+     */
+    public function getReadingListPosition(): int
+    {
+        return $this->readingLists()->count() + 1;
+    }
+
+    /**
+     * @param  int $readingList_id
+     *
+     * @return int
+     */
+    public function getLinkPosition(int $readingList_id): int
+    {
+        return Link::where('reading_list_id', '=', $readingList_id)->count() + 1;
+    }
+
 }

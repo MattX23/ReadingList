@@ -79,16 +79,6 @@ class ReadingList extends Model
     }
 
     /**
-     * @param User $user
-     *
-     * @return int
-     */
-    public function getNewReadingListPosition(User $user): int
-    {
-        return ReadingList::where('user_id', '=', $user->id)->count() + 1;
-    }
-
-    /**
      * @return array
      */
     public function getReadingListIds(): array

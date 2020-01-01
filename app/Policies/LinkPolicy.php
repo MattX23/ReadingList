@@ -38,7 +38,7 @@ class LinkPolicy
      *
      * @return bool
      */
-    public function rename(User $user, Link $link): bool
+    public function edit(User $user, Link $link): bool
     {
         return $user->id === $link->readingList->user_id;
     }

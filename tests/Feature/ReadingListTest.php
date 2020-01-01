@@ -121,7 +121,7 @@ class ReadingListTest extends TestCase
 
         $link = $this->user->readingLists()->withTrashed()->first()->links()->withTrashed()->first();
 
-        $this->post(route('link.forceDelete', $link->id))
+        $this->post(route('link.deleteFromArchives', $link->id))
             ->assertStatus(200)
             ->assertSee(Link::DELETED_SUCCESS_MESSAGE);
 
@@ -184,7 +184,7 @@ class ReadingListTest extends TestCase
 
         $newReadingList = factory(ReadingList::class)->create([
             'user_id'  => $this->user->id,
-            'position' => (new ReadingList())->getNewReadingListPosition($this->user),
+            'position' => $this->user->getReadingListPosition(),
         ]);
 
         $this->assertEquals($this->user->readingLists()->count(), $newReadingList->position);

@@ -48,8 +48,9 @@ class Link extends Model
      * @var array
      */
     protected $fillable = [
-        'url',
         'reading_list_id',
+        'title',
+        'url',
         'position',
     ];
 
@@ -100,24 +101,6 @@ class Link extends Model
     }
 
     /**
-     * @param  int $readingList_id
-     *
-     * @return int
-     */
-    public function getNewLinkPosition(int $readingList_id) : int
-    {
-        return Link::where('reading_list_id', '=', $readingList_id)->count() + 1;
-    }
-
-    public function deleteInactiveList(): void
-    {
-        $readingList = $this->readingList()->withTrashed()->first();
-
-        if ($readingList->links()->onlyTrashed()->count() === 1 &&
-            $readingList->deleted_at !== null) $readingList->forceDelete();
-    }
-
-    /**
      * @param array $ids
      */
     public function reorderLinks(array $ids)
@@ -135,5 +118,16 @@ class Link extends Model
         $readingListIds = (new ReadingList())->getReadingListIds();
 
         if (!in_array($this->reading_list_id, $readingListIds)) (new ReadingList())->restoreList($this);
+    }
+
+    /**
+     * @return void
+     */
+    public function deleteInactiveList(): void
+    {
+        $readingList = $this->readingList()->withTrashed()->first();
+
+        if ($readingList->links()->onlyTrashed()->count() === 1 &&
+            $readingList->deleted_at !== null) $readingList->forceDelete();
     }
 }
