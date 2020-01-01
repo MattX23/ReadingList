@@ -16,17 +16,6 @@ class LinkPolicy
      *
      * @return bool
      */
-    public function archive(User $user, Link $link): bool
-    {
-        return $user->id === $link->readingList->user_id;
-    }
-
-    /**
-     * @param User $user
-     * @param Link $link
-     *
-     * @return bool
-     */
     public function viewArchives(User $user, Link $link): bool
     {
         return $user->id === $link->readingList()->withTrashed()->first()->user_id;
