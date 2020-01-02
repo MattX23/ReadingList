@@ -123,5 +123,4 @@ class ReadingListController extends Controller
 
         return response()->json(ReadingList::CREATED_SUCCESS_MESSAGE);
     }
-
 }

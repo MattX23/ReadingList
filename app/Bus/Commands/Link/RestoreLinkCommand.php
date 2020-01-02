@@ -3,6 +3,7 @@
 namespace App\Bus\Commands\Link;
 
 use App\Link;
+use App\ReadingList;
 
 class RestoreLinkCommand
 {
@@ -25,7 +26,25 @@ class RestoreLinkCommand
      */
     public function handle()
     {
-        $this->link->restoreSoftDeletedList();
+        $this->restoreSoftDeletedList();
         $this->link->restore();
+    }
+
+    public function restoreSoftDeletedList(): void
+    {
+        $readingListIds = $this->link->readingList->getIds();
+
+        if (!in_array($this->link->reading_list_id, $readingListIds)) $this->restoreDormantList();
+    }
+
+    /**
+     * @return bool
+     */
+    public function restoreDormantList(): bool
+    {
+        return (bool) $this->link->readingList()
+            ->withTrashed()
+            ->where('id', '=', $this->link->reading_list_id)
+            ->restore();
     }
 }

@@ -165,7 +165,7 @@ class ReadingListTest extends TestCase
         $model = new ReadingList();
         $this->actingAs($this->user);
 
-        $ids = (new ReadingList())->getReadingListIds();
+        $ids = $this->user->readingLists->first()->getIds();
 
         $model->reorderLists(array_reverse($ids));
 

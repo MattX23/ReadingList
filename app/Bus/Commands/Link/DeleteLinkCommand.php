@@ -38,7 +38,18 @@ class DeleteLinkCommand
 
     protected function forceDelete()
     {
-        $this->link->deleteInactiveList();
+        $this->deleteInactiveList();
         $this->link->forceDelete();
+    }
+
+    /**
+     * @return void
+     */
+    public function deleteInactiveList(): void
+    {
+        $readingList = $this->link->readingList()->withTrashed()->first();
+
+        if ($readingList->links()->onlyTrashed()->count() === 1 &&
+            $readingList->deleted_at !== null) $readingList->forceDelete();
     }
 }

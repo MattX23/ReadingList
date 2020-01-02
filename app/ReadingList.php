@@ -81,7 +81,7 @@ class ReadingList extends Model
     /**
      * @return array
      */
-    public function getReadingListIds(): array
+    public function getIds(): array
     {
         return ReadingList::where('user_id', '=', Auth::user()->id)
             ->pluck('id')
@@ -99,7 +99,7 @@ class ReadingList extends Model
     }
 
     /**
-     * @param array $ids
+     * @param int[] $ids
      */
     public function reorderLists(array $ids): void
     {
@@ -111,23 +111,18 @@ class ReadingList extends Model
         }
     }
 
-    /**
-     * @param \App\Link $link
-     *
-     * @return bool
-     */
-    public function restoreList(Link $link): bool
-    {
-        return (bool) $link->readingList()
-            ->withTrashed()
-            ->where('id', '=', $link->reading_list_id)
-            ->restore();
-    }
-
     public function removeActiveLinks()
     {
         $this->links()->each(function(Link $link) {
             $link->forceDelete();
         });
+    }
+
+    /**
+     * @return int
+     */
+    public function getLinkPosition(): int
+    {
+        return Link::where('reading_list_id', '=', $this->id)->count() + 1;
     }
 }

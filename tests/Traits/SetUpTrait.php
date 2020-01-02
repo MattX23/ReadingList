@@ -72,7 +72,6 @@ trait SetUpTrait {
                 ]);
                 $c++;
             }
-
         });
     }
 }
