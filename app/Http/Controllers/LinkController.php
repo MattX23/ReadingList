@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Bus\Commands\Link\CreateLinkCommand;
+use App\Bus\Commands\Link\DeleteLinkCommand;
+use App\Bus\Commands\Link\EditLinkCommand;
+use App\Bus\Commands\Link\RestoreLinkCommand;
 use App\Http\Requests\LinkEditRequest;
 use App\Http\Requests\LinkRequest;
 use App\Link;
@@ -12,6 +16,7 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Config;
 
 class LinkController extends Controller
 {
@@ -25,7 +30,7 @@ class LinkController extends Controller
      */
     public function archive(Link $link): JsonResponse
     {
-        $link->delete();
+        $this->dispatch(new DeleteLinkCommand($link));
 
         return response()->json(Link::ARCHIVED_SUCCESS_MESSAGE);
     }
@@ -37,7 +42,7 @@ class LinkController extends Controller
      */
     public function delete(Link $link): JsonResponse
     {
-        $link->forceDelete();
+        $this->dispatch(new DeleteLinkCommand($link, true));
 
         return response()->json(Link::DELETED_SUCCESS_MESSAGE);
     }
@@ -47,13 +52,16 @@ class LinkController extends Controller
      *
      * @return JsonResponse
      */
-    public function forceDelete(int $id): JsonResponse
+    public function deleteFromArchives(int $id): JsonResponse
     {
-        $link = $this->authorizeSoftDeletedModel(Link::class, $id, 'delete', true);
+        $link = $this->authorizeSoftDeletedModel(
+            Link::class,
+            $id,
+            Config::get('policies.policy.delete'),
+            true
+        );
 
-        $link->deleteInactiveList();
-
-        $link->forceDelete();
+        $this->dispatch(new DeleteLinkCommand($link, true));
 
         return response()->json(Link::DELETED_SUCCESS_MESSAGE);
     }
@@ -63,7 +71,7 @@ class LinkController extends Controller
      *
      * @return \Illuminate\Support\Collection
      */
-    protected function getArchivedLinks(User $user)
+    protected function getArchivedLinks(User $user): Collection
     {
         $links = Collection::make();
 
@@ -85,7 +93,11 @@ class LinkController extends Controller
     {
         $links = $this->getArchivedLinks($user);
 
-        if ($links->count() > 0) $this->authorizeSoftDeletedModel(Link::class, $links->first()->id, 'viewArchives');
+        if ($links->count() > 0) $this->authorizeSoftDeletedModel(
+            Link::class,
+            $links->first()->id,
+            Config::get('policies.policy.view_archives')
+        );
 
         return response()->json($links);
     }
@@ -96,14 +108,9 @@ class LinkController extends Controller
      *
      * @return JsonResponse
      */
-    protected function rename(Link $link, LinkEditRequest $request): JsonResponse
+    protected function edit(Link $link, LinkEditRequest $request): JsonResponse
     {
-        $link->title = $request->name;
-        $data = $link->toArray();
-
-        $link->update([
-            'title' => $data['title'],
-        ]);
+        $this->dispatch(new EditLinkCommand($link, $request->name));
 
         return response()->json(Link::EDITED_SUCCESS_MESSAGE);
     }
@@ -124,11 +131,14 @@ class LinkController extends Controller
      */
     protected function restore(int $id): JsonResponse
     {
-        $link = $this->authorizeSoftDeletedModel(Link::class, $id, 'restore', true);
+        $link = $this->authorizeSoftDeletedModel(
+            Link::class,
+            $id,
+            Config::get('policies.policy.restore'),
+            true
+        );
 
-        $link->restoreSoftDeletedList();
-
-        $link->restore();
+        $this->dispatch(new RestoreLinkCommand($link));
 
         return response()->json(Link::RESTORED_SUCCESS_MESSAGE);
     }
@@ -137,22 +147,14 @@ class LinkController extends Controller
      * @param \App\Http\Requests\LinkRequest $request
      *
      * @return JsonResponse
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     protected function store(LinkRequest $request): JsonResponse
     {
-        $data = [
-            'url'             => $request->name,
-            'reading_list_id' => $request->id,
-            'position'        => (new Link())->getNewLinkPosition($request->id),
-            'title'           => $request->name,
-        ];
-
-        $link = new Link($data);
-
-        $link->getPreview($link, $data['url']);
-
-        $link->save();
+        $this->dispatch(new CreateLinkCommand(
+            $request->name,
+            $request->id,
+            $request->name
+        ));
 
         return response()->json(Link::SAVED_SUCCESS_MESSAGE);
     }

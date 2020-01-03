@@ -1,6 +1,6 @@
 <template>
     <transition name="modal-fade">
-        <div v-show="showModal" @click="closeModal" @keydown.enter="submitModal" class="custom-modal" tabindex="-1" role="dialog">
+        <div v-show="showModal" @click="closeModal" class="custom-modal" tabindex="-1" role="dialog">
             <div @click.stop="doNothing" class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">

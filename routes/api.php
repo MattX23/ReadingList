@@ -30,13 +30,13 @@ Route::group([
     Route::post('/create', 'LinkController@store')->name('create');
     Route::put('/reorder', 'LinkController@reorderLinks')->name('reorder');
 
-    Route::post('/archive/{link}', 'LinkController@archive')->name('archive')->middleware('can:archive,link');
+    Route::post('/archive/{link}', 'LinkController@archive')->name('archive')->middleware('can:delete,link');
     Route::post('/delete/{link}', 'LinkController@delete')->name('delete')->middleware('can:delete,link');
-    Route::put('/edit/{link}', 'LinkController@rename')->name('edit')->middleware('can:rename,link');
+    Route::put('/edit/{link}', 'LinkController@edit')->name('edit')->middleware('can:edit,link');
 
     // Handled via AuthorizeSoftDeletesTrait
 
     Route::get('/archives/{user}', 'LinkController@getArchives')->name('archives');
-    Route::post('/force-delete/{id}', 'LinkController@forceDelete')->name('forceDelete');
+    Route::post('/force-delete/{id}', 'LinkController@deleteFromArchives')->name('deleteFromArchives');
     Route::put('/restore/{id}', 'LinkController@restore')->name('restore');
 });

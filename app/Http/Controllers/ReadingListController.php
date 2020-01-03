@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Bus\Commands\ReadingList\CreateReadingListCommand;
+use App\Bus\Commands\ReadingList\DeleteReadingListCommand;
+use App\Bus\Commands\ReadingList\EditReadingListCommand;
 use App\Http\Requests\ReadingListRequest;
 use App\Link;
 use App\ReadingList;
@@ -9,6 +12,7 @@ use App\Traits\AuthorizeSoftDeletesTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 
 class ReadingListController extends Controller
 {
@@ -43,28 +47,30 @@ class ReadingListController extends Controller
      */
     public function delete(int $id): JsonResponse
     {
-        $readingList = $this->authorizeSoftDeletedModel(ReadingList::class, $id, 'delete', true);
+        $readingList = $this->authorizeSoftDeletedModel(
+            ReadingList::class,
+            $id,
+            Config::get('policies.policy.delete'),
+            true
+        );
 
-        $readingList->removeActiveLinks();
-
-        $readingList->hasTrash() ? $readingList->delete() : $readingList->forceDelete();
+        $this->dispatch(new DeleteReadingListCommand($readingList));
 
         return response()->json(ReadingList::DELETED_SUCCESS_MESSAGE);
     }
 
     /**
-     * @param ReadingList $readingList
+     * @param ReadingList                           $readingList
      * @param \App\Http\Requests\ReadingListRequest $request
      *
      * @return JsonResponse
      */
     public function edit(ReadingList $readingList, ReadingListRequest $request): JsonResponse
     {
-        $data = [
-            'name' => $request->name,
-        ];
-
-        $readingList->update($data);
+        $this->dispatch(new EditReadingListCommand(
+            $readingList,
+            $request->name
+        ));
 
         return response()->json(ReadingList::UPDATED_SUCCESS_MESSAGE);
     }
@@ -110,17 +116,10 @@ class ReadingListController extends Controller
      */
     public function store(ReadingListRequest $request): JsonResponse
     {
-        $user = Auth::user();
-
-        $data = [
-            'name'     => $request->name,
-            'user_id'  => $user->id,
-            'position' => (new ReadingList())->getNewReadingListPosition($user),
-        ];
-
-        $list = new ReadingList($data);
-
-        $list->save();
+        $this->dispatch(new CreateReadingListCommand(
+            $request->name,
+            Auth::user()
+        ));
 
         return response()->json(ReadingList::CREATED_SUCCESS_MESSAGE);
     }
