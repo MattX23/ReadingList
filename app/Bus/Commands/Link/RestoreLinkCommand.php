@@ -32,7 +32,9 @@ class RestoreLinkCommand
 
     public function restoreSoftDeletedList(): void
     {
-        $readingListIds = $this->link->readingList->getIds();
+        $readingListId = $this->link->reading_list_id;
+
+        $readingListIds = ReadingList::withTrashed()->where('id', '=', $readingListId)->first()->getIds();
 
         if (!in_array($this->link->reading_list_id, $readingListIds)) $this->restoreDormantList();
     }

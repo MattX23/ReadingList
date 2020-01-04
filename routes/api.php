@@ -17,26 +17,21 @@ Route::group([
     Route::put('/reorder-multiple', 'ReadingListController@reorderMultipleLists')->name('reorder-multiple');
 
     Route::put('/edit/{readingList}', 'ReadingListController@edit')->name('edit')->middleware('can:edit,readingList');
+    Route::delete('/delete/{readingList}', 'ReadingListController@archive')->name('delete')->middleware('can:archive,readingList');
 
-    // Handled via AuthorizeSoftDeletesTrait
-
-    Route::delete('/delete/{id}', 'ReadingListController@delete')->name('delete');
 });
 
 Route::group([
     'prefix'=>'link',
     'as'=>'link.'
 ], function(){
+    Route::get('/archives', 'ArchiveController@getArchives')->name('archives');
     Route::post('/create', 'LinkController@store')->name('create');
     Route::put('/reorder', 'LinkController@reorderLinks')->name('reorder');
 
     Route::post('/archive/{link}', 'LinkController@archive')->name('archive')->middleware('can:delete,link');
-    Route::post('/delete/{link}', 'LinkController@delete')->name('delete')->middleware('can:delete,link');
+    Route::delete('/delete/{link}', 'LinkController@deletePermanently')->name('delete')->middleware('can:deletePermanently,link');
     Route::put('/edit/{link}', 'LinkController@edit')->name('edit')->middleware('can:edit,link');
-
-    // Handled via AuthorizeSoftDeletesTrait
-
-    Route::get('/archives/{user}', 'LinkController@getArchives')->name('archives');
-    Route::post('/force-delete/{id}', 'LinkController@deleteFromArchives')->name('deleteFromArchives');
-    Route::put('/restore/{id}', 'LinkController@restore')->name('restore');
+    Route::delete('/force-delete/{archive}', 'ArchiveController@delete')->name('deleteArchive')->middleware('can:delete,archive');
+    Route::put('/restore/{archive}', 'ArchiveController@restore')->name('restore')->middleware('can:restore,archive');
 });

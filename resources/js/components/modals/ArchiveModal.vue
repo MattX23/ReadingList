@@ -46,7 +46,7 @@
         },
         created() {
             EventBus.$on('toggle-archive-modal', () => {
-                axios.get('/api/link/archives/' + this.userId)
+                axios.get('/api/link/archives')
                 .then((response) => {
                     this.links = response.data;
                     this.showModal = true;

@@ -2,6 +2,7 @@
 
 namespace App\Bus\Commands\Link;
 
+use App\Archive;
 use App\Link;
 
 class DeleteLinkCommand
@@ -33,13 +34,25 @@ class DeleteLinkCommand
      */
     public function handle()
     {
-        $this->forceDelete ? $this->forceDelete() : $this->link->delete();
+        $this->forceDelete ?
+            $this->forceDelete() :
+            $this->archive();
     }
 
     protected function forceDelete()
     {
         $this->deleteInactiveList();
         $this->link->forceDelete();
+    }
+
+    protected function archive()
+    {
+        Archive::create([
+           'link_id'    => $this->link->id,
+           'user_id'    => $this->link->readingList->user_id
+        ]);
+
+        $this->link->delete();
     }
 
     /**

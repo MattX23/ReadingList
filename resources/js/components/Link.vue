@@ -85,16 +85,16 @@
             },
             deleteLink() {
                 let data = {
-                    route: this.archived ? `link/force-delete/${this.link.id}`: `link/delete/${this.link.id}`,
+                    route: this.archived ? `link/force-delete/${this.link.archive_id}`: `link/delete/${this.link.id}`,
                     body: `Are you sure you want to delete ${this.link.title}?`,
                     buttonText: 'Delete',
                     btnClass: 'delete',
-                    method: 'POST',
+                    method: 'DELETE',
                 };
                 EventBus.$emit('toggle-confirmation-modal', data);
             },
             reAddLink() {
-                axios.put(`/api/link/restore/${this.link.id}`)
+                axios.put(`/api/link/restore/${this.link.archive_id}`)
                     .then((response) => {
                         if (!this.archived) EventBus.$emit('close-modal');
                         EventBus.$emit('re-render');
