@@ -2,18 +2,20 @@
 
 namespace Tests\Feature;
 
+use App\Archive;
 use App\Http\Controllers\ReadingListController;
 use App\Http\Requests\ReadingListRequest;
 use App\Link;
 use App\ReadingList;
 use App\User;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use Tests\Traits\SetUpTrait;
 
 class ReadingListTest extends TestCase
 {
-    use RefreshDatabase, SetUpTrait;
+    use RefreshDatabase, SetUpTrait, SoftDeletes;
 
     public function testUserCannotEditAnotherUsersReadingList()
     {
@@ -111,17 +113,19 @@ class ReadingListTest extends TestCase
 
         $this->actingAs($this->user);
 
-        $this->user->readingLists()->first()->links()->first()->delete();
+        $link = $this->user->readingLists()->first()->links()->first();
+
+        $this->post(route('link.archive', $link->id));
 
         $readingList = $this->user->readingLists()->first();
 
-        $this->delete(route('lists.delete', $readingList))
-            ->assertStatus(200)
-            ->assertSee(ReadingList::DELETED_SUCCESS_MESSAGE);
+        $this->delete(route('lists.delete', $readingList->id));
 
         $link = $this->user->readingLists()->withTrashed()->first()->links()->withTrashed()->first();
 
-        $this->post(route('link.deleteFromArchives', $link->id))
+        $archive = Archive::where('link_id', '=', $link->id)->first();
+
+        $this->delete(route('link.deleteArchive', $archive))
             ->assertStatus(200)
             ->assertSee(Link::DELETED_SUCCESS_MESSAGE);
 

@@ -2,15 +2,17 @@
 
 namespace Tests\Feature;
 
+use App\Archive;
 use App\Link;
 use App\User;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use Tests\Traits\SetUpTrait;
 
 class LinkTest extends TestCase
 {
-    use RefreshDatabase, SetUpTrait;
+    use RefreshDatabase, SetUpTrait, SoftDeletes;
 
     public function testUserCannotEditAnotherUsersLink()
     {
@@ -74,7 +76,7 @@ class LinkTest extends TestCase
         $link = $this->user->readingLists()->first()->links->first();
 
         $this->actingAs($this->user)
-            ->post(route('link.delete', $link->id))
+            ->delete(route('link.delete', $link->id))
             ->assertStatus(200)
             ->assertSee(Link::DELETED_SUCCESS_MESSAGE);
     }
@@ -88,7 +90,7 @@ class LinkTest extends TestCase
         $link = $this->user->readingLists()->first()->links->first();
 
         $this->actingAs($anotherUser)
-            ->post(route('link.delete', $link->id))
+            ->delete(route('link.delete', $link->id))
             ->assertStatus(403)
             ->assertDontSee(Link::DELETED_SUCCESS_MESSAGE);
     }
@@ -100,10 +102,10 @@ class LinkTest extends TestCase
         $this->actingAs($this->user);
 
         foreach ($this->user->readingLists()->first()->links as $link) {
-            $this->post(route('link.delete', $link->id));
+            $this->delete(route('link.delete', $link->id));
         }
 
-        $this->get(route('link.archives', $this->user->id))
+        $this->get(route('link.archives'))
             ->assertStatus(200)
             ->assertSee($this->user->readingLists()->first()->links);
     }
@@ -116,9 +118,13 @@ class LinkTest extends TestCase
 
         $link = $this->user->readingLists()->first()->links->first();
 
-        $this->post(route('link.archive', $link));
+        $this->post(route('link.archive', $link->id))
+            ->assertStatus(200)
+            ->assertSee(Link::ARCHIVED_SUCCESS_MESSAGE);
 
-        $this->put(route('link.restore', $link->id))
+        $archive = Archive::where('link_id', '=', $link->id)->first();
+
+        $this->put(route('link.restore', $archive->id))
             ->assertStatus(200)
             ->assertSee(Link::RESTORED_SUCCESS_MESSAGE);
     }

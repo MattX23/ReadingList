@@ -52,6 +52,10 @@ class Link extends Model
         'position',
     ];
 
+    protected $appends = [
+        'archive_id'
+    ];
+
     public function readingList(): BelongsTo
     {
         return $this->belongsTo(ReadingList::class);
@@ -68,5 +72,13 @@ class Link extends Model
                     'position' => $i + 1,
                 ]);
         }
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getArchiveIdAttribute(): ?int
+    {
+        return $this->trashed() ? Archive::where('link_id', '=', $this->id)->first()->id : null;
     }
 }

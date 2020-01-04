@@ -8,16 +8,12 @@ use App\Bus\Commands\ReadingList\EditReadingListCommand;
 use App\Http\Requests\ReadingListRequest;
 use App\Link;
 use App\ReadingList;
-use App\Traits\AuthorizeSoftDeletesTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Config;
 
 class ReadingListController extends Controller
 {
-    use AuthorizeSoftDeletesTrait;
-
     /**
      * @var string
      */
@@ -41,19 +37,12 @@ class ReadingListController extends Controller
     }
 
     /**
-     * @param integer $id
+     * @param \App\ReadingList $readingList
      *
      * @return JsonResponse
      */
-    public function delete(int $id): JsonResponse
+    public function archive(ReadingList $readingList): JsonResponse
     {
-        $readingList = $this->authorizeSoftDeletedModel(
-            ReadingList::class,
-            $id,
-            Config::get('policies.policy.delete'),
-            true
-        );
-
         $this->dispatch(new DeleteReadingListCommand($readingList));
 
         return response()->json(ReadingList::DELETED_SUCCESS_MESSAGE);

@@ -27,7 +27,7 @@ class ReadingListPolicy
      *
      * @return bool
      */
-    public function delete(User $user, ReadingList $readingList): bool
+    public function archive(User $user, ReadingList $readingList): bool
     {
         return $user->id === $readingList->user_id;
     }

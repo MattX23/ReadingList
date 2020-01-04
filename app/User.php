@@ -48,6 +48,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(ReadingList::class)->orderBy('position');
     }
 
+    public function archivedLinks(): HasMany
+    {
+        return $this->hasMany(Archive::class);
+    }
+
     /**
      * @param string $email
      *
