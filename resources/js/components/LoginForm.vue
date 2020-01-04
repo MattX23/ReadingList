@@ -59,6 +59,9 @@
                         <div class="text-center input-type-selector">
                             {{ accountStatusText }} have an account? <a href="javascript:void(0);" @click="switchType">{{ switchText }}</a>
                         </div>
+                        <div class="text-center input-type-selector">
+                            <a :href="passwordResetLink"><small>Forgot your password?</small></a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -73,6 +76,7 @@
     const REGISTER_ROUTE = '/api/register';
 
     export default {
+        props: ['passwordResetLink'],
         data() {
             return {
                 errors: {

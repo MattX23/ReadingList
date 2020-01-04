@@ -4,7 +4,9 @@
 
 @if(!Auth::check())
 
-<login-form></login-form>
+<login-form
+    password-reset-link="{{ route('password.update') }}">
+</login-form>
 
 @endif
 
