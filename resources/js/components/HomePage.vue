@@ -16,7 +16,6 @@
                         :name="readingList.name"
                         :id="readingList.id"
                         :readingList="readingList"
-                        :windowWidth="windowWidth"
                         :key="readingList.id"
                         ></reading-list>
             </draggable>
@@ -82,5 +81,11 @@
     }
     .reading-list-container {
         width: max-content;
+    }
+
+    @media (max-width: 576px){
+        .reading-list-container {
+            width: 100vw;
+        }
     }
 </style>

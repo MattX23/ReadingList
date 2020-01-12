@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div :class="{ hidden : listExpansion && !initiallyExpanded}">
         <div @click="closeOptions" class="card-body">
             <div class="row link-content">
                 <div class="col-12">
@@ -44,9 +44,11 @@
     export default {
         props: {
             link: Object,
-            windowWidth: Number,
             id: Number,
             linkCount: Number,
+            windowWidth: Number,
+            isExpanded: Boolean,
+            initiallyExpanded: Boolean,
         },
         data() {
             return {
@@ -58,6 +60,7 @@
                     btnClass: '',
                 },
                 archived: !!this.link.deleted_at,
+                hidden: 'hidden',
             }
         },
         created() {
@@ -66,17 +69,15 @@
             });
         },
         computed: {
-            wideScreen() {
-                if (this.windowWidth > 1445) {
-                    return true;
-                }
-            },
             optionsClass() {
                 let classList = 'options';
                 if (this.link.position === this.linkCount && this.linkCount > 1) {
                     classList += ' options-last';
                 }
                 return classList;
+            },
+            listExpansion() {
+                return !(this.windowWidth > 576) && !this.isExpanded;
             },
         },
         methods: {
@@ -161,5 +162,15 @@
         text-align: left;
         display: table;
         word-break: break-word;
+    }
+
+    @media (max-width: 576px) {
+        .footer {
+            margin-bottom: 0;
+        }
+
+        .hidden {
+            display: none;
+        }
     }
 </style>

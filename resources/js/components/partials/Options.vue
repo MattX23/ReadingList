@@ -5,9 +5,14 @@
                  @click.stop="addURL">
                 Add a link
             </div>
+            <div v-if="mobileView"
+                 class="option-item"
+                 @click.stop="toggleExpansion">
+                {{ expansionText }}
+            </div>
             <div class="option-item"
                  @click.stop="editListName">
-                Change title
+                Change List Name
             </div>
             <div class="option-item"
                  @click.stop="deleteList">
@@ -41,7 +46,23 @@
             showOptions: Boolean,
             optionsClass: String,
             link: Object,
-            deleteFunction: Function
+            deleteFunction: Function,
+            windowWidth: Number,
+            isExpanded: Boolean,
+            initiallyExpanded: Boolean,
+        },
+        data() {
+            return {
+                expandedStatus: this.isExpanded,
+            }
+        },
+        computed: {
+            expansionText() {
+                return this.isExpanded || this.initiallyExpanded ? 'Collapse List' : 'Expand List';
+            },
+            mobileView() {
+                return !(this.windowWidth > 576);
+            },
         },
         methods: {
             addURL() {
@@ -103,7 +124,13 @@
                     method: 'PUT',
                 };
                 EventBus.$emit('toggle-modal', data);
-            }
+            },
+            toggleExpansion() {
+                this.expandedStatus = !this.expandedStatus;
+                if (this.initiallyExpanded) this.expandedStatus = !this.expandedStatus;
+                EventBus.$emit('close-options');
+                EventBus.$emit('toggle-list', this.expandedStatus, this.readingList.id);
+            },
         }
     }
 </script>
