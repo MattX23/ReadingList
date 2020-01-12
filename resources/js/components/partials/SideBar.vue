@@ -101,4 +101,10 @@
         float: right;
         margin-right: 25px;
     }
+
+    @media (max-width: 576px){
+        .side-bar {
+            width: 100vw;
+        }
+    }
 </style>

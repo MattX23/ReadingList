@@ -2,7 +2,7 @@
     <div class="reading-list-bar">
         <draggable v-model="readingList.links"
                    group="readingList.links"
-                   :class="[card, !noListItems ? emptyClass : '']"
+                   :class="[card, applyEmptyClass ? emptyClass : '']"
                    draggable="false">
             <div @mouseover="showEditMenu"
                  @mouseout="hideEditMenu"
@@ -11,7 +11,10 @@
                 <span @click.stop="openListMenu"><i class="arrow down"></i></span>
                 <options
                     :showListOptions="showListOptions"
-                    :readingList="readingList">
+                    :readingList="readingList"
+                    :windowWidth="windowWidth"
+                    :isExpanded="isExpanded"
+                    :initiallyExpanded="initiallyExpanded">
                 </options>
             </div>
             <div>
@@ -24,7 +27,10 @@
                             :link="link"
                             :windowWidth="windowWidth"
                             :id="id"
-                            :linkCount="readingList.links.length">
+                            :linkCount="readingList.links.length"
+                            :isExpanded="isExpanded"
+                            :initiallyExpanded="initiallyExpanded"
+                        >
                         </reading-link>
                     </div>
                 </draggable>
@@ -45,26 +51,31 @@
         props: {
             name: String,
             id: Number,
-            windowWidth: Number,
             readingList: Object
         },
         data() {
             return {
                 showOptions: false,
                 showMenu: false,
-                noItems: this.readingList.links.length,
+                itemsCount: this.readingList.links.length,
                 card: "card",
                 emptyClass: "empty-bar",
                 showListOptions: false,
+                windowWidth: window.innerWidth,
+                isExpanded: false,
+                initiallyExpanded: false,
             }
         },
         computed: {
-            noListItems() {
+            applyEmptyClass() {
+                return !this.listItemsCount && (this.windowWidth > 576);
+            },
+            listItemsCount() {
                 return this.readingList.links.length;
             },
             checkForListChanges() {
-                if (this.noListItems !== this.noItems) {
-                    this.noItems = this.noListItems;
+                if (this.listItemsCount !== this.itemsCount) {
+                    this.itemsCount = this.listItemsCount;
                     this.reorderMultipleLists();
                     return true;
                 }
@@ -74,6 +85,20 @@
             EventBus.$on('close-options', () => {
                 this.closeOptions();
             });
+            EventBus.$on('toggle-list', (isExpanded, listId) => {
+                if (this.readingList.id === listId) {
+                    this.initiallyExpanded = false;
+                    this.isExpanded = isExpanded;
+                }
+            });
+        },
+        mounted() {
+            this.$nextTick(() => {
+                window.addEventListener('resize', this.onResize);
+            });
+
+            if (this.readingList.position === 1) this.initiallyExpanded = true;
+
         },
         methods: {
             closeOptions() {
@@ -87,6 +112,9 @@
             },
             hideEditMenu() {
                 this.showMenu = false;
+            },
+            onResize() {
+                this.windowWidth = window.innerWidth;
             },
             openListMenu() {
                 if (this.showListOptions) {
@@ -173,5 +201,17 @@
         margin-bottom: 15px;
         overflow-x: scroll;
         min-height: 85vh;
+    }
+
+    @media (max-width: 576px) {
+        .card-header {
+            position: relative;
+            z-index: unset;
+        }
+        .reading-list-bar {
+            overflow-x: unset;
+            width: 100vw;
+            min-height: fit-content;
+        }
     }
 </style>
